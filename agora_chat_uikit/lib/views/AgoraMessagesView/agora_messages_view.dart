@@ -9,7 +9,6 @@ import 'package:flutter/services.dart';
 class AgoraMessagesView extends StatefulWidget {
   const AgoraMessagesView({
     super.key,
-    this.appBar,
     this.inputBar,
     required this.conversation,
     this.onTap,
@@ -23,7 +22,6 @@ class AgoraMessagesView extends StatefulWidget {
     this.willSendMessage,
   });
 
-  final AppBar? appBar;
   final Widget? inputBar;
   final ChatConversation conversation;
   final AgoraMessageTapAction? onTap;
@@ -145,13 +143,13 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
         180 * 1000) {
       list.add(
         AgoraBottomSheetItem(
-          "Unsend",
+          "Recall",
           labelStyle: const TextStyle(
               color: Color.fromRGBO(255, 20, 204, 1),
               fontWeight: FontWeight.w400,
               fontSize: 18),
           onTap: () {
-            msgListViewController.unsendMessage(context, message);
+            msgListViewController.recallMessage(context, message);
             return Navigator.of(context).pop(true);
           },
         ),

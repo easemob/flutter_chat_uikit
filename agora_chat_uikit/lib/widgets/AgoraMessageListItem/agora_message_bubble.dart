@@ -129,7 +129,7 @@ class AgoraMessageBubble extends StatelessWidget {
         children: [
           Center(
             child: Padding(
-              padding: EdgeInsets.only(top: 10),
+              padding: const EdgeInsets.only(top: 10),
               child: SizedBox(
                 height: 20,
                 child: Text(

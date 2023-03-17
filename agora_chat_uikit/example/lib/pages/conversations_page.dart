@@ -13,14 +13,16 @@ class ConversationsPage extends StatefulWidget {
 class _ConversationsPageState extends State<ConversationsPage> {
   @override
   Widget build(BuildContext context) {
-    AgoraChatUIKit.of(context).conversationsController.loadAllConversations;
     return Scaffold(
       appBar: AppBar(title: const Text("Conversations")),
-      body: AgoraConversationListView(
+      body: AgoraConversationsView(
         onItemTap: (conversation) {
           Navigator.of(context).push(MaterialPageRoute(builder: (ctx) {
             return ChatPage(conversation);
           }));
+        },
+        nicknameBuilder: (context, conversation) {
+          return Text("custom ${conversation.id}");
         },
       ),
     );

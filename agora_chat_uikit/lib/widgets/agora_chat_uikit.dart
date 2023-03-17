@@ -25,7 +25,7 @@ class AgoraChatUIKit extends StatefulWidget {
 }
 
 class AgoraChatUIKitState extends State<AgoraChatUIKit> {
-  late final AgoraConversationListController _controller;
+  late final AgoraConversationsController _controller;
 
   @override
   void initState() {
@@ -34,10 +34,10 @@ class AgoraChatUIKitState extends State<AgoraChatUIKit> {
       ChatClient.getInstance.options != null,
       'You must has init AgoraChat SDK.',
     );
-    _controller = AgoraConversationListController();
+    _controller = AgoraConversationsController();
   }
 
-  AgoraConversationListController get conversationsController {
+  AgoraConversationsController get conversationsController {
     return _controller;
   }
 

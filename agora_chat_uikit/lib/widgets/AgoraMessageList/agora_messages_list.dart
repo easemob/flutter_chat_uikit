@@ -74,7 +74,7 @@ class AgoraMessageListController extends AgoraBaseController {
     }
   }
 
-  Future<void> unsendMessage(BuildContext context, ChatMessage message) async {
+  Future<void> recallMessage(BuildContext context, ChatMessage message) async {
     int index = -1;
     do {
       index = _newList.indexWhere((element) => message.msgId == element.msgId);

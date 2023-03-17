@@ -16,7 +16,7 @@ dependencies:
 
   intl: any
 
-  agora_chat_sdk: ^1.1.0
+  agora_chat_sdk: 1.1.0
 
   image_picker: 0.8.6+4
 

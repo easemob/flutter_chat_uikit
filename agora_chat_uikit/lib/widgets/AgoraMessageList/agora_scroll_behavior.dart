@@ -15,7 +15,6 @@ class AgoraScrollBehavior extends ScrollBehavior {
       case TargetPlatform.windows:
       case TargetPlatform.android:
         return child;
-      glow:
       case TargetPlatform.fuchsia:
         return GlowingOverscrollIndicator(
           axisDirection: details.direction,

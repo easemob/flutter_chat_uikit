@@ -2,7 +2,7 @@
 # See https://dart.dev/tools/pub/glossary#lockfile
 packages:
   agora_chat_sdk:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: agora_chat_sdk
       sha256: "73a3554ef78fa9eaf2b375aaeb5199b4fadde5472fd9dd077efe463d073890c5"
@@ -12,7 +12,7 @@ packages:
   agora_chat_uikit:
     dependency: "direct main"
     description:
-      path: "../agora_chat_uikit"
+      path: ".."
       relative: true
     source: path
     version: "0.0.1"
@@ -264,10 +264,10 @@ packages:
     dependency: transitive
     description:
       name: image_picker
-      sha256: "64b21d9f0e065f9ab0e4dde458076226c97382cc0c6949144cb874c62bf8e9f8"
+      sha256: "715d68a53d6bcc2eae26005097dc74c375a04c0d7c0e657da84deebbbbbf51ed"
       url: "https://pub.dev"
     source: hosted
-    version: "0.8.7"
+    version: "0.8.6+4"
   image_picker_android:
     dependency: transitive
     description:

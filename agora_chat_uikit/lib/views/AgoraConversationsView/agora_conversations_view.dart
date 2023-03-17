@@ -2,11 +2,10 @@ import 'package:agora_chat_uikit/agora_chat_uikit.dart';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:agora_chat_uikit/controllers/agora_base_controller.dart';
 
-import '../../controllers/agora_base_controller.dart';
-
-class AgoraConversationListController extends AgoraBaseController {
-  AgoraConversationListController({
+class AgoraConversationsController extends AgoraBaseController {
+  AgoraConversationsController({
     super.key,
   }) {
     _addListener();
@@ -113,10 +112,10 @@ class AgoraConversationListController extends AgoraBaseController {
   }
 }
 
-class AgoraConversationListView extends StatefulWidget {
-  const AgoraConversationListView({
+class AgoraConversationsView extends StatefulWidget {
+  const AgoraConversationsView({
     super.key,
-    required this.onItemTap,
+    this.onItemTap,
     this.controller,
     this.reverse = false,
     this.primary,
@@ -149,14 +148,13 @@ class AgoraConversationListView extends StatefulWidget {
   final ScrollViewKeyboardDismissBehavior keyboardDismissBehavior;
   final String? restorationId;
   final Clip clipBehavior;
-  final void Function(ChatConversation conversation) onItemTap;
+  final void Function(ChatConversation conversation)? onItemTap;
   @override
-  State<AgoraConversationListView> createState() =>
-      AgoraConversationListViewState();
+  State<AgoraConversationsView> createState() => AgoraConversationsViewState();
 
-  static AgoraConversationListViewState of(BuildContext context) {
-    AgoraConversationListViewState? state;
-    state = context.findAncestorStateOfType<AgoraConversationListViewState>();
+  static AgoraConversationsViewState of(BuildContext context) {
+    AgoraConversationsViewState? state;
+    state = context.findAncestorStateOfType<AgoraConversationsViewState>();
 
     assert(
       state != null,
@@ -167,8 +165,8 @@ class AgoraConversationListView extends StatefulWidget {
   }
 }
 
-class AgoraConversationListViewState extends State<AgoraConversationListView> {
-  late final AgoraConversationListController controller;
+class AgoraConversationsViewState extends State<AgoraConversationsView> {
+  late final AgoraConversationsController controller;
   @override
   void initState() {
     super.initState();
