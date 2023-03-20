@@ -17,9 +17,15 @@ class _ConversationsPageState extends State<ConversationsPage> {
       appBar: AppBar(title: const Text("Conversations")),
       body: AgoraConversationsView(
         onItemTap: (conversation) {
-          Navigator.of(context).push(MaterialPageRoute(builder: (ctx) {
-            return ChatPage(conversation);
-          }));
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (ctx) {
+                return ChatPage(conversation);
+              },
+            ),
+          ).then((value) => AgoraChatUIKit.of(context)
+              .conversationsController
+              .loadAllConversations());
         },
         nicknameBuilder: (context, conversation) {
           return Text("custom ${conversation.id}");
