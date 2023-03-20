@@ -4,9 +4,9 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'pages/second_page.dart';
 
-const String appKey = "easemob-demo#flutter";
-const String userId = "du001";
-const String password = "1";
+const String appKey = "";
+const String userId = "";
+const String password = "";
 const String agoraToken = "";
 
 void main() async {
