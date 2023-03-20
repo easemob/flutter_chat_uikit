@@ -26,19 +26,7 @@ class AgoraMessageListController extends AgoraBaseController {
 
 // send message
   void sendMessage(ChatMessage message) async {
-    int index = -1;
-    do {
-      index = _newList.indexWhere((element) => message.msgId == element.msgId);
-      if (index > -1) {
-        _removeListWithIndex(_newList, index);
-        break;
-      }
-      index = _oldList.indexWhere((element) => message.msgId == element.msgId);
-      if (index > -1) {
-        _removeListWithIndex(_oldList, index);
-      }
-    } while (false);
-
+    _removeMessageFromList(message);
     ChatMessage msg =
         await ChatClient.getInstance.chatManager.sendMessage(message);
     _newList.add(_modelCreator(msg));
@@ -48,6 +36,17 @@ class AgoraMessageListController extends AgoraBaseController {
 
   // remove message
   Future<void> removeMessage(ChatMessage message) async {
+    try {
+      await conversation.deleteMessage(message.msgId);
+      if (_removeMessageFromList(message)) {
+        refreshUI();
+      }
+    } on ChatError catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
+  bool _removeMessageFromList(ChatMessage message) {
     int index = -1;
     do {
       index = _newList.indexWhere((element) => message.msgId == element.msgId);
@@ -61,10 +60,7 @@ class AgoraMessageListController extends AgoraBaseController {
         break;
       }
     } while (false);
-    if (index >= 0) {
-      await conversation.deleteMessage(message.msgId);
-      refreshUI();
-    }
+    return index >= 0;
   }
 
   void _removeListWithIndex(List<AgoraMessageListItemModel> list, int index) {
@@ -75,28 +71,15 @@ class AgoraMessageListController extends AgoraBaseController {
   }
 
   Future<void> recallMessage(BuildContext context, ChatMessage message) async {
-    int index = -1;
-    do {
-      index = _newList.indexWhere((element) => message.msgId == element.msgId);
-      if (index >= 0) {
-        _removeListWithIndex(_newList, index);
-        break;
-      }
-      index = _oldList.indexWhere((element) => message.msgId == element.msgId);
-      if (index >= 0) {
-        _removeListWithIndex(_oldList, index);
-        break;
-      }
-    } while (false);
-    if (index >= 0) {
-      try {
-        await ChatClient.getInstance.chatManager.recallMessage(message.msgId);
+    try {
+      await ChatClient.getInstance.chatManager.recallMessage(message.msgId);
+      if (_removeMessageFromList(message)) {
         refreshUI();
-      } on ChatError catch (e) {
-        String str = e.description;
-        final snackBar = SnackBar(content: Text(str));
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
+    } on ChatError catch (e) {
+      String str = e.description;
+      final snackBar = SnackBar(content: Text(str));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
 
