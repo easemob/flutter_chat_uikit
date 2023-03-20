@@ -4,9 +4,9 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'pages/second_page.dart';
 
-const String appKey = "";
-const String userId = "";
-const String password = "";
+const String appKey = "easemob-demo#flutter";
+const String userId = "du001";
+const String password = "1";
 const String agoraToken = "";
 
 void main() async {
@@ -26,9 +26,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      builder: (context, child) {
-        return AgoraChatUIKit(child: child!);
-      },
+      builder: EasyLoading.init(
+        builder: (context, child) {
+          return AgoraChatUIKit(child: child!);
+        },
+      ),
       home: const MyHomePage(title: 'AgoraChatUIKit'),
     );
   }

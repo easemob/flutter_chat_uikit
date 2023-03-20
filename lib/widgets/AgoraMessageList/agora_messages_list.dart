@@ -187,6 +187,9 @@ class AgoraMessageListController extends AgoraBaseController {
             _newList.addAll(tmp.map((e) => _modelCreator(e)).toList());
             refreshUI();
           },
+          onMessagesRecalled: (messages) {
+            // TODO: need delete message from ui.
+          },
         ));
   }
 
