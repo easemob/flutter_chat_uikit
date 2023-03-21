@@ -51,6 +51,9 @@ class AgoraConversationsController extends AgoraBaseController {
         onMessagesReceived: (messages) async {
           loadAllConversations();
         },
+        onMessagesRecalled: (messages) {
+          loadAllConversations();
+        },
       ),
     );
   }

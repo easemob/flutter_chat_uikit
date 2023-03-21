@@ -171,7 +171,16 @@ class AgoraMessageListController extends AgoraBaseController {
             refreshUI();
           },
           onMessagesRecalled: (messages) {
-            // TODO: need delete message from ui.
+            bool needRefresh = false;
+            for (var msg in messages) {
+              if (msg.conversationId == conversation.id) {
+                bool tmp = _removeMessageFromList(msg);
+                if (tmp && !needRefresh) {
+                  needRefresh = true;
+                }
+              }
+            }
+            if (needRefresh) refreshUI();
           },
         ));
   }
