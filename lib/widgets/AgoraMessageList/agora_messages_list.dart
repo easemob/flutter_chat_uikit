@@ -61,8 +61,16 @@ class AgoraMessageListController extends AgoraBaseController {
 
   void _removeListWithIndex(List<AgoraMessageListItemModel> list, int index) {
     AgoraMessageListItemModel model = list.removeAt(index);
-    if (list.length != index && model.needTime) {
-      list[index] = list[index].copyWithNeedTime(true);
+    if (index == 0) {
+      if (list.isNotEmpty) {
+        _latestShowTsTime = list.first.message.serverTime;
+      } else {
+        _latestShowTsTime = -1;
+      }
+    } else {
+      if (model.needTime && list.isNotEmpty) {
+        list[index - 1] = list[index - 1].copyWithNeedTime(true);
+      }
     }
   }
 
@@ -80,7 +88,7 @@ class AgoraMessageListController extends AgoraBaseController {
   }
 
   // load message message
-  Future<void> loadMoreMessage([int count = 15]) async {
+  Future<void> loadMoreMessage([int count = 10]) async {
     if (_loading) return;
     _loading = true;
     if (!_hasMore) {
@@ -96,8 +104,7 @@ class AgoraMessageListController extends AgoraBaseController {
       _hasMore = false;
     }
 
-    List<AgoraMessageListItemModel> models =
-        _modelsCreator(list.reversed.toList(), _hasMore);
+    List<AgoraMessageListItemModel> models = _modelsCreator(list, _hasMore);
 
     _msgList.addAll(models);
     _loading = false;
@@ -117,12 +124,20 @@ class AgoraMessageListController extends AgoraBaseController {
   }
 
   // 发送 read ack
-  void sendReadAck(ChatMessage message) async {
+  Future<void> sendReadAck(ChatMessage message) async {
     if (needReadAck &&
         !message.hasReadAck &&
         message.direction == MessageDirection.RECEIVE) {
       await ChatClient.getInstance.chatManager.sendMessageReadAck(message);
     }
+  }
+
+  Future<void> deleteAllMessages() async {
+    await ChatClient.getInstance.chatManager
+        .deleteConversation(conversation.id);
+    _latestShowTsTime = -1;
+    _msgList.clear();
+    refreshUI();
   }
 
   void _handleMessage(String msgId, ChatMessage message) {
@@ -199,7 +214,7 @@ class AgoraMessageListController extends AgoraBaseController {
     }
   }
 
-  void _remoteChatManagerListener() {
+  void _removeChatManagerListener() {
     ChatClient.getInstance.chatManager.removeEventHandler(key);
     ChatClient.getInstance.chatManager.removeMessageEvent(key);
   }
@@ -208,13 +223,14 @@ class AgoraMessageListController extends AgoraBaseController {
       List<ChatMessage> msgs, bool hasMore) {
     List<AgoraMessageListItemModel> list = [];
     for (var i = 0; i < msgs.length; i++) {
-      if (!_hasMore) {
+      if (!_hasMore && i == 0) {
+        _latestShowTsTime = msgs[i].serverTime;
         list.add(AgoraMessageListItemModel(msgs[i], true));
       } else {
         list.add(_modelCreator(msgs[i]));
       }
     }
-    return list;
+    return list.reversed.toList();
   }
 
   AgoraMessageListItemModel _modelCreator(ChatMessage message) {
@@ -240,10 +256,6 @@ class AgoraMessageListController extends AgoraBaseController {
     bool enableAnimation = false,
     bool moveToEnd = false,
   }) {
-    if (_msgList.isNotEmpty &&
-        _latestShowTsTime > _msgList.first.message.serverTime) {
-      _latestShowTsTime = _msgList.first.message.serverTime;
-    }
     return _reloadData?.call(enableAnimation, moveToEnd);
   }
 
@@ -256,7 +268,7 @@ class AgoraMessageListController extends AgoraBaseController {
   }
 
   void dispose() {
-    _remoteChatManagerListener();
+    _removeChatManagerListener();
   }
 }
 
@@ -332,7 +344,7 @@ class _AgoraMessagesListState extends State<AgoraMessagesList>
   @override
   Widget build(BuildContext context) {
     List<AgoraMessageListItemModel> list = controller._msgList;
-    debugPrint("first need? ${list.first.needTime}");
+
     Widget content = ExtendedListView.custom(
       physics: const AlwaysScrollableScrollPhysics(),
       controller: _scrollController,
