@@ -229,7 +229,7 @@ class _AgoraMessageInputWidgetState extends State<AgoraMessageInputWidget> {
                 widget.onTextFieldChanged?.call(value);
               },
               onTap: () {
-                widget.msgListViewController.moveToEnd();
+                widget.msgListViewController.refreshUI();
                 widget.onTextFieldFocus?.call();
               },
               focusNode: _inputFocusNode,

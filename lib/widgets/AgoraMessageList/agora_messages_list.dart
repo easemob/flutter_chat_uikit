@@ -1,6 +1,8 @@
 import 'package:agora_chat_uikit/agora_chat_uikit.dart';
 import 'package:agora_chat_uikit/controllers/agora_base_controller.dart';
 import 'package:agora_chat_uikit/widgets/AgoraMessageList/agora_scroll_behavior.dart';
+import 'package:agora_chat_uikit/widgets/AgoraMessageList/list/extended_list_library.dart';
+import 'package:agora_chat_uikit/widgets/AgoraMessageList/list/widgets/scroll_view.dart';
 
 import 'package:flutter/material.dart';
 
@@ -14,8 +16,8 @@ class AgoraMessageListController extends AgoraBaseController {
   }
 
   final bool needReadAck;
-  final List<AgoraMessageListItemModel> _oldList = [];
-  final List<AgoraMessageListItemModel> _newList = [];
+  final List<AgoraMessageListItemModel> _msgList = [];
+
   VoidCallback? dismissInputAction;
   ChatMessage? playingMessage;
   int _latestShowTsTime = -1;
@@ -29,7 +31,7 @@ class AgoraMessageListController extends AgoraBaseController {
     _removeMessageFromList(message);
     ChatMessage msg =
         await ChatClient.getInstance.chatManager.sendMessage(message);
-    _newList.add(_modelCreator(msg));
+    _msgList.insert(0, _modelCreator(msg));
 
     await moveToEnd();
   }
@@ -49,14 +51,9 @@ class AgoraMessageListController extends AgoraBaseController {
   bool _removeMessageFromList(ChatMessage message) {
     int index = -1;
     do {
-      index = _newList.indexWhere((element) => message.msgId == element.msgId);
+      index = _msgList.indexWhere((element) => message.msgId == element.msgId);
       if (index >= 0) {
-        _removeListWithIndex(_newList, index);
-        break;
-      }
-      index = _oldList.indexWhere((element) => message.msgId == element.msgId);
-      if (index >= 0) {
-        _removeListWithIndex(_oldList, index);
+        _removeListWithIndex(_msgList, index);
         break;
       }
     } while (false);
@@ -84,27 +81,26 @@ class AgoraMessageListController extends AgoraBaseController {
   }
 
   // load message message
-  Future<void> loadMoreMessage([int count = 10]) async {
+  Future<void> loadMoreMessage([int count = 15]) async {
     if (_loading) return;
     _loading = true;
-    if (!_hasMore) return;
-    List<AgoraMessageListItemModel> tmpList = _oldList + _newList;
+    if (!_hasMore) {
+      _loading = false;
+      return;
+    }
+
     List<ChatMessage> list = await conversation.loadMessages(
-      startMsgId: tmpList.isEmpty ? "" : tmpList.first.msgId,
+      startMsgId: _msgList.isEmpty ? "" : _msgList.last.msgId,
       loadCount: count,
     );
     if (list.length < count) {
       _hasMore = false;
     }
 
-    List<AgoraMessageListItemModel> models = _modelsCreator(list, _hasMore);
+    List<AgoraMessageListItemModel> models =
+        _modelsCreator(list.reversed.toList(), _hasMore);
 
-    if (!hasFirstLoad) {
-      _newList.addAll(models);
-      hasFirstLoad = true;
-    } else {
-      _oldList.insertAll(0, models);
-    }
+    _msgList.addAll(models);
     _loading = false;
     refreshUI();
   }
@@ -133,14 +129,10 @@ class AgoraMessageListController extends AgoraBaseController {
   void _handleMessage(String msgId, ChatMessage message) {
     int index = -1;
     do {
-      index = _newList.indexWhere((element) => msgId == element.msgId);
+      index = _msgList.indexWhere((element) => msgId == element.msgId);
       if (index > -1) {
-        _newList[index] = _newList[index].copyWithMsg(message);
+        _msgList[index] = _msgList[index].copyWithMsg(message);
         break;
-      }
-      index = _oldList.indexWhere((element) => msgId == element.msgId);
-      if (index > -1) {
-        _oldList[index] = _oldList[index].copyWithMsg(message);
       }
     } while (false);
     if (index > -1) {
@@ -167,7 +159,7 @@ class AgoraMessageListController extends AgoraBaseController {
                 .where((element) => element.conversationId == conversation.id)
                 .toList();
 
-            _newList.addAll(tmp.map((e) => _modelCreator(e)).toList());
+            _msgList.addAll(tmp.map((e) => _modelCreator(e)).toList());
             refreshUI();
           },
           onMessagesRecalled: (messages) {
@@ -192,17 +184,13 @@ class AgoraMessageListController extends AgoraBaseController {
       int index = -1;
       do {
         index =
-            _newList.indexWhere((element) => message.msgId == element.msgId);
+            _msgList.indexWhere((element) => message.msgId == element.msgId);
         if (index > -1) {
-          _newList[index] = AgoraMessageListItemModel(message);
+          _msgList[index] = AgoraMessageListItemModel(message);
           hasChange = true;
           break;
         }
-        index =
-            _oldList.indexWhere((element) => message.msgId == element.msgId);
-        if (index > -1) {
-          _oldList[index] = AgoraMessageListItemModel(message);
-        }
+
         hasChange = true;
       } while (false);
     }
@@ -306,16 +294,11 @@ class _AgoraMessagesListState extends State<AgoraMessagesList>
   late AgoraMessageListController controller;
 
   final ScrollController _scrollController = ScrollController();
-  late final ValueKey _centerKey;
-  bool _hasLongPress = false;
 
   @override
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addObserver(this);
-
-    _centerKey = ValueKey(widget.conversation.id);
     _scrollController.addListener(scrollListener);
 
     controller = widget.messageListViewController ??
@@ -323,37 +306,12 @@ class _AgoraMessagesListState extends State<AgoraMessagesList>
           widget.conversation,
         );
 
-    controller._bindingActions(
-      moveToEnd: _moveToEnd,
-      reloadData: _reloadData,
-    );
+    controller._bindingActions(reloadData: _reloadData);
     controller.loadMoreMessage();
-  }
-
-  Future<void> _moveToEnd([int milliseconds = 50]) async {
-    setState(() {});
-    if (_scrollController.position.extentAfter > 100) {
-      _scrollController.jumpTo(100);
-    }
-
-    _scrollToEnd(milliseconds);
   }
 
   Future<void> _reloadData() async {
     setState(() {});
-    _scrollToEnd();
-  }
-
-  Future<void> _scrollToEnd(
-      [int milliseconds = 100, bool force = false]) async {
-    if (_scrollController.position.extentAfter <= 30 || force) {
-      await Future.delayed(Duration(milliseconds: milliseconds));
-      await _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 80),
-        curve: Curves.easeOutQuart,
-      );
-    }
   }
 
   @override
@@ -362,64 +320,39 @@ class _AgoraMessagesListState extends State<AgoraMessagesList>
   }
 
   @override
-  void didChangeMetrics() {
-    super.didChangeMetrics();
-    if (!_hasLongPress) {
-      _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
-    }
-  }
-
-  @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-
     controller.dispose();
     _scrollController.dispose();
     super.dispose();
   }
 
   void scrollListener() async {
-    if (_scrollController.position.extentBefore == 0) {
+    if (_scrollController.position.maxScrollExtent ==
+        _scrollController.offset) {
       controller.loadMoreMessage();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    List<AgoraMessageListItemModel> oldList = controller._oldList;
-    List<AgoraMessageListItemModel> newList = controller._newList;
+    List<AgoraMessageListItemModel> list = controller._msgList;
+    Widget content = ExtendedListView.custom(
+      physics: const AlwaysScrollableScrollPhysics(),
+      controller: _scrollController,
+      cacheExtent: 1500,
+      reverse: true,
+      childrenDelegate: SliverChildBuilderDelegate(
+        (context, index) {
+          return messageWidget(list[index]);
+        },
+        childCount: list.length,
+      ),
+      extendedListDelegate: const ExtendedListDelegate(closeToTrailing: true),
+    );
 
     return ScrollConfiguration(
       behavior: AgoraScrollBehavior(),
-      child: Scrollbar(
-        child: CustomScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          center: _centerKey,
-          controller: _scrollController,
-          slivers: [
-            SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (BuildContext context, int index) {
-                  return messageWidget(oldList[oldList.length - 1 - index]);
-                },
-                childCount: oldList.length,
-              ),
-            ),
-            SliverPadding(
-              padding: EdgeInsets.zero,
-              key: _centerKey,
-            ),
-            SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (BuildContext context, int index) {
-                  return messageWidget(newList[index]);
-                },
-                childCount: newList.length,
-              ),
-            ),
-          ],
-        ),
-      ),
+      child: Scrollbar(child: content),
     );
   }
 
@@ -480,11 +413,8 @@ class _AgoraMessagesListState extends State<AgoraMessagesList>
 
   Future<bool> _longPressed(BuildContext ctx, ChatMessage msg) async {
     controller.dismissInputAction?.call();
-    _hasLongPress = true;
-    bool ret = await widget.onBubbleLongPress?.call(ctx, msg) ?? false;
 
-    Future.delayed(const Duration(seconds: 1))
-        .then((value) => _hasLongPress = false);
+    bool ret = await widget.onBubbleLongPress?.call(ctx, msg) ?? false;
 
     return ret;
   }
