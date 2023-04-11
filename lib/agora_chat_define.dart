@@ -15,9 +15,6 @@ typedef AgoraMessageListItemBuilder = Widget? Function(
 typedef AgoraMessageTapAction = bool Function(
     BuildContext context, ChatMessage message);
 
-typedef AgoraMessageLongPressAction = Future<bool> Function(
-    BuildContext context, ChatMessage message);
-
 typedef AgoraConfirmDismissCallback = Future<bool> Function(
     BuildContext context);
 

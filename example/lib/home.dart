@@ -1,18 +1,18 @@
 import 'package:agora_chat_uikit/agora_chat_uikit.dart';
+
 import 'package:flutter/material.dart';
 
+import 'pages/chat_page.dart';
+import 'pages/conversations_page.dart';
 
-import 'chat_page.dart';
-import 'conversations_page.dart';
-
-class SecondPage extends StatefulWidget {
-  const SecondPage({super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
   @override
-  State<StatefulWidget> createState() => _SecondPageState();
+  State<StatefulWidget> createState() => _HomePageState();
 }
 
-class _SecondPageState extends State<SecondPage> {
+class _HomePageState extends State<HomePage> {
   final TextEditingController _controller = TextEditingController();
 
   @override
@@ -25,7 +25,9 @@ class _SecondPageState extends State<SecondPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: const Text("AgoraChatUIKit"),
+        leading: null,
       ),
       body: ListView(
         children: [
@@ -44,6 +46,15 @@ class _SecondPageState extends State<SecondPage> {
               height: 60,
               child: Center(
                 child: Text("ChatPage"),
+              ),
+            ),
+          ),
+          InkWell(
+            onTap: _logout,
+            child: const SizedBox(
+              height: 60,
+              child: Center(
+                child: Text("logout"),
               ),
             ),
           ),
@@ -121,6 +132,12 @@ class _SecondPageState extends State<SecondPage> {
       Navigator.of(context).push(MaterialPageRoute(builder: (context) {
         return ChatPage(conv);
       }));
+    });
+  }
+
+  void _logout() async {
+    ChatClient.getInstance.logout().then((value) {
+      Navigator.of(context).pushNamed("login");
     });
   }
 }

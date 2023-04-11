@@ -21,7 +21,7 @@ class AgoraMessageBubble extends StatelessWidget {
 
   final AgoraMessageListItemModel model;
   final AgoraMessageTapAction? onTap;
-  final AgoraMessageLongPressAction? onBubbleLongPress;
+  final AgoraMessageTapAction? onBubbleLongPress;
   final AgoraMessageTapAction? onBubbleDoubleTap;
   final AgoraWidgetBuilder? avatarBuilder;
   final AgoraWidgetBuilder? nicknameBuilder;
@@ -101,6 +101,7 @@ class AgoraMessageBubble extends StatelessWidget {
 
     if (unreadFlagBuilder != null && isLeft) {
       content = Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           content,
           const SizedBox(

@@ -16,7 +16,7 @@ class AgoraMessageListImageItem extends StatelessWidget {
 
   final AgoraMessageListItemModel model;
   final AgoraMessageTapAction? onTap;
-  final AgoraMessageLongPressAction? onBubbleLongPress;
+  final AgoraMessageTapAction? onBubbleLongPress;
   final AgoraMessageTapAction? onBubbleDoubleTap;
   final VoidCallback? onResendTap;
   final AgoraWidgetBuilder? avatarBuilder;

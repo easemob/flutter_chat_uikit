@@ -25,7 +25,7 @@ class AgoraMessagesView extends StatefulWidget {
   final Widget? inputBar;
   final ChatConversation conversation;
   final AgoraMessageTapAction? onTap;
-  final AgoraMessageLongPressAction? onBubbleLongPress;
+  final AgoraMessageTapAction? onBubbleLongPress;
   final AgoraMessageTapAction? onBubbleDoubleTap;
   final AgoraWidgetBuilder? avatarBuilder;
   final AgoraWidgetBuilder? nicknameBuilder;
@@ -86,11 +86,10 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
               bool ret = widget.onBubbleDoubleTap?.call(ctx, msg) ?? false;
               return ret;
             },
-            onBubbleLongPress: (ctx, msg) async {
-              bool ret = false;
-              ret = await widget.onBubbleLongPress?.call(ctx, msg) ?? false;
+            onBubbleLongPress: (ctx, msg) {
+              bool ret = widget.onBubbleLongPress?.call(ctx, msg) ?? false;
               if (!ret) {
-                ret = await longPressAction.call(msg) ?? false;
+                longPressAction(msg);
               }
               return ret;
             },
@@ -116,7 +115,7 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
     );
   }
 
-  Future<bool?> longPressAction(ChatMessage message) async {
+  void longPressAction(ChatMessage message) async {
     List<AgoraBottomSheetItem> list = [];
     if (message.body.type == MessageType.TXT) {
       list.add(
@@ -135,7 +134,7 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
         "Delete",
         onTap: () {
           msgListViewController.removeMessage(message);
-          return Navigator.of(context).pop(true);
+          return Navigator.of(context).pop();
         },
       ),
     );
@@ -151,14 +150,12 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
               fontSize: 18),
           onTap: () {
             msgListViewController.recallMessage(context, message);
-            return Navigator.of(context).pop(true);
+            return Navigator.of(context).pop();
           },
         ),
       );
     }
-    return AgoraBottomSheet(
-      items: list,
-    ).show<bool>(context);
+    AgoraBottomSheet(items: list).show(context);
   }
 
   void showMoreItems() {

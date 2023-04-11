@@ -19,7 +19,7 @@ class AgoraMessageListVoiceItem extends StatelessWidget {
 
   final AgoraMessageListItemModel model;
   final AgoraMessageTapAction? onTap;
-  final AgoraMessageLongPressAction? onBubbleLongPress;
+  final AgoraMessageTapAction? onBubbleLongPress;
   final AgoraMessageTapAction? onBubbleDoubleTap;
   final VoidCallback? onResendTap;
   final AgoraWidgetBuilder? avatarBuilder;
@@ -92,9 +92,13 @@ class AgoraMessageListVoiceItem extends StatelessWidget {
           ? null
           : (context) {
               return Container(
+                clipBehavior: Clip.hardEdge,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30),
+                  color: Colors.pink,
+                ),
                 width: 10,
                 height: 10,
-                color: Colors.pink,
               );
             },
       onBubbleDoubleTap: onBubbleDoubleTap,
