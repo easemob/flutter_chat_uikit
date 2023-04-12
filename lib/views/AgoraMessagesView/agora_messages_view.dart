@@ -16,7 +16,6 @@ class AgoraMessagesView extends StatefulWidget {
     this.onBubbleDoubleTap,
     this.avatarBuilder,
     this.nicknameBuilder,
-    this.titleAvatarBuilder,
     this.moreItems,
     this.messageListViewController,
     this.willSendMessage,
@@ -30,7 +29,6 @@ class AgoraMessagesView extends StatefulWidget {
   final AgoraWidgetBuilder? avatarBuilder;
   final AgoraWidgetBuilder? nicknameBuilder;
   final List<AgoraBottomSheetItem>? moreItems;
-  final AgoraConversationWidgetBuilder? titleAvatarBuilder;
   final AgoraMessageListController? messageListViewController;
   final ChatMessage Function(ChatMessage message)? willSendMessage;
 
@@ -144,10 +142,7 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
       list.add(
         AgoraBottomSheetItem(
           "Recall",
-          labelStyle: const TextStyle(
-              color: Color.fromRGBO(255, 20, 204, 1),
-              fontWeight: FontWeight.w400,
-              fontSize: 18),
+          labelStyle: Theme.of(context).bottomSheetItemLabelRecallStyle,
           onTap: () {
             msgListViewController.recallMessage(context, message);
             return Navigator.of(context).pop();

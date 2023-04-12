@@ -135,7 +135,7 @@ class AgoraMessageBubble extends StatelessWidget {
                 height: 20,
                 child: Text(
                   AgoraTimeTool.timeStrByMs(message.serverTime),
-                  style: Theme.of(context).agoraMessagesListItemTs,
+                  style: Theme.of(context).messagesListItemTs,
                 ),
               ),
             ),

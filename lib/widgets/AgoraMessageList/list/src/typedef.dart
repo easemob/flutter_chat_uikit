@@ -1,11 +1,5 @@
 import 'package:flutter/rendering.dart';
 
-import 'extended_list_library.dart';
-
-/// The builder to get layout type of last child
-/// Notice: it should only for last child
-typedef LastChildLayoutTypeBuilder = LastChildLayoutType Function(int index);
-
 /// Return indexes of children which are disposed to collect
 typedef CollectGarbage = void Function(List<int> garbages);
 

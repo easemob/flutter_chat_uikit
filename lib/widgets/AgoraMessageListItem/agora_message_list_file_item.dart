@@ -41,9 +41,7 @@ class AgoraMessageListFileItem extends StatelessWidget {
       list.add(Text(
         AgoraSizeTool.fileSize(fileSize),
         style: const TextStyle(
-            // fontWeight: FontWeight.bold,
-            fontSize: 12,
-            color: Color.fromRGBO(102, 102, 102, 1)),
+            fontSize: 12, color: Color.fromRGBO(102, 102, 102, 1)),
       ));
     }
 

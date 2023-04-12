@@ -33,6 +33,8 @@ class _ConversationsPageState extends State<ConversationsPage> {
         ],
       ),
       body: AgoraConversationsView(
+        avatarBuilder: (context, conversation) =>
+            AgoraImageLoader.defaultAvatar(size: 44),
         onItemTap: (conversation) {
           Navigator.of(context).push(
             MaterialPageRoute(
@@ -43,9 +45,6 @@ class _ConversationsPageState extends State<ConversationsPage> {
           ).then((value) => AgoraChatUIKit.of(context)
               .conversationsController
               .loadAllConversations());
-        },
-        nicknameBuilder: (context, conversation) {
-          return Text("custom ${conversation.id}");
         },
       ),
     );

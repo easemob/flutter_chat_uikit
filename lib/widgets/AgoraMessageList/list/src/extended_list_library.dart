@@ -1,33 +1,13 @@
 import 'package:flutter/rendering.dart';
 import 'typedef.dart';
 
-enum LastChildLayoutType {
-  /// as default child
-  none,
-
-  /// follow max child trailing layout offset and layout with full cross-axis extent
-  /// last child as load more item/no more item in [ExtendedGridView] and [WaterfallFlow]
-  /// with full cross axis extend
-  fullCrossAxisExtent,
-
-  /// as foot at trailing and layout with full cross axis extend
-  /// show no more item at trailing when children are not full of viewport
-  /// if children is full of viewport, it's the same as fullCrossAxisExtent
-  foot,
-}
-
 /// A delegate that provides extensions within the [ExtendedGridView],[ExtendedList],[WaterfallFlow].
 class ExtendedListDelegate {
   const ExtendedListDelegate({
-    this.lastChildLayoutTypeBuilder,
     this.collectGarbage,
     this.viewportBuilder,
     this.closeToTrailing = false,
   });
-
-  /// The builder to get layout type of last child
-  /// Notice: it should only for last child
-  final LastChildLayoutTypeBuilder? lastChildLayoutTypeBuilder;
 
   /// Call when collect garbage, return indexes of children which are disposed to collect
   final CollectGarbage? collectGarbage;
@@ -50,7 +30,7 @@ class ExtendedListDelegate {
   ///      leading
   ///
   /// to solve it, you could set closeToTrailing to true, layout is as following.
-  /// support [ExtendedGridView],[ExtendedList],[WaterfallFlow]
+  /// support [ExtendedList]
   /// it works not only reverse is true.
   ///
   ///      trailing
@@ -98,9 +78,7 @@ mixin ExtendedRenderObjectMixin on RenderSliverMultiBoxAdaptor {
           (getPaintExtend != null
               ? getPaintExtend(viewportFirstChild)
               : paintExtentOf(viewportFirstChild));
-      if (layoutOffset - (layoutOffset == 0 ? 0 : mainAxisSpacing) <=
-              constraints.scrollOffset &&
-          constraints.scrollOffset < trailingOffset) {
+      if (layoutOffset - (layoutOffset == 0 ? 0 : mainAxisSpacing) <= constraints.scrollOffset && constraints.scrollOffset < trailingOffset) {
         viewportFirstIndex = indexOf(viewportFirstChild);
         break;
       }
@@ -160,38 +138,17 @@ mixin ExtendedRenderObjectMixin on RenderSliverMultiBoxAdaptor {
     }
   }
 
-  /// handle closeToTrailing at begin
   void handleCloseToTrailingBegin(bool closeToTrailing) {
     _closeToTrailingDistance = null;
-    // if (closeToTrailing) {
-    //   RenderBox child = firstChild;
-    //   SliverMultiBoxAdaptorParentData childParentData =
-    //       child.parentData as SliverMultiBoxAdaptorParentData;
-    //   if (childParentData.index == 0 && childParentData.layoutOffset != 0) {
-    //     final double distance = childParentData.layoutOffset;
-    //     while (child != null) {
-    //       childParentData = child.parentData as SliverMultiBoxAdaptorParentData;
-    //       childParentData.layoutOffset -= distance;
-    //       child = childAfter(child);
-    //     }
-    //   }
-    // }
   }
 
   /// handle closeToTrailing at end
   double handleCloseToTrailingEnd(
       bool closeToTrailing, double endScrollOffset) {
     if (closeToTrailing && endScrollOffset < constraints.remainingPaintExtent) {
-      //RenderBox child = firstChild;
       final double distance =
           constraints.remainingPaintExtent - endScrollOffset;
       _closeToTrailingDistance = distance;
-      // while (child != null) {
-      //   final SliverMultiBoxAdaptorParentData childParentData =
-      //       child.parentData as SliverMultiBoxAdaptorParentData;
-      //   childParentData.layoutOffset += distance;
-      //   child = childAfter(child);
-      // }
       return constraints.remainingPaintExtent;
     }
     return endScrollOffset;

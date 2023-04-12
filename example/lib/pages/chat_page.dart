@@ -42,23 +42,10 @@ class _ChatPageState extends State<ChatPage> {
       ),
       body: SafeArea(
         child: AgoraMessagesView(
-          messageListViewController: controller,
-          avatarBuilder: (context, userId) {
-            return AgoraImageLoader.defaultAvatar();
-          },
-          nicknameBuilder: (context, userId) {
-            return Text(userId);
-          },
           conversation: widget.conversation,
-          onTap: (context, message) {
-            return false;
-          },
-          onBubbleLongPress: (context, message) {
-            return false;
-          },
-          onBubbleDoubleTap: (context, message) {
-            return false;
-          },
+          messageListViewController: controller,
+          avatarBuilder: (context, userId) => AgoraImageLoader.defaultAvatar(),
+          nicknameBuilder: (context, userId) => Text(userId),
         ),
       ),
     );

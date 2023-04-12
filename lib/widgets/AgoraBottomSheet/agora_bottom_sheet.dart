@@ -47,7 +47,7 @@ class AgoraBottomSheet {
               child: Text(
                 item.label,
                 style: item.labelStyle ??
-                    Theme.of(context).agoraBottomSheetItemLabelDefaultStyle,
+                    Theme.of(context).bottomSheetItemLabelDefaultStyle,
               ),
             ),
           ),

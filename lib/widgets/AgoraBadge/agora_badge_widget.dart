@@ -19,7 +19,7 @@ class AgoraBadgeWidget extends StatelessWidget {
         } else if (unreadCount < 0) {
           return Container(
             decoration: BoxDecoration(
-                color: Theme.of(context).agoraBadgeColor,
+                color: Theme.of(context).badgeColor,
                 borderRadius: const BorderRadius.all(Radius.circular(30))),
             width: 10,
             height: 10,
@@ -31,15 +31,15 @@ class AgoraBadgeWidget extends StatelessWidget {
           }
           return Container(
             decoration: BoxDecoration(
-                color: Theme.of(context).agoraBadgeColor,
+                color: Theme.of(context).badgeColor,
                 border: Border.all(
-                  color: Theme.of(context).agoraBadgeBorderColor,
-                  width: Theme.of(context).agoraBadgeBorderWidth,
+                  color: Theme.of(context).badgeBorderColor,
+                  width: Theme.of(context).badgeBorderWidth,
                 ),
                 borderRadius: const BorderRadius.all(Radius.circular(30))),
             padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
             child: Text(
-              style: Theme.of(context).agoraBadgeTextTheme,
+              style: Theme.of(context).badgeTextTheme,
               unreadStr,
             ),
           );

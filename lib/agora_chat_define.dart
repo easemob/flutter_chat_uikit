@@ -9,6 +9,10 @@ typedef AgoraConversationWidgetBuilder = Widget? Function(
   ChatConversation conversation,
 );
 
+typedef AgoraConversationTextBuilder = String? Function(
+  ChatConversation conversation,
+);
+
 typedef AgoraMessageListItemBuilder = Widget? Function(
     BuildContext context, ChatMessage message);
 

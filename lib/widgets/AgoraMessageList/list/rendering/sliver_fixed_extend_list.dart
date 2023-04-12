@@ -4,40 +4,8 @@ import 'package:agora_chat_uikit/widgets/AgoraMessageList/list/src/extended_list
 import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
 
-///
-///  create by zmtzawqlp on 2019/11/23
-///
-
-/// A sliver that contains multiple box children that have the same extent in
-/// the main axis.
-///
-/// [ExtendedRenderSliverFixedExtentBoxAdaptor] places its children in a linear array
-/// along the main axis. Each child is forced to have the [itemExtent] in the
-/// main axis and the [SliverConstraints.crossAxisExtent] in the cross axis.
-///
-/// Subclasses should override [itemExtent] to control the size of the children
-/// in the main axis. For a concrete subclass with a configurable [itemExtent],
-/// see [ExtendedRenderSliverFixedExtentList].
-///
-/// [ExtendedRenderSliverFixedExtentBoxAdaptor] is more efficient than
-/// [RenderSliverList] because [ExtendedRenderSliverFixedExtentBoxAdaptor] does not need
-/// to perform layout on its children to obtain their extent in the main axis.
-///
-/// See also:
-///
-///  * [ExtendedRenderSliverFixedExtentList], which has a configurable [itemExtent].
-///  * [RenderSliverFillViewport], which determines the [itemExtent] based on
-///    [SliverConstraints.viewportMainAxisExtent].
-///  * [RenderSliverFillRemaining], which determines the [itemExtent] based on
-///    [SliverConstraints.remainingPaintExtent].
-///  * [RenderSliverList], which does not require its children to have the same
-///    extent in the main axis.
 abstract class ExtendedRenderSliverFixedExtentBoxAdaptor
     extends RenderSliverMultiBoxAdaptor with ExtendedRenderObjectMixin {
-  /// Creates a sliver that contains multiple box children that have the same
-  /// extent in the main axis.
-  ///
-  /// The [childManager] argument must not be null.
   ExtendedRenderSliverFixedExtentBoxAdaptor({
     required RenderSliverBoxChildManager childManager,
     required ExtendedListDelegate extendedListDelegate,
@@ -46,7 +14,6 @@ abstract class ExtendedRenderSliverFixedExtentBoxAdaptor
 
   ExtendedListDelegate _extendedListDelegate;
 
-  /// A delegate that provides extensions within the [ExtendedGridView/ExtendedList/WaterfallFlow].
   @override
   ExtendedListDelegate get extendedListDelegate => _extendedListDelegate;
   set extendedListDelegate(ExtendedListDelegate value) {
@@ -59,27 +26,12 @@ abstract class ExtendedRenderSliverFixedExtentBoxAdaptor
     _extendedListDelegate = value;
   }
 
-  /// The main-axis extent of each item.
   double get itemExtent;
 
-  /// The layout offset for the child with the given index.
-  ///
-  /// This function is given the [itemExtent] as an argument to avoid
-  /// recomputing [itemExtent] repeatedly during layout.
-  ///
-  /// By default, places the children in order, without gaps, starting from
-  /// layout offset zero.
   @protected
   double indexToLayoutOffset(double itemExtent, int index) =>
       itemExtent * index;
 
-  /// The minimum child index that is visible at the given scroll offset.
-  ///
-  /// This function is given the [itemExtent] as an argument to avoid
-  /// recomputing [itemExtent] repeatedly during layout.
-  ///
-  /// By default, returns a value consistent with the children being placed in
-  /// order, without gaps, starting from layout offset zero.
   @protected
   int getMinChildIndexForScrollOffset(double scrollOffset, double itemExtent) {
     if (itemExtent > 0.0) {
@@ -93,13 +45,6 @@ abstract class ExtendedRenderSliverFixedExtentBoxAdaptor
     return 0;
   }
 
-  /// The maximum child index that is visible at the given scroll offset.
-  ///
-  /// This function is given the [itemExtent] as an argument to avoid
-  /// recomputing [itemExtent] repeatedly during layout.
-  ///
-  /// By default, returns a value consistent with the children being placed in
-  /// order, without gaps, starting from layout offset zero.
   @protected
   int getMaxChildIndexForScrollOffset(double scrollOffset, double itemExtent) {
     if (itemExtent > 0.0) {
@@ -113,18 +58,6 @@ abstract class ExtendedRenderSliverFixedExtentBoxAdaptor
     return 0;
   }
 
-  /// Called to estimate the total scrollable extents of this object.
-  ///
-  /// Must return the total distance from the start of the child with the
-  /// earliest possible index to the end of the child with the last possible
-  /// index.
-  ///
-  /// By default, defers to [RenderSliverBoxChildManager.estimateMaxScrollOffset].
-  ///
-  /// See also:
-  ///
-  ///  * [computeMaxScrollOffset], which is similar but must provide a precise
-  ///    value.
   @protected
   double estimateMaxScrollOffset(
     SliverConstraints constraints, {
@@ -142,26 +75,6 @@ abstract class ExtendedRenderSliverFixedExtentBoxAdaptor
     );
   }
 
-  /// Called to obtain a precise measure of the total scrollable extents of this
-  /// object.
-  ///
-  /// Must return the precise total distance from the start of the child with
-  /// the earliest possible index to the end of the child with the last possible
-  /// index.
-  ///
-  /// This is used when no child is available for the index corresponding to the
-  /// current scroll offset, to determine the precise dimensions of the sliver.
-  /// It must return a precise value. It will not be called if the
-  /// [childManager] returns an infinite number of children for positive
-  /// indices.
-  ///
-  /// By default, multiplies the [itemExtent] by the number of children reported
-  /// by [RenderSliverBoxChildManager.childCount].
-  ///
-  /// See also:
-  ///
-  ///  * [estimateMaxScrollOffset], which is similar but may provide inaccurate
-  ///    values.
   @protected
   double computeMaxScrollOffset(
       SliverConstraints constraints, double itemExtent) {
@@ -235,7 +148,6 @@ abstract class ExtendedRenderSliverFixedExtentBoxAdaptor
       if (!addInitialChild(
           index: firstIndex,
           layoutOffset: indexToLayoutOffset(itemExtent, firstIndex))) {
-        // There are either no children, or we are past the end of all our children.
         final double max;
         if (firstIndex <= 0) {
           max = 0.0;
@@ -251,7 +163,6 @@ abstract class ExtendedRenderSliverFixedExtentBoxAdaptor
       }
     }
 
-    // zmt
     handleCloseToTrailingBegin(closeToTrailing);
 
     RenderBox? trailingChildWithLayout;
@@ -259,9 +170,6 @@ abstract class ExtendedRenderSliverFixedExtentBoxAdaptor
     for (int index = indexOf(firstChild!) - 1; index >= firstIndex; --index) {
       final RenderBox? child = insertAndLayoutLeadingChild(childConstraints);
       if (child == null) {
-        // Items before the previously first child are no longer present.
-        // Reset the scroll offset to offset all items prior and up to the
-        // missing item. Let parent re-layout everything.
         geometry = SliverGeometry(scrollOffsetCorrection: index * itemExtent);
         return;
       }
@@ -290,7 +198,6 @@ abstract class ExtendedRenderSliverFixedExtentBoxAdaptor
         child = insertAndLayoutChild(childConstraints,
             after: trailingChildWithLayout);
         if (child == null) {
-          // We have run out of children.
           estimatedMaxScrollOffset = index * itemExtent;
           break;
         }
@@ -311,7 +218,6 @@ abstract class ExtendedRenderSliverFixedExtentBoxAdaptor
     double trailingScrollOffset =
         indexToLayoutOffset(itemExtent, lastIndex + 1);
 
-    ///zmt
     final double result =
         handleCloseToTrailingEnd(closeToTrailing, trailingScrollOffset);
     if (result != trailingScrollOffset) {
@@ -319,27 +225,17 @@ abstract class ExtendedRenderSliverFixedExtentBoxAdaptor
       estimatedMaxScrollOffset = result;
     }
 
-    ///zmt
-    final bool lastChildIsFoot = (extendedListDelegate
-                .lastChildLayoutTypeBuilder
-                ?.call(indexOf(lastChild!)) ??
-            LastChildLayoutType.none) ==
-        LastChildLayoutType.foot;
-    if (lastChildIsFoot) {
-      //layout as normal constraints
-      lastChild!.layout(constraints.asBoxConstraints(), parentUsesSize: true);
-      final double paintExtend = paintExtentOf(lastChild!);
-      trailingScrollOffset = childScrollOffset(lastChild!)! + paintExtend;
-      if (trailingScrollOffset < constraints.remainingPaintExtent) {
-        final SliverMultiBoxAdaptorParentData childParentData =
-            lastChild!.parentData as SliverMultiBoxAdaptorParentData;
-        childParentData.layoutOffset =
-            constraints.remainingPaintExtent - paintExtend;
-        trailingScrollOffset = constraints.remainingPaintExtent;
-      }
-      estimatedMaxScrollOffset = trailingScrollOffset;
+    lastChild!.layout(constraints.asBoxConstraints(), parentUsesSize: true);
+    final double paintExtend = paintExtentOf(lastChild!);
+    trailingScrollOffset = childScrollOffset(lastChild!)! + paintExtend;
+    if (trailingScrollOffset < constraints.remainingPaintExtent) {
+      final SliverMultiBoxAdaptorParentData childParentData =
+          lastChild!.parentData as SliverMultiBoxAdaptorParentData;
+      childParentData.layoutOffset =
+          constraints.remainingPaintExtent - paintExtend;
+      trailingScrollOffset = constraints.remainingPaintExtent;
     }
-
+    estimatedMaxScrollOffset = trailingScrollOffset;
     assert(firstIndex == 0 ||
         childScrollOffset(firstChild!)! - scrollOffset <=
             precisionErrorTolerance);
@@ -381,13 +277,6 @@ abstract class ExtendedRenderSliverFixedExtentBoxAdaptor
     callViewportBuilder(
         viewportBuilder: extendedListDelegate.viewportBuilder,
         getPaintExtend: (RenderBox? child) {
-          final LastChildLayoutType lastChildLayoutType = extendedListDelegate
-                  .lastChildLayoutTypeBuilder
-                  ?.call(indexOf(child!)) ??
-              LastChildLayoutType.none;
-          if (lastChildLayoutType != LastChildLayoutType.none) {
-            return paintExtentOf(child!);
-          }
           return itemExtent;
         });
 
@@ -396,14 +285,11 @@ abstract class ExtendedRenderSliverFixedExtentBoxAdaptor
       paintExtent: paintExtent,
       cacheExtent: cacheExtent,
       maxPaintExtent: estimatedMaxScrollOffset,
-      // Conservative to avoid flickering away the clip during scroll.
       hasVisualOverflow: (targetLastIndexForPaint != null &&
               lastIndex >= targetLastIndexForPaint) ||
           constraints.scrollOffset > 0.0,
     );
 
-    // We may have started the layout while scrolled to the end, which would not
-    // expose a new child.
     if (estimatedMaxScrollOffset == trailingScrollOffset) {
       childManager.setDidUnderflow(true);
     }
@@ -411,32 +297,8 @@ abstract class ExtendedRenderSliverFixedExtentBoxAdaptor
   }
 }
 
-/// A sliver that places multiple box children with the same main axis extent in
-/// a linear array.
-///
-/// [ExtendedRenderSliverFixedExtentList] places its children in a linear array along
-/// the main axis starting at offset zero and without gaps. Each child is forced
-/// to have the [itemExtent] in the main axis and the
-/// [SliverConstraints.crossAxisExtent] in the cross axis.
-///
-/// [ExtendedRenderSliverFixedExtentList] is more efficient than [RenderSliverList]
-/// because [ExtendedRenderSliverFixedExtentList] does not need to perform layout on its
-/// children to obtain their extent in the main axis.
-///
-/// See also:
-///
-///  * [RenderSliverList], which does not require its children to have the same
-///    extent in the main axis.
-///  * [RenderSliverFillViewport], which determines the [itemExtent] based on
-///    [SliverConstraints.viewportMainAxisExtent].
-///  * [RenderSliverFillRemaining], which determines the [itemExtent] based on
-///    [SliverConstraints.remainingPaintExtent].
 class ExtendedRenderSliverFixedExtentList
     extends ExtendedRenderSliverFixedExtentBoxAdaptor {
-  /// Creates a sliver that contains multiple box children that have a given
-  /// extent in the main axis.
-  ///
-  /// The [childManager] argument must not be null.
   ExtendedRenderSliverFixedExtentList(
       {required RenderSliverBoxChildManager childManager,
       required double itemExtent,
