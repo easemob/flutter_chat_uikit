@@ -53,7 +53,7 @@ class AgoraMessageRenderSliverList extends RenderSliverMultiBoxAdaptor {
       }
     }
 
-    _closeToTrailingDistance = null;
+    _trailingOffset = null;
 
     // We have at least one child.
 
@@ -291,7 +291,7 @@ class AgoraMessageRenderSliverList extends RenderSliverMultiBoxAdaptor {
       if (endScrollOffset < constraints.remainingPaintExtent) {
         final double distance =
             constraints.remainingPaintExtent - endScrollOffset;
-        _closeToTrailingDistance = distance;
+        _trailingOffset = distance;
         return constraints.remainingPaintExtent;
       }
       return endScrollOffset;
@@ -325,7 +325,7 @@ class AgoraMessageRenderSliverList extends RenderSliverMultiBoxAdaptor {
         constraints.scrollOffset + constraints.remainingPaintExtent;
 
     //fix hitTest
-    paintExtent += closeToTrailingDistance;
+    paintExtent += trailingOffset;
 
     geometry = SliverGeometry(
       scrollExtent: estimatedMaxScrollOffset,
@@ -345,25 +345,9 @@ class AgoraMessageRenderSliverList extends RenderSliverMultiBoxAdaptor {
     childManager.didFinishLayout();
   }
 
-  void handleCloseToTrailingBegin(bool closeToTrailing) {
-    _closeToTrailingDistance = null;
-  }
+  double? _trailingOffset;
 
-  /// handle closeToTrailing at end
-  double handleCloseToTrailingEnd(
-      bool closeToTrailing, double endScrollOffset) {
-    if (closeToTrailing && endScrollOffset < constraints.remainingPaintExtent) {
-      final double distance =
-          constraints.remainingPaintExtent - endScrollOffset;
-      _closeToTrailingDistance = distance;
-      return constraints.remainingPaintExtent;
-    }
-    return endScrollOffset;
-  }
-
-  double? _closeToTrailingDistance;
-
-  double get closeToTrailingDistance => _closeToTrailingDistance ?? 0.0;
+  double get trailingOffset => _trailingOffset ?? 0.0;
 
   @override
   double? childScrollOffset(RenderObject child) {
@@ -371,6 +355,6 @@ class AgoraMessageRenderSliverList extends RenderSliverMultiBoxAdaptor {
     final SliverMultiBoxAdaptorParentData childParentData =
         child.parentData as SliverMultiBoxAdaptorParentData;
     // 做偏移
-    return childParentData.layoutOffset! + closeToTrailingDistance;
+    return childParentData.layoutOffset! + trailingOffset;
   }
 }

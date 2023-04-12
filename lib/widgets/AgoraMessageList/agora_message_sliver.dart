@@ -10,10 +10,6 @@ class AgoraMessageSliver extends SliverMultiBoxAdaptorWidget {
   });
 
   @override
-  SliverMultiBoxAdaptorElement createElement() =>
-      SliverMultiBoxAdaptorElement(this, replaceMovedChildren: true);
-
-  @override
   AgoraMessageRenderSliverList createRenderObject(BuildContext context) {
     final SliverMultiBoxAdaptorElement element =
         context as SliverMultiBoxAdaptorElement;

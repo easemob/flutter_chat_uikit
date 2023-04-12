@@ -361,20 +361,6 @@ class _AgoraMessagesListState extends State<AgoraMessagesList>
       ],
     );
 
-    // Widget content = ExtendedListView.custom(
-    //   physics: const AlwaysScrollableScrollPhysics(),
-    //   controller: _scrollController,
-    //   cacheExtent: 1500,
-    //   reverse: true,
-    //   childrenDelegate: SliverChildBuilderDelegate(
-    //     (context, index) {
-    //       return messageWidget(list[index]);
-    //     },
-    //     childCount: list.length,
-    //   ),
-    //   extendedListDelegate: const ExtendedListDelegate(closeToTrailing: true),
-    // );
-
     return ScrollConfiguration(
       behavior: AgoraScrollBehavior(),
       child: Scrollbar(child: content),
