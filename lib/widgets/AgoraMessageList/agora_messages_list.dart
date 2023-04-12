@@ -1,8 +1,7 @@
 import 'package:agora_chat_uikit/agora_chat_uikit.dart';
 import 'package:agora_chat_uikit/controllers/agora_base_controller.dart';
+import 'package:agora_chat_uikit/widgets/AgoraMessageList/agora_message_sliver.dart';
 import 'package:agora_chat_uikit/widgets/AgoraMessageList/agora_scroll_behavior.dart';
-import 'package:agora_chat_uikit/widgets/AgoraMessageList/list/extended_list_library.dart';
-import 'package:agora_chat_uikit/widgets/AgoraMessageList/list/widgets/scroll_view.dart';
 
 import 'package:flutter/material.dart';
 
@@ -345,19 +344,36 @@ class _AgoraMessagesListState extends State<AgoraMessagesList>
   Widget build(BuildContext context) {
     List<AgoraMessageListItemModel> list = controller._msgList;
 
-    Widget content = ExtendedListView.custom(
+    Widget content = CustomScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
       controller: _scrollController,
       cacheExtent: 1500,
       reverse: true,
-      childrenDelegate: SliverChildBuilderDelegate(
-        (context, index) {
-          return messageWidget(list[index]);
-        },
-        childCount: list.length,
-      ),
-      extendedListDelegate: const ExtendedListDelegate(closeToTrailing: true),
+      slivers: [
+        AgoraMessageSliver(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              return messageWidget(list[index]);
+            },
+            childCount: list.length,
+          ),
+        )
+      ],
     );
+
+    // Widget content = ExtendedListView.custom(
+    //   physics: const AlwaysScrollableScrollPhysics(),
+    //   controller: _scrollController,
+    //   cacheExtent: 1500,
+    //   reverse: true,
+    //   childrenDelegate: SliverChildBuilderDelegate(
+    //     (context, index) {
+    //       return messageWidget(list[index]);
+    //     },
+    //     childCount: list.length,
+    //   ),
+    //   extendedListDelegate: const ExtendedListDelegate(closeToTrailing: true),
+    // );
 
     return ScrollConfiguration(
       behavior: AgoraScrollBehavior(),
