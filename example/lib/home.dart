@@ -23,6 +23,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint(AppLocalizations.of(context)!.localeName);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,

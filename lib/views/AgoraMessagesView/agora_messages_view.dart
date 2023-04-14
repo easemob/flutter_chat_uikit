@@ -179,15 +179,18 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
     AgoraBottomSheet(
       items: widget.moreItems ??
           [
-            AgoraBottomSheetItem("Camera", onTap: () {
+            AgoraBottomSheetItem(AppLocalizations.of(context)!.files,
+                onTap: () {
               Navigator.of(context).pop();
               _takePhoto();
             }),
-            AgoraBottomSheetItem("Album", onTap: () {
+            AgoraBottomSheetItem(AppLocalizations.of(context)!.album,
+                onTap: () {
               Navigator.of(context).pop();
               _openImagePicker();
             }),
-            AgoraBottomSheetItem("Files", onTap: () {
+            AgoraBottomSheetItem(AppLocalizations.of(context)!.files,
+                onTap: () {
               Navigator.of(context).pop();
               _openFilePicker();
             }),

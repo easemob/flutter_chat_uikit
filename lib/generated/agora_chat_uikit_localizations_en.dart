@@ -5,20 +5,41 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get audio => 'audio';
+  String get audio => 'Audio';
 
   @override
-  String get file => 'file';
+  String get file => 'File';
 
   @override
-  String get video => 'video';
+  String get video => 'Video';
 
   @override
-  String get location => 'location';
+  String get location => 'Location';
 
   @override
-  String get image => 'image';
+  String get image => 'Image';
 
   @override
-  String get custom => 'custom';
+  String get custom => 'Custom';
+
+  @override
+  String get camera => 'Camera';
+
+  @override
+  String get album => 'Album';
+
+  @override
+  String get files => 'Files';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get deleteConversation => 'Delete conversation';
+
+  @override
+  String get confirm => 'Confirm';
+
+  @override
+  String get cancel => 'Cancel';
 }

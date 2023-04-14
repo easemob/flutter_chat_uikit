@@ -21,4 +21,25 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get custom => '自定义';
+
+  @override
+  String get camera => '相机';
+
+  @override
+  String get album => '相册';
+
+  @override
+  String get files => '文件';
+
+  @override
+  String get delete => '删除';
+
+  @override
+  String get deleteConversation => '删除会话';
+
+  @override
+  String get confirm => '确定';
+
+  @override
+  String get cancel => '取消';
 }

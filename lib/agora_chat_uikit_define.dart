@@ -1,6 +1,5 @@
 import 'package:agora_chat_sdk/agora_chat_sdk.dart';
 import 'package:flutter/widgets.dart';
-
 import 'agora_chat_uikit_type.dart';
 
 typedef AgoraWidgetBuilder = Widget Function(
