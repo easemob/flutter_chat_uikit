@@ -1,3 +1,15 @@
 {
-  "hello": "Hello"
+  "audio": "Audio",
+  "file": "File",
+  "video": "Video",
+  "location": "Location",
+  "image": "Image",
+  "custom": "Custom",
+  "camera": "Camera",
+  "album": "Album",
+  "files": "Files",
+  "delete":"Delete",
+  "deleteConversation": "Delete conversation",
+  "confirm":"Confirm",
+  "cancel":"Cancel"
 }

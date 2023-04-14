@@ -36,13 +36,11 @@ class AgoraConversationListTile extends StatelessWidget {
                 title ??
                     Text(
                       conversation.id,
-                      style: const TextStyle(fontSize: 17),
+                      style: Theme.of(context).conversationListItemTitleStyle,
                     ),
                 Text(
                   msg?.createTs ?? "",
-                  style: const TextStyle(
-                    fontSize: 14,
-                  ),
+                  style: Theme.of(context).conversationListItemTsStyle,
                 )
               ]),
           subtitle: subtitle ??
@@ -50,9 +48,9 @@ class AgoraConversationListTile extends StatelessWidget {
                 Expanded(child: Builder(
                   builder: (context) {
                     return Text(
-                      msg?.summary ?? "",
-                      style: const TextStyle(
-                          fontSize: 14, overflow: TextOverflow.ellipsis),
+                      msg?.summary(context) ?? "",
+                      style:
+                          Theme.of(context).conversationListItemSubTitleStyle,
                     );
                   },
                 )),

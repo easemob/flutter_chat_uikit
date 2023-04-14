@@ -14,17 +14,75 @@ class _ConversationsPageState extends State<ConversationsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Conversations")),
+      appBar: AppBar(
+        title: const Text("Conversations"),
+        actions: [
+          InkWell(
+            onTap: deleteAllConversations,
+            child: UnconstrainedBox(
+              child: Padding(
+                padding: const EdgeInsets.only(right: 20),
+                child: Builder(builder: (ctx) {
+                  return const Text('Clear All',
+                      style:
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 14));
+                }),
+              ),
+            ),
+          )
+        ],
+      ),
       body: AgoraConversationsView(
+        avatarBuilder: (context, conversation) =>
+            AgoraImageLoader.defaultAvatar(size: 44),
         onItemTap: (conversation) {
-          Navigator.of(context).push(MaterialPageRoute(builder: (ctx) {
-            return ChatPage(conversation);
-          }));
-        },
-        nicknameBuilder: (context, conversation) {
-          return Text("custom ${conversation.id}");
+          Navigator.of(context)
+              .push(
+                MaterialPageRoute(
+                  builder: (ctx) => ChatPage(conversation),
+                ),
+              )
+              .then((value) => AgoraChatUIKit.of(context)
+                  .conversationsController
+                  .loadAllConversations());
         },
       ),
     );
+  }
+
+  void deleteAllConversations() {
+    AgoraDialog(
+      titleLabel: "Clear All Conversations",
+      titleStyle: const TextStyle(
+        fontWeight: FontWeight.w600,
+        fontSize: 16,
+      ),
+      items: [
+        AgoraDialogItem(
+          label: "Cancel",
+          onTap: () => Navigator.of(context).pop(),
+          labelStyle: const TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.w600,
+            fontSize: 14,
+          ),
+        ),
+        AgoraDialogItem(
+          label: "Confirm",
+          onTap: () {
+            AgoraChatUIKit.of(context)
+                .conversationsController
+                .deleteAllConversations();
+            Navigator.of(context).pop();
+          },
+          backgroundColor: const Color.fromRGBO(17, 78, 255, 1),
+          labelStyle: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+            fontSize: 14,
+          ),
+        ),
+      ],
+    ).show(context);
   }
 }

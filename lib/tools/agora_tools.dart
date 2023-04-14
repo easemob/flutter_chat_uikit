@@ -18,17 +18,17 @@ class AgoraTimeTool {
     // MM/dd
     else if (DateUtil.yearIsEqualByMs(ms, DateUtil.getNowDateMs())) {
       if (showTime) {
-        ret = DateUtil.formatDateMs(ms, format: 'MM月dd日 HH:mm');
+        ret = DateUtil.formatDateMs(ms, format: 'MM/dd HH:mm');
       } else {
-        ret = DateUtil.formatDateMs(ms, format: 'MM月dd日');
+        ret = DateUtil.formatDateMs(ms, format: 'MM/dd');
       }
     }
     // yyyy/MM/dd
     else {
       if (showTime) {
-        ret = DateUtil.formatDateMs(ms, format: 'yyyy年MM月dd日 HH:mm');
+        ret = DateUtil.formatDateMs(ms, format: 'yyyy/MM/dd HH:mm');
       } else {
-        ret = DateUtil.formatDateMs(ms, format: 'yyyy年MM月dd日');
+        ret = DateUtil.formatDateMs(ms, format: 'yyyy/MM/dd');
       }
     }
 

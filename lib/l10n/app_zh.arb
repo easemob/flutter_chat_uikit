@@ -1,3 +1,15 @@
 {
-    "hello": "你好"
-}
+    "audio": "音频",
+    "file": "文件",
+    "video": "视频",
+    "location": "位置",
+    "image": "图片",
+    "custom": "自定义",
+    "camera": "相机",
+    "album": "相册",
+    "files": "文件",
+    "delete":"删除",
+    "deleteConversation": "删除会话",
+    "confirm":"确定",
+    "cancel":"取消"
+  }

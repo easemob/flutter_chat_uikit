@@ -1,6 +1,6 @@
-import 'package:agora_chat_uikit/agora_chat_uikit.dart';
 import 'package:flutter/material.dart';
 
+import '../../agora_chat_uikit.dart';
 import 'agora_emoji_widget.dart';
 
 class AgoraMessageInputWidget extends StatefulWidget {
@@ -60,6 +60,7 @@ class _AgoraMessageInputWidgetState extends State<AgoraMessageInputWidget> {
     )..addListener(() {
         _adjustSendBtn();
       });
+
     _inputFocusNode.addListener(() {
       if (_inputFocusNode.hasFocus) {
         _updateCurrentInputType(_AgoraInputType.text);
@@ -67,8 +68,12 @@ class _AgoraMessageInputWidgetState extends State<AgoraMessageInputWidget> {
     });
 
     widget.msgListViewController.dismissInputAction = () {
-      _inputFocusNode.unfocus();
-      _updateCurrentInputType(_AgoraInputType.dismiss);
+      if (_inputFocusNode.hasFocus) {
+        _inputFocusNode.unfocus();
+      }
+      if (_currentInputType != _AgoraInputType.dismiss) {
+        _updateCurrentInputType(_AgoraInputType.dismiss);
+      }
     };
   }
 
@@ -229,7 +234,7 @@ class _AgoraMessageInputWidgetState extends State<AgoraMessageInputWidget> {
                 widget.onTextFieldChanged?.call(value);
               },
               onTap: () {
-                widget.msgListViewController.moveToEnd();
+                widget.msgListViewController.refreshUI(moveToEnd: true);
                 widget.onTextFieldFocus?.call();
               },
               focusNode: _inputFocusNode,
@@ -266,6 +271,7 @@ class _AgoraMessageInputWidgetState extends State<AgoraMessageInputWidget> {
                   InkWell(
                     onTap: () async {
                       _inputFocusNode.unfocus();
+                      widget.msgListViewController.refreshUI(moveToEnd: true);
                       _updateCurrentInputType(_AgoraInputType.emoji);
                     },
                     child: _currentInputType == _AgoraInputType.emoji

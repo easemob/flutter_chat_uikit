@@ -11,13 +11,77 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
+  late AgoraMessageListController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = AgoraMessageListController(widget.conversation);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.conversation.id)),
+      appBar: AppBar(
+        title: Text(widget.conversation.id),
+        actions: [
+          InkWell(
+            onTap: deleteAllMessages,
+            child: UnconstrainedBox(
+              child: Padding(
+                padding: const EdgeInsets.only(right: 20),
+                child: Builder(builder: (ctx) {
+                  return const Text('Clear All',
+                      style:
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 14));
+                }),
+              ),
+            ),
+          )
+        ],
+      ),
       body: SafeArea(
-        child: AgoraMessagesView(conversation: widget.conversation),
+        child: AgoraMessagesView(
+          conversation: widget.conversation,
+          messageListViewController: controller,
+          avatarBuilder: (context, userId) => AgoraImageLoader.defaultAvatar(),
+          nicknameBuilder: (context, userId) => Text(userId),
+        ),
       ),
     );
+  }
+
+  void deleteAllMessages() {
+    AgoraDialog(
+      titleLabel: "Clear All Messages",
+      titleStyle: const TextStyle(
+        fontWeight: FontWeight.w600,
+        fontSize: 16,
+      ),
+      items: [
+        AgoraDialogItem(
+          label: "Cancel",
+          onTap: () => Navigator.of(context).pop(),
+          labelStyle: const TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.w600,
+            fontSize: 14,
+          ),
+        ),
+        AgoraDialogItem(
+          label: "Confirm",
+          onTap: () {
+            controller.deleteAllMessages();
+            Navigator.of(context).pop();
+          },
+          backgroundColor: const Color.fromRGBO(17, 78, 255, 1),
+          labelStyle: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+            fontSize: 14,
+          ),
+        ),
+      ],
+    ).show(context);
   }
 }

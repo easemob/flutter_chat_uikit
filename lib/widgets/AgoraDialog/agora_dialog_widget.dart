@@ -31,7 +31,7 @@ class AgoraDialog {
               child: Text(
                 item.label,
                 style: item.labelStyle ??
-                    Theme.of(context).agoraDialogItemLabelDefaultStyle,
+                    Theme.of(context).dialogItemLabelDefaultStyle,
               ),
             ),
           ),

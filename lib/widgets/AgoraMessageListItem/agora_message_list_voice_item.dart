@@ -19,7 +19,7 @@ class AgoraMessageListVoiceItem extends StatelessWidget {
 
   final AgoraMessageListItemModel model;
   final AgoraMessageTapAction? onTap;
-  final AgoraMessageLongPressAction? onBubbleLongPress;
+  final AgoraMessageTapAction? onBubbleLongPress;
   final AgoraMessageTapAction? onBubbleDoubleTap;
   final VoidCallback? onResendTap;
   final AgoraWidgetBuilder? avatarBuilder;
@@ -46,30 +46,45 @@ class AgoraMessageListVoiceItem extends StatelessWidget {
                   items: [
                     Transform.scale(
                         scaleX: isLeft ? 1 : -1,
-                        child: AgoraImageLoader.loadImage("voice_0.png",
-                            color: isLeft
-                                ? const Color.fromRGBO(169, 169, 169, 1)
-                                : Colors.white)),
+                        child: AgoraImageLoader.loadImage(
+                          "voice_0.png",
+                          color: isLeft
+                              ? Theme.of(context)
+                                  .sendVoiceMessageItemSpeakerIconColor
+                              : Theme.of(context)
+                                  .receiveVoiceMessageItemSpeakerIconColor,
+                        )),
                     Transform.scale(
                         scaleX: isLeft ? 1 : -1,
-                        child: AgoraImageLoader.loadImage("voice_1.png",
-                            color: isLeft
-                                ? const Color.fromRGBO(169, 169, 169, 1)
-                                : Colors.white)),
+                        child: AgoraImageLoader.loadImage(
+                          "voice_1.png",
+                          color: isLeft
+                              ? Theme.of(context)
+                                  .sendVoiceMessageItemSpeakerIconColor
+                              : Theme.of(context)
+                                  .receiveVoiceMessageItemSpeakerIconColor,
+                        )),
                     Transform.scale(
                         scaleX: isLeft ? 1 : -1,
-                        child: AgoraImageLoader.loadImage("voice_2.png",
-                            color: isLeft
-                                ? const Color.fromRGBO(169, 169, 169, 1)
-                                : Colors.white)),
+                        child: AgoraImageLoader.loadImage(
+                          "voice_2.png",
+                          color: isLeft
+                              ? Theme.of(context)
+                                  .sendVoiceMessageItemSpeakerIconColor
+                              : Theme.of(context)
+                                  .receiveVoiceMessageItemSpeakerIconColor,
+                        )),
                   ],
                 )
               : Transform.scale(
                   scaleX: isLeft ? 1 : -1,
-                  child: AgoraImageLoader.loadImage("voice_2.png",
-                      color: isLeft
-                          ? const Color.fromRGBO(169, 169, 169, 1)
-                          : Colors.white)),
+                  child: AgoraImageLoader.loadImage(
+                    "voice_2.png",
+                    color: isLeft
+                        ? Theme.of(context).sendVoiceMessageItemSpeakerIconColor
+                        : Theme.of(context)
+                            .receiveVoiceMessageItemSpeakerIconColor,
+                  )),
         ),
         Container(
             constraints: const BoxConstraints(minWidth: 20),
@@ -78,7 +93,9 @@ class AgoraMessageListVoiceItem extends StatelessWidget {
             )),
         Text(
           AgoraTimeTool.durationStr(body.duration),
-          style: TextStyle(color: isLeft ? Colors.black : Colors.white),
+          style: !isLeft
+              ? Theme.of(context).sendVoiceMessageItemDurationTextStyle
+              : Theme.of(context).receiveVoiceMessageItemDurationTextStyle,
         ),
       ],
     );
@@ -92,9 +109,13 @@ class AgoraMessageListVoiceItem extends StatelessWidget {
           ? null
           : (context) {
               return Container(
+                clipBehavior: Clip.hardEdge,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30),
+                  color: Colors.pink,
+                ),
                 width: 10,
                 height: 10,
-                color: Colors.pink,
               );
             },
       onBubbleDoubleTap: onBubbleDoubleTap,
