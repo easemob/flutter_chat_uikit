@@ -42,6 +42,8 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
   final Record _audioRecorder = Record();
   final AudioPlayer _player = AudioPlayer();
   int _recordDuration = 0;
+  bool _recordBtnTouchDown = false;
+  bool _dragOutside = false;
   Timer? _timer;
   @override
   void initState() {
@@ -62,7 +64,7 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    Widget content = Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Expanded(
@@ -99,6 +101,8 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
               recordTouchDown: _startRecord,
               recordTouchUpInside: _stopRecord,
               recordTouchUpOutside: _cancelRecord,
+              recordDragInside: _recordDragInside,
+              recordDragOutside: _recordDragOutside,
               moreAction: showMoreItems,
               onTextFieldChanged: (text) {},
               onSendBtnTap: (text) {
@@ -111,6 +115,17 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
             )
       ],
     );
+
+    content = Stack(
+      children: [
+        Positioned.fill(child: content),
+        Positioned.fill(
+          child: Center(child: _maskWidget()),
+        )
+      ],
+    );
+
+    return content;
   }
 
   void longPressAction(ChatMessage message) async {
@@ -289,7 +304,6 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
   }
 
   void _startRecord() async {
-    debugPrint("开始录制");
     try {
       if (await _audioRecorder.hasPermission()) {
         final isSupported = await _audioRecorder.isEncoderSupported(
@@ -302,6 +316,11 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
 
         _startTimer();
       }
+
+      setState(() {
+        _dragOutside = false;
+        _recordBtnTouchDown = true;
+      });
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -309,14 +328,31 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
 
   void _stopRecord() async {
     _endTimer();
+
+    setState(() {
+      _recordBtnTouchDown = false;
+    });
     final path = await _audioRecorder.stop();
-    debugPrint("结束录制 $path");
     _sendVoice(path);
   }
 
   void _cancelRecord() async {
+    setState(() {
+      _recordBtnTouchDown = false;
+    });
     _endTimer();
-    debugPrint("取消录制");
+  }
+
+  void _recordDragInside() {
+    setState(() {
+      _dragOutside = false;
+    });
+  }
+
+  void _recordDragOutside() {
+    setState(() {
+      _dragOutside = true;
+    });
   }
 
   void _startTimer() {
@@ -327,5 +363,18 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
 
   void _endTimer() {
     _timer?.cancel();
+  }
+
+  Widget? _maskWidget() {
+    // if (_recordBtnTouchDown) {
+    //   return Container(
+    //     width: 300,
+    //     height: 300,
+    //     color: _dragOutside ? Colors.red : Colors.blue,
+    //   );
+    // } else {
+    //   return null;
+    // }
+    return null;
   }
 }

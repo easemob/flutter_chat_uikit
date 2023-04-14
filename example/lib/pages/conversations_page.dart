@@ -36,15 +36,15 @@ class _ConversationsPageState extends State<ConversationsPage> {
         avatarBuilder: (context, conversation) =>
             AgoraImageLoader.defaultAvatar(size: 44),
         onItemTap: (conversation) {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (ctx) {
-                return ChatPage(conversation);
-              },
-            ),
-          ).then((value) => AgoraChatUIKit.of(context)
-              .conversationsController
-              .loadAllConversations());
+          Navigator.of(context)
+              .push(
+                MaterialPageRoute(
+                  builder: (ctx) => ChatPage(conversation),
+                ),
+              )
+              .then((value) => AgoraChatUIKit.of(context)
+                  .conversationsController
+                  .loadAllConversations());
         },
       ),
     );

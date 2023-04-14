@@ -1,6 +1,6 @@
-import 'package:agora_chat_uikit/agora_chat_uikit.dart';
 import 'package:flutter/material.dart';
 
+import '../../agora_chat_uikit.dart';
 import 'agora_emoji_widget.dart';
 
 class AgoraMessageInputWidget extends StatefulWidget {

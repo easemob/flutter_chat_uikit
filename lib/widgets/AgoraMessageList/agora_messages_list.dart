@@ -1,9 +1,9 @@
-import 'package:agora_chat_uikit/agora_chat_uikit.dart';
-import 'package:agora_chat_uikit/controllers/agora_base_controller.dart';
-import 'package:agora_chat_uikit/widgets/AgoraMessageList/agora_message_sliver.dart';
-import 'package:agora_chat_uikit/widgets/AgoraMessageList/agora_scroll_behavior.dart';
-
 import 'package:flutter/material.dart';
+
+import '../../agora_chat_uikit.dart';
+import '../../controllers/agora_base_controller.dart';
+import 'agora_message_sliver.dart';
+import 'agora_scroll_behavior.dart';
 
 class AgoraMessageListController extends AgoraBaseController {
   AgoraMessageListController(
@@ -371,10 +371,13 @@ class _AgoraMessagesListState extends State<AgoraMessagesList>
     ChatMessage message = model.message;
     controller.sendReadAck(message);
 
+    ValueKey<String>? valueKey; //ValueKey(message.msgId);
+
     Widget content = widget.itemBuilder?.call(context, model.message) ??
         () {
           if (message.body.type == MessageType.TXT) {
             return AgoraMessageListTextItem(
+              key: valueKey,
               model: model,
               onTap: widget.onTap,
               avatarBuilder: widget.avatarBuilder,
@@ -385,6 +388,7 @@ class _AgoraMessagesListState extends State<AgoraMessagesList>
             );
           } else if (message.body.type == MessageType.IMAGE) {
             return AgoraMessageListImageItem(
+              key: valueKey,
               model: model,
               onTap: widget.onTap,
               avatarBuilder: widget.avatarBuilder,
@@ -395,6 +399,7 @@ class _AgoraMessagesListState extends State<AgoraMessagesList>
             );
           } else if (message.body.type == MessageType.FILE) {
             return AgoraMessageListFileItem(
+              key: valueKey,
               model: model,
               onTap: widget.onTap,
               avatarBuilder: widget.avatarBuilder,
@@ -405,6 +410,7 @@ class _AgoraMessagesListState extends State<AgoraMessagesList>
             );
           } else if (message.body.type == MessageType.VOICE) {
             return AgoraMessageListVoiceItem(
+              key: valueKey,
               model: model,
               onTap: widget.onTap,
               avatarBuilder: widget.avatarBuilder,
