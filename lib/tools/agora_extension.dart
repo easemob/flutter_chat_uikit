@@ -1,11 +1,9 @@
 import 'dart:io';
-
-import 'package:agora_chat_sdk/agora_chat_sdk.dart';
-
-import 'agora_tools.dart';
+import 'package:flutter/widgets.dart';
+import '../agora_chat_uikit.dart';
 
 extension ChatMessageExt on ChatMessage {
-  String get summary {
+  String summary(BuildContext context) {
     String ret = "";
     switch (body.type) {
       case MessageType.TXT:
@@ -15,25 +13,25 @@ extension ChatMessageExt on ChatMessage {
         }
         break;
       case MessageType.IMAGE:
-        ret = "[图片]";
+        ret = "[${AppLocalizations.of(context)!.image}]";
         break;
       case MessageType.VIDEO:
-        ret = "[视频]";
+        ret = "[${AppLocalizations.of(context)!.video}]";
         break;
       case MessageType.LOCATION:
-        ret = "[位置]";
+        ret = "[${AppLocalizations.of(context)!.location}]";
         break;
       case MessageType.VOICE:
-        ret = "[音频]";
+        ret = "[${AppLocalizations.of(context)!.audio}]";
         break;
       case MessageType.FILE:
-        ret = "[文件]";
+        ret = "[${AppLocalizations.of(context)!.file}]";
+        break;
+      case MessageType.CUSTOM:
+        ret = "[${AppLocalizations.of(context)!.custom}]";
         break;
       case MessageType.CMD:
         ret = "";
-        break;
-      case MessageType.CUSTOM:
-        ret = "[自定义]";
         break;
     }
     return ret;

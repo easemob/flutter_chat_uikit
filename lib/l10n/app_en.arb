@@ -1,3 +1,8 @@
 {
-  "hello": "Hello"
+  "audio": "audio",
+  "file": "file",
+  "video": "video",
+  "location": "location",
+  "image": "image",
+  "custom": "custom"
 }

@@ -1,6 +1,8 @@
 import 'package:agora_chat_sdk/agora_chat_sdk.dart';
 import 'package:flutter/widgets.dart';
 
+import 'agora_chat_uikit_type.dart';
+
 typedef AgoraWidgetBuilder = Widget Function(
     BuildContext context, String userId);
 
@@ -27,3 +29,6 @@ typedef AgoraConversationItemWidgetBuilder = Widget? Function(
 
 typedef AgoraConversationSortHandle = Future<List<ChatConversation>> Function(
     List<ChatConversation> beforeList);
+
+typedef PermissionRequest = Future<bool> Function(
+    AgoraChatUIKitPermission permission);

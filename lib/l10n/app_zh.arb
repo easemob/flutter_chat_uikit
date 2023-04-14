@@ -1,3 +1,8 @@
 {
-    "hello": "你好"
-}
+    "audio": "音频",
+    "file": "文件",
+    "video": "视频",
+    "location": "位置",
+    "image": "图片",
+    "custom": "自定义"
+  }

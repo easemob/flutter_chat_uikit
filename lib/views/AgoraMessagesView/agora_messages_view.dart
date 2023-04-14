@@ -1,10 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:agora_chat_uikit/agora_chat_uikit_type.dart';
 import 'package:agora_chat_uikit/agora_chat_uikit.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import '../../agora_chat_uikit_error.dart';
 
 class AgoraMessagesView extends StatefulWidget {
   const AgoraMessagesView({
@@ -19,6 +22,8 @@ class AgoraMessagesView extends StatefulWidget {
     this.moreItems,
     this.messageListViewController,
     this.willSendMessage,
+    this.permissionRequest,
+    this.onError,
   });
 
   final Widget? inputBar;
@@ -31,6 +36,8 @@ class AgoraMessagesView extends StatefulWidget {
   final List<AgoraBottomSheetItem>? moreItems;
   final AgoraMessageListController? messageListViewController;
   final ChatMessage Function(ChatMessage message)? willSendMessage;
+  final PermissionRequest? permissionRequest;
+  final void Function(AgoraChatUIKitError)? onError;
 
   @override
   State<AgoraMessagesView> createState() => _AgoraMessagesViewState();
@@ -189,6 +196,12 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
   }
 
   void _openFilePicker() async {
+    PermissionStatus permission = await Permission.storage.request();
+    if (permission != PermissionStatus.granted) {
+      widget.onError?.call(AgoraChatUIKitError.noPermission);
+      return;
+    }
+
     FilePickerResult? result = await FilePicker.platform.pickFiles();
     if (result != null) {
       PlatformFile? file = result.files.first;
@@ -211,6 +224,7 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
         _sendImage(photo.path);
       }
     } catch (e) {
+      widget.onError?.call(AgoraChatUIKitError.noPermission);
       debugPrint(e.toString());
     }
   }
@@ -222,6 +236,7 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
         _sendImage(image.path);
       }
     } catch (e) {
+      widget.onError?.call(AgoraChatUIKitError.noPermission);
       debugPrint(e.toString());
     }
   }
@@ -257,6 +272,7 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
       return;
     }
     if (_recordDuration <= 1) {
+      widget.onError?.call(AgoraChatUIKitError.recordTimeTooShort);
       return;
     }
 
@@ -305,22 +321,32 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
 
   void _startRecord() async {
     try {
-      if (await _audioRecorder.hasPermission()) {
-        final isSupported = await _audioRecorder.isEncoderSupported(
-          AudioEncoder.aacLc,
-        );
-        debugPrint('${AudioEncoder.aacLc.name} supported: $isSupported');
-
-        await _audioRecorder.start();
-        _recordDuration = 0;
-
-        _startTimer();
-      }
-
-      setState(() {
-        _dragOutside = false;
-        _recordBtnTouchDown = true;
-      });
+      do {
+        if (await Permission.microphone.isGranted) {
+          final isSupported = await _audioRecorder.isEncoderSupported(
+            AudioEncoder.aacLc,
+          );
+          debugPrint('${AudioEncoder.aacLc.name} supported: $isSupported');
+          _recordDuration = 0;
+          _startTimer();
+          await _audioRecorder.start();
+          setState(() {
+            _dragOutside = false;
+            _recordBtnTouchDown = true;
+          });
+        } else {
+          bool permission = false;
+          if (widget.permissionRequest != null) {
+            permission = await widget.permissionRequest!
+                .call(AgoraChatUIKitPermission.record);
+          } else {
+            permission = await _audioRecorder.hasPermission();
+          }
+          if (permission == false) {
+            widget.onError?.call(AgoraChatUIKitError.noPermission);
+          }
+        }
+      } while (false);
     } catch (e) {
       debugPrint(e.toString());
     }

@@ -31,6 +31,9 @@ class MyApp extends StatelessWidget {
         },
       ),
       title: 'Callkit demo',
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+      ],
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),

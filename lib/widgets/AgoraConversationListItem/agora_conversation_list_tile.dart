@@ -48,7 +48,7 @@ class AgoraConversationListTile extends StatelessWidget {
                 Expanded(child: Builder(
                   builder: (context) {
                     return Text(
-                      msg?.summary ?? "",
+                      msg?.summary(context) ?? "",
                       style:
                           Theme.of(context).conversationListItemSubTitleStyle,
                     );

@@ -93,11 +93,41 @@ abstract class AppLocalizations {
     Locale('zh')
   ];
 
-  /// No description provided for @hello.
+  /// No description provided for @audio.
   ///
   /// In en, this message translates to:
-  /// **'Hello'**
-  String get hello;
+  /// **'audio'**
+  String get audio;
+
+  /// No description provided for @file.
+  ///
+  /// In en, this message translates to:
+  /// **'file'**
+  String get file;
+
+  /// No description provided for @video.
+  ///
+  /// In en, this message translates to:
+  /// **'video'**
+  String get video;
+
+  /// No description provided for @location.
+  ///
+  /// In en, this message translates to:
+  /// **'location'**
+  String get location;
+
+  /// No description provided for @image.
+  ///
+  /// In en, this message translates to:
+  /// **'image'**
+  String get image;
+
+  /// No description provided for @custom.
+  ///
+  /// In en, this message translates to:
+  /// **'custom'**
+  String get custom;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

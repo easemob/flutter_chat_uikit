@@ -1,0 +1,4 @@
+enum AgoraChatUIKitError {
+  noPermission,
+  recordTimeTooShort,
+}
