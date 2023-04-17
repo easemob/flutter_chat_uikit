@@ -2,6 +2,7 @@ import 'package:agora_chat_uikit/agora_chat_uikit.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:ui_kit_demo/config.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -11,28 +12,30 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  String userId = "";
-  String tokenOrPwd = "";
+  final TextEditingController _userIdController = TextEditingController();
+  final TextEditingController _pwdOrAgoraTokenController =
+      TextEditingController();
+
+  String get userId => _userIdController.text;
+  String get tokenOrPwd => _pwdOrAgoraTokenController.text;
 
   @override
   Widget build(BuildContext context) {
+    _userIdController.text = Config.userId;
+    _pwdOrAgoraTokenController.text = Config.pwdOrAgoraToken;
     Widget content = Column(
       children: [
         Expanded(
           child: TextField(
+            controller: _userIdController,
             decoration: const InputDecoration(hintText: "userId"),
-            onChanged: (value) {
-              userId = value;
-            },
           ),
         ),
         Expanded(
           child: TextField(
+            controller: _pwdOrAgoraTokenController,
             decoration:
                 const InputDecoration(hintText: "password / agoraToken"),
-            onChanged: (value) {
-              tokenOrPwd = value;
-            },
           ),
         ),
         Row(
