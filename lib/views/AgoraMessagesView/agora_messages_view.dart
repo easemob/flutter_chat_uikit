@@ -9,7 +9,36 @@ import 'package:flutter/services.dart';
 
 import '../../agora_chat_uikit_error.dart';
 
+/// Message details page
 class AgoraMessagesView extends StatefulWidget {
+  /// Message details page.
+  ///
+  /// [inputBar] Text input component, if not passed by default will use [AgoraMessageInputWidget]
+  ///
+  /// [conversation] The session corresponding to the message details.
+  ///
+  /// [onTap] Message Bubble click event callback.
+  ///
+  /// [onBubbleLongPress] Message bubbles long press the event callback.
+  ///
+  /// [onBubbleDoubleTap] Message Bubble Double-click the event callback.
+  ///
+  /// [avatarBuilder] Avatar component builder.
+  ///
+  /// [nicknameBuilder] Nickname component builder.
+  ///
+  /// [itemBuilder] Message bubble, if not set, will take the default bubble.
+  ///
+  /// [moreItems] The more the input component clicks on the list displayed, the default items will be used if not passed in, including copy, delete, and recall.
+  ///
+  /// [messageListViewController] Message list controller: You are advised not to pass messages. Use the default value. For details, see [AgoraMessageListController].
+  ///
+  /// [willSendMessage] A pre-text message event that needs to return a ChatMessage object. that can be used for pre-text message processing.
+  ///
+  /// [permissionRequest] Callback for permission application. Callback for obtaining permission, such as recording permission, album permission, photo permission, etc.
+  ///
+  /// [onError] Error callbacks, such as no current permissions, etc.
+  ///
   const AgoraMessagesView({
     super.key,
     this.inputBar,
@@ -19,6 +48,7 @@ class AgoraMessagesView extends StatefulWidget {
     this.onBubbleDoubleTap,
     this.avatarBuilder,
     this.nicknameBuilder,
+    this.itemBuilder,
     this.moreItems,
     this.messageListViewController,
     this.willSendMessage,
@@ -26,17 +56,47 @@ class AgoraMessagesView extends StatefulWidget {
     this.onError,
   });
 
+  /// Text input component, if not passed by default will use [AgoraMessageInputWidget]
   final Widget? inputBar;
+
+  /// The session corresponding to the message details.
   final ChatConversation conversation;
+
+  /// Message Bubble click event callback.
   final AgoraMessageTapAction? onTap;
+
+  /// Message bubbles long press the event callback.
   final AgoraMessageTapAction? onBubbleLongPress;
+
+  /// Message Bubble Double-click the event callback.
   final AgoraMessageTapAction? onBubbleDoubleTap;
+
+  /// Avatar component builder
   final AgoraWidgetBuilder? avatarBuilder;
+
+  /// Nickname component builder
   final AgoraWidgetBuilder? nicknameBuilder;
+
+  /// The more the input component clicks on the list displayed,
+  /// the default items will be used if not passed in, including copy, delete, and recall.
   final List<AgoraBottomSheetItem>? moreItems;
+
+  /// Message bubble, if not set, will take the default bubble.
+  final AgoraMessageListItemBuilder? itemBuilder;
+
+  /// Message list controller: You are advised not to pass messages. Use the default value.
+  /// For details, see [AgoraMessageListController].
   final AgoraMessageListController? messageListViewController;
+
+  /// A pre-text message event that needs to return a ChatMessage object.
+  /// that can be used for pre-text message processing.
   final ChatMessage Function(ChatMessage message)? willSendMessage;
+
+  /// Callback for permission application. Callback for obtaining permission,
+  /// such as recording permission, album permission, photo permission, etc.
   final PermissionRequest? permissionRequest;
+
+  /// Error callbacks, such as no current permissions, etc.
   final void Function(AgoraChatUIKitError)? onError;
 
   @override
@@ -80,6 +140,7 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
             messageListViewController: msgListViewController,
             avatarBuilder: widget.avatarBuilder,
             nicknameBuilder: widget.nicknameBuilder,
+            itemBuilder: widget.itemBuilder,
             onTap: (ctx, msg) {
               bool ret = widget.onTap?.call(ctx, msg) ?? false;
               if (!ret) {

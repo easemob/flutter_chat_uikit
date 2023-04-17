@@ -46,6 +46,7 @@ class AgoraChatUIKitState extends State<AgoraChatUIKit> {
     return widget.child;
   }
 
+  /// Notify agora chat uikit ui initialization is complete.
   void uiSetup() {
     ChatClient.getInstance.startCallback();
   }
