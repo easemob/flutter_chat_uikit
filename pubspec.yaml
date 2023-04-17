@@ -1,6 +1,6 @@
 name: agora_chat_uikit
 description: agora chat uikit.
-version: 0.0.1
+version: 0.1.0
 homepage: https://www.agora.io/en/
 
 environment:
@@ -28,7 +28,7 @@ dependencies:
 
   common_utils: 2.1.0
 
-  permission_handler: ^10.2.0
+  permission_handler: 10.2.0
 
 dev_dependencies:
   flutter_test:
