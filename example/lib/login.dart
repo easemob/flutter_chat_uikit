@@ -101,6 +101,6 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void pushToHome() {
-    Navigator.of(context).pushNamed("home");
+    Navigator.of(context).pushReplacementNamed("home");
   }
 }

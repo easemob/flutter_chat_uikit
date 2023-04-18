@@ -41,8 +41,8 @@ class AgoraMessageListImageItem extends StatelessWidget {
       width = max / height * width;
       height = max;
     }
-
     Widget content;
+
     if (message.direction == MessageDirection.SEND) {
       content = Image(
           gaplessPlayback: true,
@@ -78,6 +78,7 @@ class AgoraMessageListImageItem extends StatelessWidget {
           ),
           fit: BoxFit.fill);
     } else {
+      ChatClient.getInstance.chatManager.downloadThumbnail(message);
       content = Container(
         color: const Color.fromRGBO(242, 242, 242, 1),
         child: FadeInImage(

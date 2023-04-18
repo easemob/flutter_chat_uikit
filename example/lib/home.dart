@@ -138,7 +138,7 @@ class _HomePageState extends State<HomePage> {
 
   void _logout() async {
     ChatClient.getInstance.logout().then((value) {
-      Navigator.of(context).pushNamed("login");
+      Navigator.of(context).pushReplacementNamed("login");
     });
   }
 }

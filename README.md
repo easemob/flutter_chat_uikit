@@ -31,8 +31,35 @@ dependencies:
   common_utils: 2.1.0
 ```
 
+## Permissions
 
+### Android
 
+```
+<uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+<uses-permission android:name="android.permission.WAKE_LOCK"/>
+<uses-permission android:name="android.permission.RECORD_AUDIO" />
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+```
+### iOS
+
+Open info.plist and add:
+
+```
+Privacy - Microphone Usage Description, and add a note in the Value column.
+Privacy - Camera Usage Description, and add a note in the Value column.
+Privacy - Photo Library Usage Description.
+```
+
+## Prevent code obfuscation
+
+In the example/android/app/proguard-rules.pro file, add the following lines to prevent code obfuscation:
+```
+-keep class com.hyphenate.** {*;}
+-dontwarn  com.hyphenate.**
+```
 
 ## Getting started
 
