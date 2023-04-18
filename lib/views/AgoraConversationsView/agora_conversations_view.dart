@@ -318,18 +318,24 @@ class AgoraConversationsViewState extends State<AgoraConversationsView> {
                               }
                             },
                             backgroundColor: Colors.red,
-                            text: AppLocalizations.of(context)!.delete,
+                            text: AppLocalizations.of(context)?.delete ??
+                                "Delete",
                             confirmAction: (_) async {
                               return await AgoraBottomSheet(
-                                    titleLabel: AppLocalizations.of(context)!
-                                        .deleteConversation,
+                                    titleLabel: AppLocalizations.of(context)
+                                            ?.deleteConversation ??
+                                        'Delete conversation',
                                     items: [
                                       AgoraBottomSheetItem(
-                                          AppLocalizations.of(context)!.confirm,
+                                          AppLocalizations.of(context)
+                                                  ?.confirm ??
+                                              'Confirm',
                                           onTap: () =>
                                               Navigator.of(context).pop(true)),
                                       AgoraBottomSheetItem(
-                                          AppLocalizations.of(context)!.cancel,
+                                          AppLocalizations.of(context)
+                                                  ?.cancel ??
+                                              'Cancel',
                                           onTap: () =>
                                               Navigator.of(context).pop(false)),
                                     ],
