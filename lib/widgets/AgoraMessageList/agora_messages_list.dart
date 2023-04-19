@@ -25,7 +25,9 @@ class AgoraMessageListController extends AgoraBaseController {
   bool _loading = false;
   bool hasFirstLoad = false;
 
-// send message
+  /// Send a message.
+  ///
+  /// Param [message] The message to send.
   void sendMessage(ChatMessage message) async {
     _removeMessageFromList(message);
     ChatMessage msg =
@@ -34,7 +36,9 @@ class AgoraMessageListController extends AgoraBaseController {
     await refreshUI(moveToEnd: true);
   }
 
-  // remove message
+  /// Remove a message.
+  ///
+  /// Param [message] The message to remove.
   Future<void> removeMessage(ChatMessage message) async {
     try {
       await conversation.deleteMessage(message.msgId);
@@ -44,6 +48,104 @@ class AgoraMessageListController extends AgoraBaseController {
     } on ChatError catch (e) {
       debugPrint(e.toString());
     }
+  }
+
+  /// Recall a message.
+  ///
+  /// Param [context] context.
+  ///
+  /// Param [message] The message to recall.
+  Future<void> recallMessage(BuildContext context, ChatMessage message) async {
+    try {
+      await ChatClient.getInstance.chatManager.recallMessage(message.msgId);
+      if (_removeMessageFromList(message)) {
+        refreshUI();
+      }
+    } on ChatError catch (e) {
+      // TODO: callback error?
+      String str = e.description;
+      final snackBar = SnackBar(content: Text(str));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
+
+  /// load messages
+  ///
+  /// Param [count] load count.
+  Future<void> loadMoreMessage([int count = 10]) async {
+    if (_loading) return;
+    _loading = true;
+    if (!_hasMore) {
+      _loading = false;
+      return;
+    }
+
+    List<ChatMessage> list = await conversation.loadMessages(
+      startMsgId: _msgList.isEmpty ? "" : _msgList.last.msgId,
+      loadCount: count,
+    );
+    if (list.length < count) {
+      _hasMore = false;
+    }
+
+    List<AgoraMessageListItemModel> models = _modelsCreator(list, _hasMore);
+
+    _msgList.addAll(models);
+    _loading = false;
+    refreshUI();
+  }
+
+  /// Set all messages in the current conversation to read. current conversation see [AgoraMessagesList].
+  Future<void> markAllMessagesAsRead() async {
+    return conversation.markAllMessagesAsRead();
+  }
+
+  /// Set a message in the current conversation to read.
+  /// affects only unread messages count in the conversation.
+  ///
+  /// Param [message] The message needs to be set to read. current conversation see [AgoraMessagesList].
+  Future<void> markMessageAsRead(ChatMessage message) async {
+    if (message.direction == MessageDirection.RECEIVE) {
+      await conversation.markMessageAsRead(message.msgId);
+    }
+  }
+
+  /// Send a message read receipt, the other party will receive a read receipt.
+  ///
+  /// Param [message] Param [message] The message to send read ack.
+  Future<void> sendReadAck(ChatMessage message) async {
+    if (needReadAck &&
+        !message.hasReadAck &&
+        message.direction == MessageDirection.RECEIVE) {
+      await ChatClient.getInstance.chatManager.sendMessageReadAck(message);
+    }
+  }
+
+  /// Deletes all messages in the current conversation. Only the local database is deleted.
+  /// If the message roaming interface is called, the deleted message can still be retrieved.
+  /// current conversation see [AgoraMessagesList]. message roaming see [ChatManager.fetchHistoryMessages].
+  Future<void> deleteAllMessages() async {
+    await ChatClient.getInstance.chatManager
+        .deleteConversation(conversation.id);
+    _latestShowTsTime = -1;
+    _msgList.clear();
+    refreshUI();
+  }
+
+  /// Refresh AgoraMessagesList Widget. see [AgoraMessagesList].
+  Future<void>? refreshUI({
+    bool enableAnimation = false,
+    bool moveToEnd = false,
+  }) {
+    return _reloadData?.call(enableAnimation, moveToEnd);
+  }
+
+  void play(ChatMessage message) {
+    playingMessage = message;
+  }
+
+  void stopPlay(ChatMessage message) {
+    playingMessage = null;
   }
 
   bool _removeMessageFromList(ChatMessage message) {
@@ -73,73 +175,6 @@ class AgoraMessageListController extends AgoraBaseController {
     }
   }
 
-  Future<void> recallMessage(BuildContext context, ChatMessage message) async {
-    try {
-      await ChatClient.getInstance.chatManager.recallMessage(message.msgId);
-      if (_removeMessageFromList(message)) {
-        refreshUI();
-      }
-    } on ChatError catch (e) {
-      // TODO: callback error?
-      String str = e.description;
-      final snackBar = SnackBar(content: Text(str));
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    }
-  }
-
-  // load message message
-  Future<void> loadMoreMessage([int count = 10]) async {
-    if (_loading) return;
-    _loading = true;
-    if (!_hasMore) {
-      _loading = false;
-      return;
-    }
-
-    List<ChatMessage> list = await conversation.loadMessages(
-      startMsgId: _msgList.isEmpty ? "" : _msgList.last.msgId,
-      loadCount: count,
-    );
-    if (list.length < count) {
-      _hasMore = false;
-    }
-
-    List<AgoraMessageListItemModel> models = _modelsCreator(list, _hasMore);
-
-    _msgList.addAll(models);
-    _loading = false;
-    refreshUI();
-  }
-
-  // mark all messages as read;
-  Future<void> markAllMessagesAsRead() async {
-    return conversation.markAllMessagesAsRead();
-  }
-
-  // mark a message as read;
-  Future<void> markMessageAsRead(ChatMessage message) async {
-    if (message.direction == MessageDirection.RECEIVE) {
-      await conversation.markMessageAsRead(message.msgId);
-    }
-  }
-
-  // 发送 read ack
-  Future<void> sendReadAck(ChatMessage message) async {
-    if (needReadAck &&
-        !message.hasReadAck &&
-        message.direction == MessageDirection.RECEIVE) {
-      await ChatClient.getInstance.chatManager.sendMessageReadAck(message);
-    }
-  }
-
-  Future<void> deleteAllMessages() async {
-    await ChatClient.getInstance.chatManager
-        .deleteConversation(conversation.id);
-    _latestShowTsTime = -1;
-    _msgList.clear();
-    refreshUI();
-  }
-
   void _handleMessage(String msgId, ChatMessage message) {
     int index = -1;
     do {
@@ -166,30 +201,31 @@ class AgoraMessageListController extends AgoraBaseController {
           },
         ));
     ChatClient.getInstance.chatManager.addEventHandler(
-        key,
-        ChatEventHandler(
-          onMessagesRead: _updateMessageItems,
-          onMessagesReceived: (messages) {
-            List<ChatMessage> tmp = messages
-                .where((element) => element.conversationId == conversation.id)
-                .toList();
+      key,
+      ChatEventHandler(
+        onMessagesRead: _updateMessageItems,
+        onMessagesReceived: (messages) {
+          List<ChatMessage> tmp = messages
+              .where((element) => element.conversationId == conversation.id)
+              .toList();
 
-            _msgList.insertAll(0, tmp.map((e) => _modelCreator(e)).toList());
-            refreshUI();
-          },
-          onMessagesRecalled: (messages) {
-            bool needRefresh = false;
-            for (var msg in messages) {
-              if (msg.conversationId == conversation.id) {
-                bool tmp = _removeMessageFromList(msg);
-                if (tmp && !needRefresh) {
-                  needRefresh = true;
-                }
+          _msgList.insertAll(0, tmp.map((e) => _modelCreator(e)).toList());
+          refreshUI();
+        },
+        onMessagesRecalled: (messages) {
+          bool needRefresh = false;
+          for (var msg in messages) {
+            if (msg.conversationId == conversation.id) {
+              bool tmp = _removeMessageFromList(msg);
+              if (tmp && !needRefresh) {
+                needRefresh = true;
               }
             }
-            if (needRefresh) refreshUI();
-          },
-        ));
+          }
+          if (needRefresh) refreshUI();
+        },
+      ),
+    );
   }
 
   void _updateMessageItems(List<ChatMessage> list) {
@@ -250,21 +286,6 @@ class AgoraMessageListController extends AgoraBaseController {
     Future<void> Function(bool enableAnimation, bool moveToEnd)? reloadData,
   }) {
     _reloadData = reloadData;
-  }
-
-  Future<void>? refreshUI({
-    bool enableAnimation = false,
-    bool moveToEnd = false,
-  }) {
-    return _reloadData?.call(enableAnimation, moveToEnd);
-  }
-
-  void play(ChatMessage message) {
-    playingMessage = message;
-  }
-
-  void stopPlay(ChatMessage message) {
-    playingMessage = null;
   }
 
   void dispose() {

@@ -1,1 +1,3 @@
-class AgoraUIKitWidgetController {}
+class AgoraUIKitControllerManager {
+  AgoraUIKitControllerManager();
+}

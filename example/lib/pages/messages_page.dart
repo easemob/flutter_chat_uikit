@@ -46,6 +46,15 @@ class _ChatPageState extends State<ChatPage> {
           messageListViewController: controller,
           avatarBuilder: (context, userId) => AgoraImageLoader.defaultAvatar(),
           nicknameBuilder: (context, userId) => Text(userId),
+          inputBar: TextField(
+            decoration: const InputDecoration(hintText: "inputText"),
+            onSubmitted: (value) {
+              debugPrint("run! $value");
+              final msg = ChatMessage.createTxtSendMessage(
+                  targetId: widget.conversation.id, content: value);
+              controller.sendMessage(msg);
+            },
+          ),
         ),
       ),
     );
