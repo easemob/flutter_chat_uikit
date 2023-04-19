@@ -2,6 +2,7 @@ import 'package:agora_chat_uikit/agora_chat_uikit.dart';
 
 import 'package:flutter/material.dart';
 
+import 'pages/contact_page.dart';
 import 'pages/messages_page.dart';
 import 'pages/conversations_page.dart';
 
@@ -46,6 +47,15 @@ class _HomePageState extends State<HomePage> {
               height: 60,
               child: Center(
                 child: Text("ChatPage"),
+              ),
+            ),
+          ),
+          InkWell(
+            onTap: _pushToSelectContactPage,
+            child: const SizedBox(
+              height: 60,
+              child: Center(
+                child: Text("Select contact"),
               ),
             ),
           ),
@@ -128,6 +138,21 @@ class _HomePageState extends State<HomePage> {
       }
     }).then((value) {
       if (value == null) return;
+      ChatConversation conv = value as ChatConversation;
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+        return ChatPage(conv);
+      }));
+    });
+  }
+
+  void _pushToSelectContactPage() {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+      return const ContactPage();
+    })).then((value) {
+      if (value != null && value is List<String>) {
+        return ChatClient.getInstance.chatManager.getConversation(value.first);
+      }
+    }).then((value) {
       ChatConversation conv = value as ChatConversation;
       Navigator.of(context).push(MaterialPageRoute(builder: (context) {
         return ChatPage(conv);
