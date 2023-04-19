@@ -93,83 +93,83 @@ abstract class AppLocalizations {
     Locale('zh')
   ];
 
-  /// No description provided for @audio.
+  /// No description provided for @agoraAudio.
   ///
   /// In en, this message translates to:
   /// **'Audio'**
-  String get audio;
+  String get agoraAudio;
 
-  /// No description provided for @file.
+  /// No description provided for @agoraFile.
   ///
   /// In en, this message translates to:
   /// **'File'**
-  String get file;
+  String get agoraFile;
 
-  /// No description provided for @video.
+  /// No description provided for @agoraVideo.
   ///
   /// In en, this message translates to:
   /// **'Video'**
-  String get video;
+  String get agoraVideo;
 
-  /// No description provided for @location.
+  /// No description provided for @agoraLocation.
   ///
   /// In en, this message translates to:
   /// **'Location'**
-  String get location;
+  String get agoraLocation;
 
-  /// No description provided for @image.
+  /// No description provided for @agoraImage.
   ///
   /// In en, this message translates to:
   /// **'Image'**
-  String get image;
+  String get agoraImage;
 
-  /// No description provided for @custom.
+  /// No description provided for @agoraCustom.
   ///
   /// In en, this message translates to:
   /// **'Custom'**
-  String get custom;
+  String get agoraCustom;
 
-  /// No description provided for @camera.
+  /// No description provided for @agoraCamera.
   ///
   /// In en, this message translates to:
   /// **'Camera'**
-  String get camera;
+  String get agoraCamera;
 
-  /// No description provided for @album.
+  /// No description provided for @agoraAlbum.
   ///
   /// In en, this message translates to:
   /// **'Album'**
-  String get album;
+  String get agoraAlbum;
 
-  /// No description provided for @files.
+  /// No description provided for @agoraFiles.
   ///
   /// In en, this message translates to:
   /// **'Files'**
-  String get files;
+  String get agoraFiles;
 
-  /// No description provided for @delete.
+  /// No description provided for @agoraDelete.
   ///
   /// In en, this message translates to:
   /// **'Delete'**
-  String get delete;
+  String get agoraDelete;
 
-  /// No description provided for @deleteConversation.
+  /// No description provided for @agoraDeleteConversation.
   ///
   /// In en, this message translates to:
   /// **'Delete conversation'**
-  String get deleteConversation;
+  String get agoraDeleteConversation;
 
-  /// No description provided for @confirm.
+  /// No description provided for @agoraConfirm.
   ///
   /// In en, this message translates to:
   /// **'Confirm'**
-  String get confirm;
+  String get agoraConfirm;
 
-  /// No description provided for @cancel.
+  /// No description provided for @agoraCancel.
   ///
   /// In en, this message translates to:
   /// **'Cancel'**
-  String get cancel;
+  String get agoraCancel;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

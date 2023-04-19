@@ -2,7 +2,7 @@ import 'package:agora_chat_uikit/agora_chat_uikit.dart';
 
 import 'package:flutter/material.dart';
 
-import 'pages/chat_page.dart';
+import 'pages/messages_page.dart';
 import 'pages/conversations_page.dart';
 
 class HomePage extends StatefulWidget {

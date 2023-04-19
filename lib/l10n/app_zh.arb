@@ -1,15 +1,15 @@
 {
-    "audio": "音频",
-    "file": "文件",
-    "video": "视频",
-    "location": "位置",
-    "image": "图片",
-    "custom": "自定义",
-    "camera": "相机",
-    "album": "相册",
-    "files": "文件",
-    "delete":"删除",
-    "deleteConversation": "删除会话",
-    "confirm":"确定",
-    "cancel":"取消"
+    "agoraAudio": "音频",
+    "agoraFile": "文件",
+    "agoraVideo": "视频",
+    "agoraLocation": "位置",
+    "agoraImage": "图片",
+    "agoraCustom": "自定义",
+    "agoraCamera": "相机",
+    "agoraAlbum": "相册",
+    "agoraFiles": "文件",
+    "agoraDelete":"删除",
+    "agoraDeleteConversation": "删除会话",
+    "agoraConfirm":"确定",
+    "agoraCancel":"取消"
   }

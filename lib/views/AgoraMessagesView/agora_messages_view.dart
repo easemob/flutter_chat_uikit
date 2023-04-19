@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:agora_chat_uikit/agora_chat_uikit_type.dart';
 import 'package:agora_chat_uikit/agora_chat_uikit.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../agora_chat_uikit_error.dart';
+import '../../agora_chat_uikit_type.dart';
 
 /// Message details page
 class AgoraMessagesView extends StatefulWidget {
@@ -241,17 +241,18 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
       items: widget.moreItems ??
           [
             AgoraBottomSheetItem(
-                AppLocalizations.of(context)?.camera ?? 'Camera', onTap: () {
+                AppLocalizations.of(context)?.agoraCamera ?? 'Camera',
+                onTap: () {
               Navigator.of(context).pop();
               _takePhoto();
             }),
-            AgoraBottomSheetItem(AppLocalizations.of(context)?.album ?? 'Album',
-                onTap: () {
+            AgoraBottomSheetItem(
+                AppLocalizations.of(context)?.agoraAlbum ?? 'Album', onTap: () {
               Navigator.of(context).pop();
               _openImagePicker();
             }),
-            AgoraBottomSheetItem(AppLocalizations.of(context)?.files ?? 'Files',
-                onTap: () {
+            AgoraBottomSheetItem(
+                AppLocalizations.of(context)?.agoraFiles ?? 'Files', onTap: () {
               Navigator.of(context).pop();
               _openFilePicker();
             }),

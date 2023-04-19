@@ -1,7 +1,7 @@
 import 'package:agora_chat_uikit/agora_chat_uikit.dart';
 import 'package:flutter/material.dart';
 
-import 'chat_page.dart';
+import 'messages_page.dart';
 
 class ConversationsPage extends StatefulWidget {
   const ConversationsPage({super.key});
@@ -11,6 +11,11 @@ class ConversationsPage extends StatefulWidget {
 }
 
 class _ConversationsPageState extends State<ConversationsPage> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,8 +38,6 @@ class _ConversationsPageState extends State<ConversationsPage> {
         ],
       ),
       body: AgoraConversationsView(
-        avatarBuilder: (context, conversation) =>
-            AgoraImageLoader.defaultAvatar(size: 44),
         onItemTap: (conversation) {
           Navigator.of(context)
               .push(

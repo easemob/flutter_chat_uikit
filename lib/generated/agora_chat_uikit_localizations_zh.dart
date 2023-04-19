@@ -5,41 +5,41 @@ class AppLocalizationsZh extends AppLocalizations {
   AppLocalizationsZh([String locale = 'zh']) : super(locale);
 
   @override
-  String get audio => '音频';
+  String get agoraAudio => '音频';
 
   @override
-  String get file => '文件';
+  String get agoraFile => '文件';
 
   @override
-  String get video => '视频';
+  String get agoraVideo => '视频';
 
   @override
-  String get location => '位置';
+  String get agoraLocation => '位置';
 
   @override
-  String get image => '图片';
+  String get agoraImage => '图片';
 
   @override
-  String get custom => '自定义';
+  String get agoraCustom => '自定义';
 
   @override
-  String get camera => '相机';
+  String get agoraCamera => '相机';
 
   @override
-  String get album => '相册';
+  String get agoraAlbum => '相册';
 
   @override
-  String get files => '文件';
+  String get agoraFiles => '文件';
 
   @override
-  String get delete => '删除';
+  String get agoraDelete => '删除';
 
   @override
-  String get deleteConversation => '删除会话';
+  String get agoraDeleteConversation => '删除会话';
 
   @override
-  String get confirm => '确定';
+  String get agoraConfirm => '确定';
 
   @override
-  String get cancel => '取消';
+  String get agoraCancel => '取消';
 }

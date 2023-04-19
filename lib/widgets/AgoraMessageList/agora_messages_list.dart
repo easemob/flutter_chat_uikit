@@ -80,6 +80,7 @@ class AgoraMessageListController extends AgoraBaseController {
         refreshUI();
       }
     } on ChatError catch (e) {
+      // TODO: callback error?
       String str = e.description;
       final snackBar = SnackBar(content: Text(str));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);

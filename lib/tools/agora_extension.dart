@@ -13,22 +13,22 @@ extension ChatMessageExt on ChatMessage {
         }
         break;
       case MessageType.IMAGE:
-        ret = "[${AppLocalizations.of(context)?.image ?? "Image"}]";
+        ret = "[${AppLocalizations.of(context)?.agoraImage ?? "Image"}]";
         break;
       case MessageType.VIDEO:
-        ret = "[${AppLocalizations.of(context)?.video ?? "Video"}]";
+        ret = "[${AppLocalizations.of(context)?.agoraVideo ?? "Video"}]";
         break;
       case MessageType.LOCATION:
-        ret = "[${AppLocalizations.of(context)?.location ?? "Location"}]";
+        ret = "[${AppLocalizations.of(context)?.agoraLocation ?? "Location"}]";
         break;
       case MessageType.VOICE:
-        ret = "[${AppLocalizations.of(context)?.audio ?? "Audio"}]";
+        ret = "[${AppLocalizations.of(context)?.agoraAudio ?? "Audio"}]";
         break;
       case MessageType.FILE:
-        ret = "[${AppLocalizations.of(context)?.file ?? "File"}]";
+        ret = "[${AppLocalizations.of(context)?.agoraFile ?? "File"}]";
         break;
       case MessageType.CUSTOM:
-        ret = "[${AppLocalizations.of(context)?.custom ?? "Custom"}]";
+        ret = "[${AppLocalizations.of(context)?.agoraCustom ?? "Custom"}]";
         break;
       case MessageType.CMD:
         ret = "";
