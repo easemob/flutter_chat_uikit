@@ -86,4 +86,18 @@ class AgoraBottomSheetItem {
   final VoidCallback onTap;
   final Color backgroundColor;
   final TextStyle? labelStyle;
+
+  AgoraBottomSheetItem copyWith({
+    String? label,
+    VoidCallback? onTap,
+    Color? backgroundColor,
+    TextStyle? labelStyle,
+  }) {
+    return AgoraBottomSheetItem(
+      label ?? this.label,
+      onTap: onTap ?? this.onTap,
+      backgroundColor: backgroundColor ?? this.backgroundColor,
+      labelStyle: labelStyle ?? this.labelStyle,
+    );
+  }
 }

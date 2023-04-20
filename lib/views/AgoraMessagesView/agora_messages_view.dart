@@ -56,6 +56,7 @@ class AgoraMessagesView extends StatefulWidget {
     this.onError,
     this.enableScrollBar = true,
     this.needDismissInputWidgetAction,
+    this.inputBarMoreActionsOnTap,
     super.key,
   });
 
@@ -96,11 +97,11 @@ class AgoraMessagesView extends StatefulWidget {
 
   /// A pre-text message event that needs to return a ChatMessage object.
   /// that can be used for pre-text message processing.
-  final ChatMessage Function(ChatMessage message)? willSendMessage;
+  final AgoraReplaceMessage? willSendMessage;
 
   /// Callback for permission application. Callback for obtaining permission,
   /// such as recording permission, album permission, photo permission, etc.
-  final PermissionRequest? permissionRequest;
+  final AgoraPermissionRequest? permissionRequest;
 
   /// Error callbacks, such as no current permissions, etc.
   final void Function(ChatError error)? onError;
@@ -112,6 +113,9 @@ class AgoraMessagesView extends StatefulWidget {
   /// dismiss the inputBar when you receive the callback,
   /// for example, by calling [FocusNode.unfocus], see [AgoraMessageInputWidget].
   final VoidCallback? needDismissInputWidgetAction;
+
+  /// More button click after callback, need to return to the AgoraBottomSheetItems list.
+  final AgoraReplaceMoreActions? inputBarMoreActionsOnTap;
 
   @override
   State<AgoraMessagesView> createState() => _AgoraMessagesViewState();
@@ -228,8 +232,17 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
                 var msg = ChatMessage.createTxtSendMessage(
                     targetId: widget.conversation.id, content: text);
                 msg.chatType = ChatType.values[widget.conversation.type.index];
-                msgListViewController
-                    .sendMessage(widget.willSendMessage?.call(msg) ?? msg);
+                ChatMessage? willSend;
+                if (widget.willSendMessage != null) {
+                  willSend = widget.willSendMessage!.call(msg);
+                  if (willSend == null) {
+                    return;
+                  }
+                } else {
+                  willSend = msg;
+                }
+
+                msgListViewController.sendMessage(willSend);
               },
             )
       ],
@@ -289,27 +302,35 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
   }
 
   void showMoreItems() {
-    AgoraBottomSheet(
-      items: widget.moreItems ??
-          [
-            AgoraBottomSheetItem(
-                AppLocalizations.of(context)?.agoraCamera ?? 'Camera',
-                onTap: () {
-              Navigator.of(context).pop();
-              _takePhoto();
-            }),
-            AgoraBottomSheetItem(
-                AppLocalizations.of(context)?.agoraAlbum ?? 'Album', onTap: () {
-              Navigator.of(context).pop();
-              _openImagePicker();
-            }),
-            AgoraBottomSheetItem(
-                AppLocalizations.of(context)?.agoraFiles ?? 'Files', onTap: () {
-              Navigator.of(context).pop();
-              _openFilePicker();
-            }),
-          ],
-    ).show(context);
+    List<AgoraBottomSheetItem> currentList = widget.moreItems ?? _moreItems();
+    if (widget.inputBarMoreActionsOnTap != null) {
+      final list = widget.inputBarMoreActionsOnTap!.call(currentList);
+      if (list.isNotEmpty) {
+        AgoraBottomSheet(items: list).show(context);
+      }
+    } else {
+      AgoraBottomSheet(items: widget.moreItems ?? _moreItems()).show(context);
+    }
+  }
+
+  List<AgoraBottomSheetItem> _moreItems() {
+    return [
+      AgoraBottomSheetItem(
+          AppLocalizations.of(context)?.agoraCamera ?? 'Camera', onTap: () {
+        Navigator.of(context).pop();
+        _takePhoto();
+      }),
+      AgoraBottomSheetItem(AppLocalizations.of(context)?.agoraAlbum ?? 'Album',
+          onTap: () {
+        Navigator.of(context).pop();
+        _openImagePicker();
+      }),
+      AgoraBottomSheetItem(AppLocalizations.of(context)?.agoraFiles ?? 'Files',
+          onTap: () {
+        Navigator.of(context).pop();
+        _openFilePicker();
+      }),
+    ];
   }
 
   void _openFilePicker() async {

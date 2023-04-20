@@ -1,19 +1,22 @@
 import 'package:agora_chat_uikit/agora_chat_uikit.dart';
 import 'package:flutter/material.dart';
 
-class MessagesPage extends StatefulWidget {
-  const MessagesPage(this.conversation, {super.key});
+import 'video_widget.dart';
+
+class ChatPage extends StatefulWidget {
+  const ChatPage(this.conversation, {super.key});
 
   final ChatConversation conversation;
 
   @override
-  State<MessagesPage> createState() => _MessagesPageState();
+  State<ChatPage> createState() => _ChatPageState();
 }
 
-class _MessagesPageState extends State<MessagesPage> {
+class _ChatPageState extends State<ChatPage> {
   late AgoraMessageListController controller;
 
   final TextEditingController _textEditingController = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
 
   @override
   void initState() {
@@ -44,14 +47,27 @@ class _MessagesPageState extends State<MessagesPage> {
       ),
       body: SafeArea(
         child: AgoraMessagesView(
-          // inputBarTextEditingController: _textEditingController,
-          // inputBarText: _inputText,
           onError: (error) {
             final snackBar = SnackBar(content: Text(error.description));
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
           },
+          inputBarMoreActionsOnTap: (items) {
+            return items + [items.first.copyWith(onTap: () {}, label: "Video")];
+          },
           conversation: widget.conversation,
           messageListViewController: controller,
+          avatarBuilder: (context, userId) => AgoraImageLoader.defaultAvatar(),
+          nicknameBuilder: (context, userId) => Text(userId),
+          itemBuilder: (context, model) {
+            if (model.message.body.type == MessageType.VIDEO) {
+              return VideoWidget(
+                avatarBuilder: (context, userId) =>
+                    AgoraImageLoader.defaultAvatar(),
+                model: model,
+              );
+            }
+            return null;
+          },
         ),
       ),
     );

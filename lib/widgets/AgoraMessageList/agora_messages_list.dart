@@ -17,7 +17,7 @@ class AgoraMessageListController extends AgoraBaseController {
 
   /// The message recall callback, executed when the message is recalled,
   /// You can return a message that the sdk inserts into the local database.
-  final ChatMessage? Function(ChatMessage recalledMessage)? didRecallMessage;
+  final AgoraReplaceMessage? didRecallMessage;
 
   /// Enable the read receipt. The read receipt supports only single-chat messages.
   /// After text messages are displayed, the system automatically sends the read receipt to the message sender.
@@ -408,8 +408,8 @@ class AgoraMessagesList extends StatefulWidget {
   /// Enable scroll bar.
   final bool enableScrollBar;
 
-  /// Dismiss the input widget callback. If you use a customized inputBar,
-  /// dismiss the inputBar when you receive the callback,
+  /// Dismiss the input widget callback. If you use a customized input widget,
+  /// need dismiss the widget when you receive the callback,
   /// for example, by calling [FocusNode.unfocus], see [AgoraMessageInputWidget].
   final VoidCallback? needDismissInputWidgetAction;
 
@@ -557,21 +557,16 @@ class _AgoraMessagesListState extends State<AgoraMessagesList>
               isPlay: controller._playingMessage?.msgId == message.msgId,
               unreadFlagBuilder: message.hasRead
                   ? null
-                  : (context) {
-                      return Container(
-                        clipBehavior: Clip.hardEdge,
-                        decoration: BoxDecoration(
+                  : (_) => Container(
+                      clipBehavior: Clip.hardEdge,
+                      decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(30),
-                          color: Colors.pink,
-                        ),
-                        width: 10,
-                        height: 10,
-                      );
-                    },
+                          color: Colors.pink),
+                      width: 10,
+                      height: 10),
             );
           }
-
-          return Container(width: 100, height: 100, color: Colors.red);
+          return Container();
         }();
 
     return content;

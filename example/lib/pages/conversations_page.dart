@@ -42,7 +42,7 @@ class _ConversationsPageState extends State<ConversationsPage> {
           Navigator.of(context)
               .push(
                 MaterialPageRoute(
-                  builder: (ctx) => MessagesPage(conversation),
+                  builder: (ctx) => ChatPage(conversation),
                 ),
               )
               .then((value) => AgoraChatUIKit.of(context)
