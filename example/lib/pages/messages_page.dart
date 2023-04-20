@@ -51,23 +51,7 @@ class _ChatPageState extends State<ChatPage> {
             final snackBar = SnackBar(content: Text(error.description));
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
           },
-          inputBarMoreActionsOnTap: (items) {
-            return items + [items.first.copyWith(onTap: () {}, label: "Video")];
-          },
           conversation: widget.conversation,
-          messageListViewController: controller,
-          avatarBuilder: (context, userId) => AgoraImageLoader.defaultAvatar(),
-          nicknameBuilder: (context, userId) => Text(userId),
-          itemBuilder: (context, model) {
-            if (model.message.body.type == MessageType.VIDEO) {
-              return VideoWidget(
-                avatarBuilder: (context, userId) =>
-                    AgoraImageLoader.defaultAvatar(),
-                model: model,
-              );
-            }
-            return null;
-          },
         ),
       ),
     );
