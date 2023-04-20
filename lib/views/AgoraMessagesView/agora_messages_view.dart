@@ -145,7 +145,7 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
 
   @override
   void didUpdateWidget(covariant AgoraMessagesView oldWidget) {
-    _stopRecord();
+    _stopRecord(false);
     _stopVoice();
     super.didUpdateWidget(oldWidget);
   }
@@ -311,15 +311,7 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
     if (result != null) {
       PlatformFile? file = result.files.first;
-      ChatMessage fileMsg = ChatMessage.createFileSendMessage(
-        targetId: widget.conversation.id,
-        filePath: file.path!,
-        fileSize: file.size,
-        displayName: file.name,
-      );
-      fileMsg.chatType = ChatType.values[widget.conversation.type.index];
-      msgListViewController
-          .sendMessage(widget.willSendMessage?.call(fileMsg) ?? fileMsg);
+      _sendFile(file);
     }
   }
 
@@ -348,6 +340,20 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
         AgoraChatUIKitError.toChatError(
             AgoraChatUIKitError.noPermission, "no permission"),
       );
+    }
+  }
+
+  void _sendFile(PlatformFile? file) async {
+    if (file != null) {
+      ChatMessage fileMsg = ChatMessage.createFileSendMessage(
+        targetId: widget.conversation.id,
+        filePath: file.path!,
+        fileSize: file.size,
+        displayName: file.name,
+      );
+      fileMsg.chatType = ChatType.values[widget.conversation.type.index];
+      msgListViewController
+          .sendMessage(widget.willSendMessage?.call(fileMsg) ?? fileMsg);
     }
   }
 

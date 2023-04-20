@@ -500,6 +500,8 @@ class _AgoraMessagesListState extends State<AgoraMessagesList>
             );
           } else if (message.body.type == MessageType.IMAGE) {
             return AgoraMessageListImageItem(
+              bubblePadding: EdgeInsets.zero,
+              bubbleColor: Colors.transparent,
               key: valueKey,
               model: model,
               onTap: widget.onTap,
@@ -511,6 +513,7 @@ class _AgoraMessagesListState extends State<AgoraMessagesList>
             );
           } else if (message.body.type == MessageType.FILE) {
             return AgoraMessageListFileItem(
+              bubbleColor: const Color.fromRGBO(242, 242, 242, 1),
               key: valueKey,
               model: model,
               onTap: widget.onTap,
@@ -531,6 +534,19 @@ class _AgoraMessagesListState extends State<AgoraMessagesList>
               onBubbleLongPress: widget.onBubbleLongPress,
               onResendTap: () => controller.sendMessage(message),
               isPlay: controller._playingMessage?.msgId == message.msgId,
+              unreadFlagBuilder: message.hasRead
+                  ? null
+                  : (context) {
+                      return Container(
+                        clipBehavior: Clip.hardEdge,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30),
+                          color: Colors.pink,
+                        ),
+                        width: 10,
+                        height: 10,
+                      );
+                    },
             );
           }
 
