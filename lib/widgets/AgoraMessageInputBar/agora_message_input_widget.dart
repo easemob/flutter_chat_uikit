@@ -6,8 +6,8 @@ import 'agora_emoji_widget.dart';
 class AgoraMessageInputWidget extends StatefulWidget {
   const AgoraMessageInputWidget({
     super.key,
+    required this.textEditingController,
     required this.focusNode,
-    this.inputTextStr,
     this.recordTouchDown,
     this.recordTouchUpInside,
     this.recordTouchUpOutside,
@@ -23,7 +23,7 @@ class AgoraMessageInputWidget extends StatefulWidget {
     this.inputWidgetOnTap,
     this.emojiWidgetOnTap,
   });
-  final String? inputTextStr;
+
   final VoidCallback? inputWidgetOnTap;
   final VoidCallback? emojiWidgetOnTap;
   final VoidCallback? recordTouchDown;
@@ -39,6 +39,7 @@ class AgoraMessageInputWidget extends StatefulWidget {
   final bool enableVoice;
   final bool enableMore;
   final String hiddenStr;
+  final TextEditingController textEditingController;
 
   final FocusNode focusNode;
   @override
@@ -47,7 +48,6 @@ class AgoraMessageInputWidget extends StatefulWidget {
 }
 
 class _AgoraMessageInputWidgetState extends State<AgoraMessageInputWidget> {
-  late TextEditingController textEditingController;
   _AgoraInputType _currentInputType = _AgoraInputType.dismiss;
   _AgoraInputType? _lastInputType;
 
@@ -58,13 +58,7 @@ class _AgoraMessageInputWidgetState extends State<AgoraMessageInputWidget> {
   void initState() {
     super.initState();
 
-    textEditingController = TextEditingController(
-      text: widget.inputTextStr,
-    )..addListener(
-        () {
-          _adjustSendBtn();
-        },
-      );
+    widget.textEditingController.addListener(_adjustSendBtn);
 
     widget.focusNode.addListener(() {
       if (widget.focusNode.hasFocus) {
@@ -79,12 +73,11 @@ class _AgoraMessageInputWidgetState extends State<AgoraMessageInputWidget> {
 
   @override
   void dispose() {
-    textEditingController.dispose();
     super.dispose();
   }
 
   void _adjustSendBtn() {
-    if (textEditingController.text.isEmpty) {
+    if (widget.textEditingController.text.isEmpty) {
       if (_showSendBtn) {
         setState(() => _showSendBtn = false);
       }
@@ -148,9 +141,10 @@ class _AgoraMessageInputWidgetState extends State<AgoraMessageInputWidget> {
                                   ? InkWell(
                                       key: const ValueKey("1"),
                                       onTap: () {
-                                        widget.onSendBtnTap?.call(
-                                            textEditingController.text.trim());
-                                        textEditingController.text = "";
+                                        widget.onSendBtnTap?.call(widget
+                                            .textEditingController.text
+                                            .trim());
+                                        widget.textEditingController.text = "";
                                       },
                                       child: Container(
                                         width: 55,
@@ -236,7 +230,7 @@ class _AgoraMessageInputWidgetState extends State<AgoraMessageInputWidget> {
                 widget.inputWidgetOnTap?.call();
               },
               focusNode: widget.focusNode,
-              controller: textEditingController,
+              controller: widget.textEditingController,
               maxLines: null,
               decoration: InputDecoration(
                 prefixText: " ",
@@ -340,14 +334,14 @@ class _AgoraMessageInputWidgetState extends State<AgoraMessageInputWidget> {
           Positioned(
             child: AgoraEmojiWidget(
               emojiClicked: (emoji) {
-                TextEditingValue value = textEditingController.value;
+                TextEditingValue value = widget.textEditingController.value;
                 int current = value.selection.baseOffset;
                 if (current < 0) current = 0;
                 String text = value.text;
                 text = text.substring(0, current) +
                     emoji +
                     text.substring(current);
-                textEditingController.value = value.copyWith(
+                widget.textEditingController.value = value.copyWith(
                   text: text,
                   selection: TextSelection.fromPosition(
                     TextPosition(
@@ -364,7 +358,7 @@ class _AgoraMessageInputWidgetState extends State<AgoraMessageInputWidget> {
             right: 30,
             child: InkWell(
               onTap: () {
-                TextEditingValue value = textEditingController.value;
+                TextEditingValue value = widget.textEditingController.value;
                 int current = value.selection.baseOffset;
                 String mStr = "";
                 int offset = 0;
@@ -392,7 +386,7 @@ class _AgoraMessageInputWidgetState extends State<AgoraMessageInputWidget> {
                     }
                   }
                 } while (false);
-                textEditingController.value = value.copyWith(
+                widget.textEditingController.value = value.copyWith(
                   text: mStr,
                   selection: TextSelection.fromPosition(
                     TextPosition(

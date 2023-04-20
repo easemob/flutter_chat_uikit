@@ -40,9 +40,9 @@ class AgoraMessagesView extends StatefulWidget {
   /// [onError] Error callbacks, such as no current permissions, etc.
   ///
   const AgoraMessagesView({
-    super.key,
-    this.inputBar,
     required this.conversation,
+    this.inputBarTextEditingController,
+    this.inputBar,
     this.onTap,
     this.onBubbleLongPress,
     this.onBubbleDoubleTap,
@@ -56,9 +56,13 @@ class AgoraMessagesView extends StatefulWidget {
     this.onError,
     this.enableScrollBar = true,
     this.needDismissInputWidgetAction,
+    super.key,
   });
 
-  /// Text input component, if not passed by default will use [AgoraMessageInputWidget]
+  /// Text input widget text editing controller.
+  final TextEditingController? inputBarTextEditingController;
+
+  /// Text input widget, if not passed by default will use [AgoraMessageInputWidget].
   final Widget? inputBar;
 
   /// The session corresponding to the message details.
@@ -123,12 +127,13 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
   bool _recordBtnTouchDown = false;
   bool _dragOutside = false;
   Timer? _timer;
-
+  late TextEditingController _textController;
   ChatMessage? _playingMessage;
   @override
   void initState() {
     super.initState();
-
+    _textController =
+        widget.inputBarTextEditingController ?? TextEditingController();
     msgListViewController = widget.messageListViewController ??
         AgoraMessageListController(widget.conversation);
     msgListViewController.markAllMessagesAsRead();
@@ -137,6 +142,10 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
   @override
   void dispose() {
     _audioRecorder.dispose();
+    if (widget.inputBarTextEditingController == null) {
+      _textController.dispose();
+    }
+
     _player.dispose();
     _focusNode.dispose();
     msgListViewController.dispose();
@@ -178,10 +187,12 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
               return ret;
             },
             onBubbleDoubleTap: (ctx, msg) {
+              _focusNode.unfocus();
               bool ret = widget.onBubbleDoubleTap?.call(ctx, msg) ?? false;
               return ret;
             },
             onBubbleLongPress: (ctx, msg) {
+              _focusNode.unfocus();
               bool ret = widget.onBubbleLongPress?.call(ctx, msg) ?? false;
               if (!ret) {
                 longPressAction(msg);
@@ -192,6 +203,7 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
         ),
         widget.inputBar ??
             AgoraMessageInputWidget(
+              textEditingController: _textController,
               focusNode: _focusNode,
               inputWidgetOnTap: () {
                 if (!_focusNode.hasFocus) {
@@ -483,9 +495,12 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
     setState(() {
       _recordBtnTouchDown = false;
     });
-    final path = await _audioRecorder.stop();
-    if (send) {
-      _sendVoice(path);
+    bool isRecording = await _audioRecorder.isRecording();
+    if (isRecording) {
+      final path = await _audioRecorder.stop();
+      if (send) {
+        _sendVoice(path);
+      }
     }
   }
 

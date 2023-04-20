@@ -72,9 +72,7 @@ class AgoraMessageListController extends AgoraBaseController {
   ) async {
     try {
       await ChatClient.getInstance.chatManager.recallMessage(message.msgId);
-      if (_removeMessageFromList(message)) {
-        refreshUI();
-      }
+      _recallMessagesCallback([message]);
     } on ChatError catch (e) {
       _onError?.call(e);
     }
@@ -194,6 +192,19 @@ class AgoraMessageListController extends AgoraBaseController {
     _playingMessage = null;
   }
 
+  void _replaceMessage(ChatMessage fromMessage, ChatMessage toMessage) {
+    int index = -1;
+    do {
+      index =
+          msgList.indexWhere((element) => fromMessage.msgId == element.msgId);
+      if (index >= 0) {
+        AgoraMessageListItemModel model = msgList[index].copyWithMsg(toMessage);
+        msgList[index] = model;
+        break;
+      }
+    } while (false);
+  }
+
   bool _removeMessageFromList(ChatMessage message) {
     int index = -1;
     do {
@@ -260,19 +271,29 @@ class AgoraMessageListController extends AgoraBaseController {
           refreshUI();
         },
         onMessagesRecalled: (messages) {
-          bool needRefresh = false;
-          for (var msg in messages) {
-            if (msg.conversationId == conversation.id) {
-              bool tmp = _removeMessageFromList(msg);
-              if (tmp && !needRefresh) {
-                needRefresh = true;
-              }
-            }
-          }
-          if (needRefresh) refreshUI();
+          _recallMessagesCallback(messages);
         },
       ),
     );
+  }
+
+  void _recallMessagesCallback(List<ChatMessage> msgs) async {
+    bool needReload = false;
+    for (var msg in msgs) {
+      ChatMessage? needInsertMessage = didRecallMessage?.call(msg);
+      if (needInsertMessage != null) {
+        await conversation.insertMessage(needInsertMessage);
+        _replaceMessage(msg, needInsertMessage);
+        needReload = true;
+      } else {
+        if (_removeMessageFromList(msg)) {
+          needReload = true;
+        }
+      }
+    }
+    if (needReload) {
+      refreshUI();
+    }
   }
 
   void _updateMessageItems(List<ChatMessage> list) {
@@ -485,7 +506,7 @@ class _AgoraMessagesListState extends State<AgoraMessagesList>
 
     ValueKey<String>? valueKey; //ValueKey(message.msgId);
 
-    Widget content = widget.itemBuilder?.call(context, model.message) ??
+    Widget content = widget.itemBuilder?.call(context, model) ??
         () {
           if (message.body.type == MessageType.TXT) {
             return AgoraMessageListTextItem(

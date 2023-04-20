@@ -140,7 +140,7 @@ class _HomePageState extends State<HomePage> {
       if (value == null) return;
       ChatConversation conv = value as ChatConversation;
       Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-        return ChatPage(conv);
+        return MessagesPage(conv);
       }));
     });
   }
@@ -155,7 +155,7 @@ class _HomePageState extends State<HomePage> {
     }).then((value) {
       ChatConversation conv = value as ChatConversation;
       Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-        return ChatPage(conv);
+        return MessagesPage(conv);
       }));
     });
   }

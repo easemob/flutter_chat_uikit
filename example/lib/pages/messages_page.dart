@@ -1,17 +1,19 @@
 import 'package:agora_chat_uikit/agora_chat_uikit.dart';
 import 'package:flutter/material.dart';
 
-class ChatPage extends StatefulWidget {
-  const ChatPage(this.conversation, {super.key});
+class MessagesPage extends StatefulWidget {
+  const MessagesPage(this.conversation, {super.key});
 
   final ChatConversation conversation;
 
   @override
-  State<ChatPage> createState() => _ChatPageState();
+  State<MessagesPage> createState() => _MessagesPageState();
 }
 
-class _ChatPageState extends State<ChatPage> {
+class _MessagesPageState extends State<MessagesPage> {
   late AgoraMessageListController controller;
+
+  final TextEditingController _textEditingController = TextEditingController();
 
   @override
   void initState() {
@@ -42,14 +44,14 @@ class _ChatPageState extends State<ChatPage> {
       ),
       body: SafeArea(
         child: AgoraMessagesView(
+          // inputBarTextEditingController: _textEditingController,
+          // inputBarText: _inputText,
           onError: (error) {
             final snackBar = SnackBar(content: Text(error.description));
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
           },
           conversation: widget.conversation,
           messageListViewController: controller,
-          avatarBuilder: (context, userId) => AgoraImageLoader.defaultAvatar(),
-          nicknameBuilder: (context, userId) => Text(userId),
         ),
       ),
     );
@@ -87,5 +89,11 @@ class _ChatPageState extends State<ChatPage> {
         ),
       ],
     ).show(context);
+  }
+
+  @override
+  void dispose() {
+    _textEditingController.dispose();
+    super.dispose();
   }
 }

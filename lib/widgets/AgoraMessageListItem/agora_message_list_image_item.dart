@@ -104,9 +104,7 @@ class AgoraMessageListImageItem extends AgoraMessageListItem {
       content = Image(
           gaplessPlayback: true,
           image: ResizeImage(
-            FileImage(
-              File(body.localPath),
-            ),
+            FileImage(File(body.localPath)),
             width: width.toInt(),
             height: height.toInt(),
           ),
@@ -116,9 +114,7 @@ class AgoraMessageListImageItem extends AgoraMessageListItem {
       content = Image(
           gaplessPlayback: true,
           image: ResizeImage(
-            FileImage(
-              File(body.thumbnailLocalPath!),
-            ),
+            FileImage(File(body.thumbnailLocalPath!)),
             width: width.toInt(),
             height: height.toInt(),
           ),
@@ -127,9 +123,7 @@ class AgoraMessageListImageItem extends AgoraMessageListItem {
       content = Image(
           gaplessPlayback: true,
           image: ResizeImage(
-            FileImage(
-              File(body.localPath),
-            ),
+            FileImage(File(body.localPath)),
             width: width.toInt(),
             height: height.toInt(),
           ),
