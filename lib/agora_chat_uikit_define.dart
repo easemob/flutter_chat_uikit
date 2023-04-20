@@ -31,3 +31,6 @@ typedef AgoraConversationSortHandle = Future<List<ChatConversation>> Function(
 
 typedef PermissionRequest = Future<bool> Function(
     AgoraChatUIKitPermission permission);
+
+typedef AgoraRecallHandler = ChatMessage? Function(
+    ChatMessage didRecallMessage);

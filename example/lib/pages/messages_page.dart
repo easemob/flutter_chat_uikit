@@ -13,6 +13,7 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   late AgoraMessageListController controller;
 
+  final FocusNode _inputFocusNode = FocusNode();
   @override
   void initState() {
     super.initState();
@@ -42,19 +43,27 @@ class _ChatPageState extends State<ChatPage> {
       ),
       body: SafeArea(
         child: AgoraMessagesView(
+          onError: (error) {
+            final snackBar = SnackBar(content: Text(error.description));
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          },
           conversation: widget.conversation,
           messageListViewController: controller,
           avatarBuilder: (context, userId) => AgoraImageLoader.defaultAvatar(),
           nicknameBuilder: (context, userId) => Text(userId),
-          inputBar: TextField(
-            decoration: const InputDecoration(hintText: "inputText"),
-            onSubmitted: (value) {
-              debugPrint("run! $value");
-              final msg = ChatMessage.createTxtSendMessage(
-                  targetId: widget.conversation.id, content: value);
-              controller.sendMessage(msg);
-            },
-          ),
+          // needDismissInputWidgetAction: () {
+          //   _inputFocusNode.unfocus();
+          // },
+          // inputBar: TextField(
+          //   focusNode: _inputFocusNode,
+          //   decoration: const InputDecoration(hintText: "inputText"),
+          //   onSubmitted: (value) {
+          //     debugPrint("run! $value");
+          //     final msg = ChatMessage.createTxtSendMessage(
+          //         targetId: widget.conversation.id, content: value);
+          //     controller.sendMessage(msg);
+          //   },
+          // ),
         ),
       ),
     );

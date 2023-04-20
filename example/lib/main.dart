@@ -30,14 +30,15 @@ class MyApp extends StatelessWidget {
           );
         },
       ),
-      title: 'Callkit demo',
+      title: 'AgoraChat UIKit Demo',
       localizationsDelegates: const [
         AppLocalizations.delegate,
       ],
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        highlightColor: Colors.transparent,
+        splashFactory: NoSplash.splashFactory,
       ),
-      home: const MyHomePage(title: 'Callkit demo'),
+      home: const MyHomePage(title: 'AgoraChat UIKit Demo'),
       onGenerateRoute: (settings) {
         return MaterialPageRoute(builder: ((context) {
           if (settings.name == 'login') {
