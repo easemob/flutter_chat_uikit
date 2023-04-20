@@ -42,7 +42,67 @@ class AgoraMessageListImageItem extends StatelessWidget {
       height = max;
     }
     Widget content;
+/*
+    do {
+      if (message.direction == MessageDirection.SEND) {
+        if (body.fileStatus == DownloadStatus.SUCCESS) {
+          content = Image(
+              gaplessPlayback: true,
+              image: ResizeImage(
+                FileImage(
+                  File(body.localPath),
+                ),
+                width: width.toInt(),
+                height: height.toInt(),
+              ),
+              fit: BoxFit.fill);
+          break;
+        }
+      }
 
+      if (body.thumbnailStatus == DownloadStatus.SUCCESS &&
+          body.thumbnailLocalPath != null) {
+        content = Image(
+            gaplessPlayback: true,
+            image: ResizeImage(
+              FileImage(
+                File(body.thumbnailLocalPath!),
+              ),
+              width: width.toInt(),
+              height: height.toInt(),
+            ),
+            fit: BoxFit.fill);
+        break;
+      }
+
+      if (body.fileStatus == DownloadStatus.SUCCESS) {
+        content = Image(
+            gaplessPlayback: true,
+            image: ResizeImage(
+              FileImage(
+                File(body.localPath),
+              ),
+              width: width.toInt(),
+              height: height.toInt(),
+            ),
+            fit: BoxFit.fill);
+        break;
+      }
+      ChatClient.getInstance.chatManager.downloadThumbnail(message);
+      content = Container(
+        color: const Color.fromRGBO(242, 242, 242, 1),
+        child: FadeInImage(
+            placeholderFit: BoxFit.contain,
+            placeholder: AgoraImageLoader.assetImage("download_img.png"),
+            image: NetworkImage(body.thumbnailRemotePath!),
+            imageErrorBuilder: (context, error, stackTrace) {
+              return AgoraImageLoader.loadImage("download_img_failed.png",
+                  fit: BoxFit.contain);
+            },
+            fit: BoxFit.fill),
+      );
+    } while (false);
+*/
     if (message.direction == MessageDirection.SEND) {
       content = Image(
           gaplessPlayback: true,
