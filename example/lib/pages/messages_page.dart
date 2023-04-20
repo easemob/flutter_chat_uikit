@@ -1,8 +1,6 @@
 import 'package:agora_chat_uikit/agora_chat_uikit.dart';
 import 'package:flutter/material.dart';
 
-import 'video_widget.dart';
-
 class ChatPage extends StatefulWidget {
   const ChatPage(this.conversation, {super.key});
 
