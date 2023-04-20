@@ -13,9 +13,6 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   late AgoraMessageListController controller;
 
-  final TextEditingController _textEditingController = TextEditingController();
-  final FocusNode _focusNode = FocusNode();
-
   @override
   void initState() {
     super.initState();
@@ -91,7 +88,6 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   void dispose() {
-    _textEditingController.dispose();
     super.dispose();
   }
 }
