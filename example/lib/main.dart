@@ -1,17 +1,21 @@
+import 'package:flutter/material.dart';
 import 'package:agora_chat_uikit/agora_chat_uikit.dart';
 
-import 'package:flutter/material.dart';
+import 'conversations_page.dart';
+import 'messages_page.dart';
 
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-
-import 'config.dart';
-import 'home.dart';
-import 'login.dart';
+class AgoraChatConfig {
+  static const String appKey = "easemob#easeim";
+  static const String userId = "du001";
+  static const String agoraToken = "1";
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  var options =
-      ChatOptions(appKey: Config.appkey, debugModel: true, autoLogin: true);
+  final options = ChatOptions(
+    appKey: AgoraChatConfig.appKey,
+    autoLogin: false,
+  );
   await ChatClient.getInstance.init(options);
   runApp(const MyApp());
 }
@@ -19,37 +23,15 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      builder: EasyLoading.init(
-        builder: (context, child) {
-          return AgoraChatUIKit(
-            child: child!,
-          );
-        },
-      ),
-      title: 'AgoraChat UIKit Demo',
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-      ],
+      title: 'Flutter Demo',
       theme: ThemeData(
-        highlightColor: Colors.transparent,
-        splashFactory: NoSplash.splashFactory,
+        primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'AgoraChat UIKit Demo'),
-      onGenerateRoute: (settings) {
-        return MaterialPageRoute(builder: ((context) {
-          if (settings.name == 'login') {
-            return const LoginPage();
-          } else if (settings.name == 'home') {
-            return const HomePage();
-          } else {
-            return Container();
-          }
-        }));
-      },
+      builder: (context, child) => AgoraChatUIKit(child: child!),
+      home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
@@ -64,26 +46,169 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  ScrollController scrollController = ScrollController();
+  ChatConversation? conversation;
+  String _chatId = "";
+  final List<String> _logText = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder(
-        future: ChatClient.getInstance.isLoginBefore(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Container(color: Colors.red);
-          }
-          return getWidget(snapshot.data!);
-        },
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: Container(
+        padding: const EdgeInsets.only(left: 10, right: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            const SizedBox(height: 10),
+            const Text("login userId: ${AgoraChatConfig.userId}"),
+            const Text("agoraToken: ${AgoraChatConfig.agoraToken}"),
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: TextButton(
+                    onPressed: () {
+                      _signIn();
+                    },
+                    style: ButtonStyle(
+                      foregroundColor: MaterialStateProperty.all(Colors.white),
+                      backgroundColor:
+                          MaterialStateProperty.all(Colors.lightBlue),
+                    ),
+                    child: const Text("SIGN IN"),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: TextButton(
+                    onPressed: () {
+                      _signOut();
+                    },
+                    style: ButtonStyle(
+                      foregroundColor: MaterialStateProperty.all(Colors.white),
+                      backgroundColor:
+                          MaterialStateProperty.all(Colors.lightBlue),
+                    ),
+                    child: const Text("SIGN OUT"),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    decoration: const InputDecoration(
+                      hintText: "Enter recipient's userId",
+                    ),
+                    onChanged: (chatId) => _chatId = chatId,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                TextButton(
+                  onPressed: () {
+                    pushToChatPage(_chatId);
+                  },
+                  style: ButtonStyle(
+                    foregroundColor: MaterialStateProperty.all(Colors.white),
+                    backgroundColor:
+                        MaterialStateProperty.all(Colors.lightBlue),
+                  ),
+                  child: const Text("START CHAT"),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            TextButton(
+              onPressed: () {
+                pushToConversationPage();
+              },
+              style: ButtonStyle(
+                foregroundColor: MaterialStateProperty.all(Colors.white),
+                backgroundColor: MaterialStateProperty.all(Colors.lightBlue),
+              ),
+              child: const Text("CONVERSATION"),
+            ),
+            Flexible(
+              child: ListView.builder(
+                controller: scrollController,
+                itemBuilder: (_, index) {
+                  return Text(_logText[index]);
+                },
+                itemCount: _logText.length,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget getWidget(bool hasSignIn) {
-    if (hasSignIn) {
-      return const HomePage();
-    } else {
-      return const LoginPage();
+  void pushToConversationPage() async {
+    if (ChatClient.getInstance.currentUserId == null) {
+      _addLogToConsole('user not login');
+      return;
     }
+    Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+      return const ConversationsPage();
+    }));
+  }
+
+  void pushToChatPage(String userId) async {
+    if (userId.isEmpty) {
+      _addLogToConsole('UserId is null');
+      return;
+    }
+    if (ChatClient.getInstance.currentUserId == null) {
+      _addLogToConsole('user not login');
+      return;
+    }
+    ChatConversation? conv =
+        await ChatClient.getInstance.chatManager.getConversation(userId);
+    Future(() {
+      Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+        return MessagesPage(conv!);
+      }));
+    });
+  }
+
+  void _signIn() async {
+    _addLogToConsole('begin sign in...');
+    try {
+      await ChatClient.getInstance.login(
+        AgoraChatConfig.userId,
+        AgoraChatConfig.agoraToken,
+      );
+      _addLogToConsole('sign in success');
+    } on ChatError catch (e) {
+      _addLogToConsole('sign in fail: ${e.description}');
+    }
+  }
+
+  void _signOut() async {
+    _addLogToConsole('begin sign out...');
+    try {
+      await ChatClient.getInstance.logout();
+      _addLogToConsole('sign out success');
+    } on ChatError catch (e) {
+      _addLogToConsole('sign out fail: ${e.description}');
+    }
+  }
+
+  void _addLogToConsole(String log) {
+    _logText.add("$_timeString: $log");
+    setState(() {
+      scrollController.jumpTo(scrollController.position.maxScrollExtent);
+    });
+  }
+
+  String get _timeString {
+    return DateTime.now().toString().split(".").first;
   }
 }

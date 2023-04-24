@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../agora_chat_uikit_error.dart';
-import '../../agora_chat_uikit_type.dart';
 
 /// Message details page
 class AgoraMessagesView extends StatefulWidget {
