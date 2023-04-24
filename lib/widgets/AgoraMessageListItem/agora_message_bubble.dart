@@ -32,6 +32,8 @@ class AgoraMessageBubble extends StatelessWidget {
   final Color? bubbleColor;
   final EdgeInsets? padding;
 
+  final boxConstraints = const BoxConstraints(maxWidth: 260);
+
   @override
   Widget build(BuildContext context) {
     ChatMessage message = model.message;
@@ -51,7 +53,7 @@ class AgoraMessageBubble extends StatelessWidget {
               isLeft ? const Radius.circular(10) : const Radius.circular(3),
         ),
       ),
-      constraints: const BoxConstraints(maxWidth: 260),
+      constraints: boxConstraints,
       child: Padding(
         padding: padding ?? const EdgeInsets.fromLTRB(12, 8, 12, 8),
         child: childBuilder(context),
@@ -63,7 +65,7 @@ class AgoraMessageBubble extends StatelessWidget {
     if (nicknameBuilder != null) {
       insideBubbleWidgets.add(
         Container(
-          constraints: const BoxConstraints(maxWidth: 260),
+          constraints: boxConstraints,
           child: nicknameBuilder!.call(context, message.from!),
         ),
       );
@@ -97,6 +99,7 @@ class AgoraMessageBubble extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: insideBubbleWidgets.toList(),
     );
+
     insideBubbleWidgets.clear();
 
     if (unreadFlagBuilder != null && isLeft) {
