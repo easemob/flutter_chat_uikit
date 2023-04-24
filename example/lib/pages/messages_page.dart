@@ -1,16 +1,16 @@
 import 'package:agora_chat_uikit/agora_chat_uikit.dart';
 import 'package:flutter/material.dart';
 
-class ChatPage extends StatefulWidget {
-  const ChatPage(this.conversation, {super.key});
+class MessagesPage extends StatefulWidget {
+  const MessagesPage(this.conversation, {super.key});
 
   final ChatConversation conversation;
 
   @override
-  State<ChatPage> createState() => _ChatPageState();
+  State<MessagesPage> createState() => _MessagesPageState();
 }
 
-class _ChatPageState extends State<ChatPage> {
+class _MessagesPageState extends State<MessagesPage> {
   late AgoraMessageListController controller;
 
   @override

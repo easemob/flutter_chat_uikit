@@ -417,11 +417,6 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
   }
 
   void _sendVoice(String path) async {
-    if (Platform.isIOS) {
-      if (path.startsWith("file:///")) {
-        path = path.substring(8);
-      }
-    }
     String displayName = path.split("/").last;
 
     ChatMessage msg = ChatMessage.createVoiceSendMessage(
@@ -463,9 +458,6 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
   }
 
   void _startRecord() async {
-    final isSupported = await _audioRecorder.isEncoderSupported(
-      AudioEncoder.aacLc,
-    );
     _recordDuration = 0;
     _startTimer();
     await _audioRecorder.start();
@@ -482,11 +474,16 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
     });
     bool isRecording = await _audioRecorder.isRecording();
     if (isRecording) {
-      final path = await _audioRecorder.stop();
+      String? path = await _audioRecorder.stop();
 
       if (path != null) {
+        if (Platform.isIOS) {
+          if (path.startsWith("file:///")) {
+            path = path.substring(8);
+          }
+        }
         final file = File(path);
-        bool isExists = await file.exists();
+        bool isExists = file.existsSync();
 
         if (isExists) {
           if (_recordDuration <= 1) {
