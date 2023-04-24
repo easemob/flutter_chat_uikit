@@ -32,7 +32,7 @@ class AgoraMessageBubble extends StatelessWidget {
   final Color? bubbleColor;
   final EdgeInsets? padding;
 
-  final boxConstraints = const BoxConstraints(maxWidth: 260);
+  final boxConstraints = const BoxConstraints(minWidth: 3);
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +70,8 @@ class AgoraMessageBubble extends StatelessWidget {
         ),
       );
 
-      insideBubbleWidgets.add(Flexible(child: content));
+      insideBubbleWidgets.add(Flexible(flex: 5, child: content));
+      insideBubbleWidgets.add(Flexible(flex: 2, child: Container()));
 
       content = Column(
         mainAxisSize: MainAxisSize.min,
@@ -86,7 +87,8 @@ class AgoraMessageBubble extends StatelessWidget {
       insideBubbleWidgets.add(const SizedBox(width: 10));
     }
 
-    insideBubbleWidgets.add(content);
+    insideBubbleWidgets.add(Flexible(flex: 5, child: content));
+    insideBubbleWidgets.add(Flexible(flex: 2, child: Container()));
     insideBubbleWidgets.add(SizedBox(width: isLeft ? 0 : 10.4));
 
     if (!isLeft) {
