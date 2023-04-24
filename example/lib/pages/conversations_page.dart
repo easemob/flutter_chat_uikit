@@ -1,7 +1,7 @@
-import 'package:agora_chat_uikit/agora_chat_uikit.dart';
 import 'package:flutter/material.dart';
+import 'package:ui_kit_demo/conversation/conversation_page2.dart';
 
-import 'messages_page.dart';
+import '../conversation/conversation_page1.dart';
 
 class ConversationsPage extends StatefulWidget {
   const ConversationsPage({super.key});
@@ -19,73 +19,31 @@ class _ConversationsPageState extends State<ConversationsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Conversations"),
-        actions: [
-          InkWell(
-            onTap: deleteAllConversations,
-            child: UnconstrainedBox(
-              child: Padding(
-                padding: const EdgeInsets.only(right: 20),
-                child: Builder(builder: (ctx) {
-                  return const Text('Clear All',
-                      style:
-                          TextStyle(fontWeight: FontWeight.w600, fontSize: 14));
-                }),
-              ),
-            ),
-          )
+      appBar: AppBar(title: const Text("Conversation Custom")),
+      body: ListView(
+        children: [
+          getItem("ConversationPage1", const ConversationPage1()),
+          getItem("ConversationPage2", const ConversationPage2()),
         ],
-      ),
-      body: AgoraConversationsView(
-        onItemTap: (conversation) {
-          Navigator.of(context)
-              .push(
-                MaterialPageRoute(
-                  builder: (ctx) => ChatPage(conversation),
-                ),
-              )
-              .then((value) => AgoraChatUIKit.of(context)
-                  .conversationsController
-                  .loadAllConversations());
-        },
       ),
     );
   }
 
-  void deleteAllConversations() {
-    AgoraDialog(
-      titleLabel: "Clear All Conversations",
-      titleStyle: const TextStyle(
-        fontWeight: FontWeight.w600,
-        fontSize: 16,
+  Widget getItem(String name, Widget widget) {
+    return InkWell(
+      child: ListTile(
+        title: Text(name),
+        onTap: () => pushRoute(name, widget),
       ),
-      items: [
-        AgoraDialogItem(
-          label: "Cancel",
-          onTap: () => Navigator.of(context).pop(),
-          labelStyle: const TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.w600,
-            fontSize: 14,
-          ),
-        ),
-        AgoraDialogItem(
-          label: "Confirm",
-          onTap: () {
-            AgoraChatUIKit.of(context)
-                .conversationsController
-                .deleteAllConversations();
-            Navigator.of(context).pop();
-          },
-          backgroundColor: const Color.fromRGBO(17, 78, 255, 1),
-          labelStyle: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w600,
-            fontSize: 14,
-          ),
-        ),
-      ],
-    ).show(context);
+    );
+  }
+
+  void pushRoute(String name, Widget widget) {
+    Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+      return Scaffold(
+        appBar: AppBar(title: Text(name)),
+        body: widget,
+      );
+    }));
   }
 }

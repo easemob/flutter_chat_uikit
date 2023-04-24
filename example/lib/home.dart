@@ -153,6 +153,7 @@ class _HomePageState extends State<HomePage> {
         return ChatClient.getInstance.chatManager.getConversation(value.first);
       }
     }).then((value) {
+      if (value == null) return;
       ChatConversation conv = value as ChatConversation;
       Navigator.of(context).push(MaterialPageRoute(builder: (context) {
         return ChatPage(conv);
