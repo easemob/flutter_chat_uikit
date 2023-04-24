@@ -146,9 +146,6 @@ class AgoraConversationsView extends StatefulWidget {
   /// [shrinkWrap] Creates a scrollable, linear array of widgets with a custom child model. For example, a custom child model
   /// can control the algorithm used to estimate the size of children that are not actually visible.
   ///
-  /// [padding] Creates a scrollable, linear array of widgets with a custom child model. For example, a custom child model
-  /// can control the algorithm used to estimate the size of children that are not actually visible.
-  ///
   /// [cacheExtent] Creates a scrollable, linear array of widgets with a custom child model. For example, a custom child model
   /// can control the algorithm used to estimate the size of children that are not actually visible.
   ///
@@ -166,9 +163,9 @@ class AgoraConversationsView extends StatefulWidget {
   ///
   /// [itemBuilder] Conversation list item builder, return a widget if you need to customize it.
   ///
-  /// [avatarBuilder] Avatar widget builder.
+  /// [avatarBuilder] Avatar builder, if not implemented or returns null will use the default avatar.
   ///
-  /// [nicknameBuilder] Nickname widget builder.
+  /// [nicknameBuilder] Nickname builder, which displays the userId if not set or null is returned.
   ///
   const AgoraConversationsView({
     super.key,
@@ -178,7 +175,6 @@ class AgoraConversationsView extends StatefulWidget {
     this.primary,
     this.physics,
     this.shrinkWrap = false,
-    this.padding,
     this.cacheExtent,
     this.dragStartBehavior = DragStartBehavior.down,
     this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
@@ -195,11 +191,14 @@ class AgoraConversationsView extends StatefulWidget {
   /// Conversation list item builder, return a widget if you need to customize it.
   final AgoraConversationItemWidgetBuilder? itemBuilder;
 
-  /// Avatar widget builder.
+  /// Avatar builder, if not implemented or returns null will use the default avatar.
   final AgoraConversationWidgetBuilder? avatarBuilder;
 
-  /// Nickname widget builder.
+  /// Nickname builder, which displays the userId if not set or null is returned.
   final AgoraConversationWidgetBuilder? nicknameBuilder;
+
+  /// Conversation list item Click event callback.
+  final void Function(ChatConversation conversation)? onItemTap;
 
   /// Creates a scrollable, linear array of widgets with a custom child model. For example, a custom child model
   /// can control the algorithm used to estimate the size of children that are not actually visible.
@@ -219,13 +218,9 @@ class AgoraConversationsView extends StatefulWidget {
 
   /// Creates a scrollable, linear array of widgets with a custom child model. For example, a custom child model
   /// can control the algorithm used to estimate the size of children that are not actually visible.
-  final EdgeInsetsGeometry? padding;
-
-  /// Creates a scrollable, linear array of widgets with a custom child model. For example, a custom child model
-  /// can control the algorithm used to estimate the size of children that are not actually visible.
   final double? cacheExtent;
 
-  /// Creates a scrollable, linear array of widgets with a custom child model.For example, a custom child model can
+  /// Creates a scrollable, linear array                                                                                                                                                                                                                                                                                                         of widgets with a custom child model.For example, a custom child model can
   /// control the algorithm used to estimate the size of children that are not actually visible.
   final DragStartBehavior dragStartBehavior;
 
@@ -240,9 +235,6 @@ class AgoraConversationsView extends StatefulWidget {
   /// Creates a scrollable, linear array of widgets with a custom child model. For example, a custom child model can
   /// control the algorithm used to estimate the size of children that are not actually visible.
   final Clip clipBehavior;
-
-  /// Conversation list item Click event callback.
-  final void Function(ChatConversation conversation)? onItemTap;
 
   @override
   State<AgoraConversationsView> createState() => AgoraConversationsViewState();
@@ -287,95 +279,97 @@ class AgoraConversationsViewState extends State<AgoraConversationsView> {
     _tmpList.clear();
     _tmpList.addAll(controller.conversationList);
 
-    return AgoraSwipeAutoCloseBehavior(
-      child: _tmpList.isEmpty
-          ? Center(
-              child: AgoraImageLoader.loadImage("conversation_empty.png"),
-            )
-          : ListView.custom(
-              scrollDirection: Axis.vertical,
-              reverse: widget.reverse,
-              controller: widget.controller,
-              primary: widget.primary,
-              physics: widget.physics,
-              shrinkWrap: widget.shrinkWrap,
-              padding: widget.padding,
-              childrenDelegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  ChatConversation conversation = _tmpList[index];
-                  return widget.itemBuilder
-                          ?.call(context, index, conversation) ??
-                      AgoraSwipeWidget(
-                        key: ValueKey(conversation.id),
-                        rightSwipeItems: [
-                          AgoraSwipeItem(
-                            dismissed: (bool dismissed) async {
-                              if (dismissed) {
-                                {
-                                  await controller.deleteConversationWithId(
-                                      conversation.id);
-                                }
-                              }
-                            },
-                            backgroundColor: Colors.red,
-                            text: AppLocalizations.of(context)?.delete ??
-                                "Delete",
-                            confirmAction: (_) async {
-                              return await AgoraBottomSheet(
-                                    titleLabel: AppLocalizations.of(context)
-                                            ?.deleteConversation ??
-                                        'Delete conversation',
-                                    items: [
-                                      AgoraBottomSheetItem(
-                                          AppLocalizations.of(context)
-                                                  ?.confirm ??
-                                              'Confirm',
-                                          onTap: () =>
-                                              Navigator.of(context).pop(true)),
-                                      AgoraBottomSheetItem(
-                                          AppLocalizations.of(context)
-                                                  ?.cancel ??
-                                              'Cancel',
-                                          onTap: () =>
-                                              Navigator.of(context).pop(false)),
-                                    ],
-                                  ).show(context) ??
-                                  false;
-                            },
-                          ),
-                        ],
-                        child: Container(
-                          color: Colors.white,
-                          child: AgoraConversationListTile(
-                            avatar: widget.avatarBuilder
-                                    ?.call(context, conversation) ??
-                                AgoraImageLoader.defaultAvatar(size: 40),
-                            title: widget.nicknameBuilder
-                                ?.call(context, conversation),
-                            conversation: conversation,
-                            onTap: (conversation) {
-                              widget.onItemTap?.call(conversation);
-                            },
-                          ),
-                        ),
-                      );
-                },
-                semanticIndexCallback: (Widget _, int index) => index,
-                findChildIndexCallback: (key) {
-                  final ValueKey<String> valueKey = key as ValueKey<String>;
-                  int index = _tmpList.indexWhere(
-                      (conversation) => conversation.id == valueKey.value);
+    if (_tmpList.isEmpty) {
+      return Center(
+        child: AgoraImageLoader.loadImage("conversation_empty.png"),
+      );
+    }
 
-                  return index > -1 ? index : null;
-                },
-                childCount: _tmpList.length,
-              ),
-              cacheExtent: widget.cacheExtent ?? 2000,
-              dragStartBehavior: widget.dragStartBehavior,
-              keyboardDismissBehavior: widget.keyboardDismissBehavior,
-              restorationId: widget.restorationId,
-              clipBehavior: widget.clipBehavior,
+    return AgoraSwipeAutoCloseBehavior(
+      child: CustomScrollView(
+        clipBehavior: widget.clipBehavior,
+        restorationId: widget.restorationId,
+        keyboardDismissBehavior: widget.keyboardDismissBehavior,
+        dragStartBehavior: widget.dragStartBehavior,
+        cacheExtent: widget.cacheExtent,
+        shrinkWrap: widget.shrinkWrap,
+        controller: widget.controller,
+        primary: widget.primary,
+        reverse: widget.reverse,
+        slivers: [
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                ChatConversation conversation = _tmpList[index];
+                return widget.itemBuilder?.call(context, index, conversation) ??
+                    AgoraSwipeWidget(
+                      key: ValueKey(conversation.id),
+                      rightSwipeItems: [
+                        AgoraSwipeItem(
+                          dismissed: (bool dismissed) async {
+                            if (dismissed) {
+                              {
+                                await controller
+                                    .deleteConversationWithId(conversation.id);
+                              }
+                            }
+                          },
+                          backgroundColor: Colors.red,
+                          text: AppLocalizations.of(context)?.agoraDelete ??
+                              "Delete",
+                          confirmAction: (_) async {
+                            return await AgoraBottomSheet(
+                                  titleLabel: AppLocalizations.of(context)
+                                          ?.agoraDeleteConversation ??
+                                      'Delete conversation',
+                                  items: [
+                                    AgoraBottomSheetItem(
+                                        AppLocalizations.of(context)
+                                                ?.agoraConfirm ??
+                                            'Confirm',
+                                        onTap: () =>
+                                            Navigator.of(context).pop(true)),
+                                    AgoraBottomSheetItem(
+                                        AppLocalizations.of(context)
+                                                ?.agoraCancel ??
+                                            'Cancel',
+                                        onTap: () =>
+                                            Navigator.of(context).pop(false)),
+                                  ],
+                                ).show(context) ??
+                                false;
+                          },
+                        ),
+                      ],
+                      child: Container(
+                        color: Colors.white,
+                        child: AgoraConversationListTile(
+                          avatar: widget.avatarBuilder
+                                  ?.call(context, conversation) ??
+                              AgoraImageLoader.defaultAvatar(size: 40),
+                          title: widget.nicknameBuilder
+                              ?.call(context, conversation),
+                          conversation: conversation,
+                          onTap: (conversation) {
+                            widget.onItemTap?.call(conversation);
+                          },
+                        ),
+                      ),
+                    );
+              },
+              semanticIndexCallback: (Widget _, int index) => index,
+              findChildIndexCallback: (key) {
+                final ValueKey<String> valueKey = key as ValueKey<String>;
+                int index = _tmpList.indexWhere(
+                    (conversation) => conversation.id == valueKey.value);
+
+                return index > -1 ? index : null;
+              },
+              childCount: _tmpList.length,
             ),
+          )
+        ],
+      ),
     );
   }
 }

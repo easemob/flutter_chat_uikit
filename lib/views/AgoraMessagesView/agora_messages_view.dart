@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:agora_chat_uikit/agora_chat_uikit_type.dart';
 import 'package:agora_chat_uikit/agora_chat_uikit.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
@@ -40,9 +39,9 @@ class AgoraMessagesView extends StatefulWidget {
   /// [onError] Error callbacks, such as no current permissions, etc.
   ///
   const AgoraMessagesView({
-    super.key,
-    this.inputBar,
     required this.conversation,
+    this.inputBarTextEditingController,
+    this.inputBar,
     this.onTap,
     this.onBubbleLongPress,
     this.onBubbleDoubleTap,
@@ -54,9 +53,16 @@ class AgoraMessagesView extends StatefulWidget {
     this.willSendMessage,
     this.permissionRequest,
     this.onError,
+    this.enableScrollBar = true,
+    this.needDismissInputWidgetAction,
+    this.inputBarMoreActionsOnTap,
+    super.key,
   });
 
-  /// Text input component, if not passed by default will use [AgoraMessageInputWidget]
+  /// Text input widget text editing controller.
+  final TextEditingController? inputBarTextEditingController;
+
+  /// Text input widget, if not passed by default will use [AgoraMessageInputWidget].
   final Widget? inputBar;
 
   /// The session corresponding to the message details.
@@ -90,14 +96,25 @@ class AgoraMessagesView extends StatefulWidget {
 
   /// A pre-text message event that needs to return a ChatMessage object.
   /// that can be used for pre-text message processing.
-  final ChatMessage Function(ChatMessage message)? willSendMessage;
+  final AgoraReplaceMessage? willSendMessage;
 
   /// Callback for permission application. Callback for obtaining permission,
   /// such as recording permission, album permission, photo permission, etc.
-  final PermissionRequest? permissionRequest;
+  final AgoraPermissionRequest? permissionRequest;
 
   /// Error callbacks, such as no current permissions, etc.
-  final void Function(AgoraChatUIKitError)? onError;
+  final void Function(ChatError error)? onError;
+
+  /// Enable scroll bar.
+  final bool enableScrollBar;
+
+  /// Dismiss the input widget callback. If you use a customized inputBar,
+  /// dismiss the inputBar when you receive the callback,
+  /// for example, by calling [FocusNode.unfocus], see [AgoraMessageInputWidget].
+  final VoidCallback? needDismissInputWidgetAction;
+
+  /// More button click after callback, need to return to the AgoraBottomSheetItems list.
+  final AgoraReplaceMoreActions? inputBarMoreActionsOnTap;
 
   @override
   State<AgoraMessagesView> createState() => _AgoraMessagesViewState();
@@ -108,14 +125,18 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
   final ImagePicker _picker = ImagePicker();
   final Record _audioRecorder = Record();
   final AudioPlayer _player = AudioPlayer();
+  final FocusNode _focusNode = FocusNode();
   int _recordDuration = 0;
   bool _recordBtnTouchDown = false;
   bool _dragOutside = false;
   Timer? _timer;
+  late TextEditingController _textController;
+  ChatMessage? _playingMessage;
   @override
   void initState() {
     super.initState();
-
+    _textController =
+        widget.inputBarTextEditingController ?? TextEditingController();
     msgListViewController = widget.messageListViewController ??
         AgoraMessageListController(widget.conversation);
     msgListViewController.markAllMessagesAsRead();
@@ -124,9 +145,21 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
   @override
   void dispose() {
     _audioRecorder.dispose();
+    if (widget.inputBarTextEditingController == null) {
+      _textController.dispose();
+    }
+
     _player.dispose();
+    _focusNode.dispose();
     msgListViewController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant AgoraMessagesView oldWidget) {
+    _stopRecord(false);
+    _stopVoice();
+    super.didUpdateWidget(oldWidget);
   }
 
   @override
@@ -136,6 +169,12 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
       children: [
         Expanded(
           child: AgoraMessagesList(
+            needDismissInputWidgetAction: widget.needDismissInputWidgetAction ??
+                () {
+                  _focusNode.unfocus();
+                },
+            enableScrollBar: widget.enableScrollBar,
+            onError: widget.onError,
             conversation: widget.conversation,
             messageListViewController: msgListViewController,
             avatarBuilder: widget.avatarBuilder,
@@ -151,10 +190,12 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
               return ret;
             },
             onBubbleDoubleTap: (ctx, msg) {
+              _focusNode.unfocus();
               bool ret = widget.onBubbleDoubleTap?.call(ctx, msg) ?? false;
               return ret;
             },
             onBubbleLongPress: (ctx, msg) {
+              _focusNode.unfocus();
               bool ret = widget.onBubbleLongPress?.call(ctx, msg) ?? false;
               if (!ret) {
                 longPressAction(msg);
@@ -165,7 +206,20 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
         ),
         widget.inputBar ??
             AgoraMessageInputWidget(
-              msgListViewController: msgListViewController,
+              textEditingController: _textController,
+              focusNode: _focusNode,
+              inputWidgetOnTap: () {
+                if (!_focusNode.hasFocus) {
+                  _focusNode.requestFocus();
+                }
+                msgListViewController.refreshUI(moveToEnd: true);
+              },
+              emojiWidgetOnTap: () {
+                if (_focusNode.hasFocus) {
+                  _focusNode.unfocus();
+                }
+                msgListViewController.refreshUI(moveToEnd: true);
+              },
               recordTouchDown: _startRecord,
               recordTouchUpInside: _stopRecord,
               recordTouchUpOutside: _cancelRecord,
@@ -177,8 +231,17 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
                 var msg = ChatMessage.createTxtSendMessage(
                     targetId: widget.conversation.id, content: text);
                 msg.chatType = ChatType.values[widget.conversation.type.index];
-                msgListViewController
-                    .sendMessage(widget.willSendMessage?.call(msg) ?? msg);
+                ChatMessage? willSend;
+                if (widget.willSendMessage != null) {
+                  willSend = widget.willSendMessage!.call(msg);
+                  if (willSend == null) {
+                    return;
+                  }
+                } else {
+                  willSend = msg;
+                }
+
+                msgListViewController.sendMessage(willSend);
               },
             )
       ],
@@ -219,15 +282,16 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
         },
       ),
     );
-    if (DateTime.now().millisecondsSinceEpoch - message.serverTime <
-            180 * 1000 &&
-        message.direction != MessageDirection.RECEIVE) {
+
+    var time = DateTime.now().millisecondsSinceEpoch - message.serverTime;
+
+    if (time < 180 * 1000 && message.direction != MessageDirection.RECEIVE) {
       list.add(
         AgoraBottomSheetItem(
           "Recall",
           labelStyle: Theme.of(context).bottomSheetItemLabelRecallStyle,
           onTap: () {
-            msgListViewController.recallMessage(context, message);
+            msgListViewController.recallMessage(message);
             return Navigator.of(context).pop();
           },
         ),
@@ -237,47 +301,49 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
   }
 
   void showMoreItems() {
-    AgoraBottomSheet(
-      items: widget.moreItems ??
-          [
-            AgoraBottomSheetItem(
-                AppLocalizations.of(context)?.camera ?? 'Camera', onTap: () {
-              Navigator.of(context).pop();
-              _takePhoto();
-            }),
-            AgoraBottomSheetItem(AppLocalizations.of(context)?.album ?? 'Album',
-                onTap: () {
-              Navigator.of(context).pop();
-              _openImagePicker();
-            }),
-            AgoraBottomSheetItem(AppLocalizations.of(context)?.files ?? 'Files',
-                onTap: () {
-              Navigator.of(context).pop();
-              _openFilePicker();
-            }),
-          ],
-    ).show(context);
+    List<AgoraBottomSheetItem> currentList = widget.moreItems ?? _moreItems();
+    if (widget.inputBarMoreActionsOnTap != null) {
+      final list = widget.inputBarMoreActionsOnTap!.call(currentList);
+      if (list.isNotEmpty) {
+        AgoraBottomSheet(items: list).show(context);
+      }
+    } else {
+      AgoraBottomSheet(items: widget.moreItems ?? _moreItems()).show(context);
+    }
+  }
+
+  List<AgoraBottomSheetItem> _moreItems() {
+    return [
+      AgoraBottomSheetItem(
+          AppLocalizations.of(context)?.agoraCamera ?? 'Camera', onTap: () {
+        Navigator.of(context).pop();
+        _takePhoto();
+      }),
+      AgoraBottomSheetItem(AppLocalizations.of(context)?.agoraAlbum ?? 'Album',
+          onTap: () {
+        Navigator.of(context).pop();
+        _openImagePicker();
+      }),
+      AgoraBottomSheetItem(AppLocalizations.of(context)?.agoraFiles ?? 'Files',
+          onTap: () {
+        Navigator.of(context).pop();
+        _openFilePicker();
+      }),
+    ];
   }
 
   void _openFilePicker() async {
-    PermissionStatus permission = await Permission.storage.request();
-    if (permission != PermissionStatus.granted) {
-      widget.onError?.call(AgoraChatUIKitError.noPermission);
-      return;
-    }
+    // PermissionStatus permission = await Permission.storage.request();
+    // if (permission != PermissionStatus.granted) {
+    //   widget.onError?.call(AgoraChatUIKitError.toChatError(
+    //       AgoraChatUIKitError.noPermission, "no permission"));
+    //   return;
+    // }
 
     FilePickerResult? result = await FilePicker.platform.pickFiles();
     if (result != null) {
       PlatformFile? file = result.files.first;
-      ChatMessage fileMsg = ChatMessage.createFileSendMessage(
-        targetId: widget.conversation.id,
-        filePath: file.path!,
-        fileSize: file.size,
-        displayName: file.name,
-      );
-      fileMsg.chatType = ChatType.values[widget.conversation.type.index];
-      msgListViewController
-          .sendMessage(widget.willSendMessage?.call(fileMsg) ?? fileMsg);
+      _sendFile(file);
     }
   }
 
@@ -288,8 +354,10 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
         _sendImage(photo.path);
       }
     } catch (e) {
-      widget.onError?.call(AgoraChatUIKitError.noPermission);
-      debugPrint(e.toString());
+      widget.onError?.call(
+        AgoraChatUIKitError.toChatError(
+            AgoraChatUIKitError.noPermission, "no take photo permission"),
+      );
     }
   }
 
@@ -300,8 +368,24 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
         _sendImage(image.path);
       }
     } catch (e) {
-      widget.onError?.call(AgoraChatUIKitError.noPermission);
-      debugPrint(e.toString());
+      widget.onError?.call(
+        AgoraChatUIKitError.toChatError(
+            AgoraChatUIKitError.noPermission, "no image library permission"),
+      );
+    }
+  }
+
+  void _sendFile(PlatformFile? file) async {
+    if (file != null) {
+      ChatMessage fileMsg = ChatMessage.createFileSendMessage(
+        targetId: widget.conversation.id,
+        filePath: file.path!,
+        fileSize: file.size,
+        displayName: file.name,
+      );
+      fileMsg.chatType = ChatType.values[widget.conversation.type.index];
+      msgListViewController
+          .sendMessage(widget.willSendMessage?.call(fileMsg) ?? fileMsg);
     }
   }
 
@@ -331,20 +415,7 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
     }));
   }
 
-  void _sendVoice(String? path) {
-    if (path == null) {
-      return;
-    }
-    if (_recordDuration <= 1) {
-      widget.onError?.call(AgoraChatUIKitError.recordTimeTooShort);
-      return;
-    }
-
-    if (Platform.isIOS) {
-      if (path.startsWith("file:///")) {
-        path = path.substring(8);
-      }
-    }
+  void _sendVoice(String path) async {
     String displayName = path.split("/").last;
 
     ChatMessage msg = ChatMessage.createVoiceSendMessage(
@@ -359,77 +430,100 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
   Future<void> _voiceBubblePressed(ChatMessage message) async {
     await widget.conversation.markMessageAsRead(message.msgId);
     message.hasRead = true;
-    if (msgListViewController.playingMessage?.msgId == message.msgId) {
-      _stopVoice(message);
+    if (_playingMessage?.msgId == message.msgId) {
+      _stopVoice();
     } else {
       _playVoice(message);
     }
   }
 
   void _playVoice(ChatMessage message) async {
+    _playingMessage = message;
     msgListViewController.play(message);
     msgListViewController.refreshUI();
     ChatVoiceMessageBody body = message.body as ChatVoiceMessageBody;
     await _player.stop();
     _player.play(DeviceFileSource(body.localPath));
     _player.onPlayerComplete.first.whenComplete(() {
-      _stopVoice(message);
+      _stopVoice();
     });
   }
 
-  void _stopVoice(ChatMessage message) async {
+  void _stopVoice() async {
+    _playingMessage = null;
     await _player.stop();
-    msgListViewController.stopPlay(message);
+    msgListViewController.stopPlay();
     msgListViewController.refreshUI();
   }
 
   void _startRecord() async {
-    try {
-      do {
-        if (await Permission.microphone.isGranted) {
-          final isSupported = await _audioRecorder.isEncoderSupported(
-            AudioEncoder.aacLc,
-          );
-          debugPrint('${AudioEncoder.aacLc.name} supported: $isSupported');
-          _recordDuration = 0;
-          _startTimer();
-          await _audioRecorder.start();
-          setState(() {
-            _dragOutside = false;
-            _recordBtnTouchDown = true;
-          });
-        } else {
-          bool permission = false;
-          if (widget.permissionRequest != null) {
-            permission = await widget.permissionRequest!
-                .call(AgoraChatUIKitPermission.record);
-          } else {
-            permission = await _audioRecorder.hasPermission();
-          }
-          if (permission == false) {
-            widget.onError?.call(AgoraChatUIKitError.noPermission);
+    _recordDuration = 0;
+    _startTimer();
+    await _audioRecorder.start();
+    setState(() {
+      _dragOutside = false;
+      _recordBtnTouchDown = true;
+    });
+  }
+
+  void _stopRecord([bool send = true]) async {
+    _endTimer();
+    setState(() {
+      _recordBtnTouchDown = false;
+    });
+    bool isRecording = await _audioRecorder.isRecording();
+    if (isRecording) {
+      String? path = await _audioRecorder.stop();
+
+      if (path != null) {
+        if (Platform.isIOS) {
+          if (path.startsWith("file:///")) {
+            path = path.substring(8);
           }
         }
-      } while (false);
-    } catch (e) {
-      debugPrint(e.toString());
+        final file = File(path);
+        bool isExists = file.existsSync();
+
+        if (isExists) {
+          if (_recordDuration <= 1) {
+            widget.onError?.call(
+              AgoraChatUIKitError.toChatError(
+                  AgoraChatUIKitError.recordTimeTooShort,
+                  "record time too short"),
+            );
+            await file.delete();
+            return;
+          }
+          _sendVoice(path);
+        } else {
+          bool permission = await _audioRecorder.hasPermission();
+          if (permission) {
+            widget.onError?.call(
+              AgoraChatUIKitError.toChatError(
+                  AgoraChatUIKitError.recordError, 'record error'),
+            );
+          } else {
+            widget.onError?.call(
+              AgoraChatUIKitError.toChatError(
+                  AgoraChatUIKitError.noPermission, 'no record permission'),
+            );
+          }
+        }
+      }
     }
   }
 
-  void _stopRecord() async {
-    _endTimer();
-
-    setState(() {
-      _recordBtnTouchDown = false;
-    });
-    final path = await _audioRecorder.stop();
-    _sendVoice(path);
-  }
-
   void _cancelRecord() async {
+    String? path = await _audioRecorder.stop();
+    if (path != null) {
+      final file = File(path);
+      await file.delete();
+    }
+
     setState(() {
       _recordBtnTouchDown = false;
     });
+
     _endTimer();
   }
 
@@ -447,7 +541,7 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
 
   void _startTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
-      _recordDuration++;
+      ++_recordDuration;
     });
   }
 

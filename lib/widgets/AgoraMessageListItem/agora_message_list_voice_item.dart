@@ -4,26 +4,23 @@ import 'package:agora_chat_uikit/agora_chat_uikit.dart';
 
 import 'package:flutter/material.dart';
 
-class AgoraMessageListVoiceItem extends StatelessWidget {
+import 'agora_message_list_item.dart';
+
+class AgoraMessageListVoiceItem extends AgoraMessageListItem {
   const AgoraMessageListVoiceItem({
     super.key,
-    required this.model,
+    required super.model,
+    super.onTap,
+    super.onBubbleLongPress,
+    super.onBubbleDoubleTap,
+    super.onResendTap,
+    super.avatarBuilder,
+    super.nicknameBuilder,
+    super.bubbleColor,
+    super.bubblePadding,
+    super.unreadFlagBuilder,
     this.isPlay = false,
-    this.onTap,
-    this.onBubbleLongPress,
-    this.onBubbleDoubleTap,
-    this.onResendTap,
-    this.avatarBuilder,
-    this.nicknameBuilder,
   });
-
-  final AgoraMessageListItemModel model;
-  final AgoraMessageTapAction? onTap;
-  final AgoraMessageTapAction? onBubbleLongPress;
-  final AgoraMessageTapAction? onBubbleDoubleTap;
-  final VoidCallback? onResendTap;
-  final AgoraWidgetBuilder? avatarBuilder;
-  final AgoraWidgetBuilder? nicknameBuilder;
 
   final bool isPlay;
 
@@ -100,30 +97,32 @@ class AgoraMessageListVoiceItem extends StatelessWidget {
       ],
     );
 
-    return AgoraMessageBubble(
-      model: model,
-      childBuilder: (context) {
-        return content;
-      },
-      unreadFlagBuilder: message.hasRead
-          ? null
-          : (context) {
-              return Container(
-                clipBehavior: Clip.hardEdge,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30),
-                  color: Colors.pink,
-                ),
-                width: 10,
-                height: 10,
-              );
-            },
-      onBubbleDoubleTap: onBubbleDoubleTap,
-      onBubbleLongPress: onBubbleLongPress,
-      onTap: onTap,
-      avatarBuilder: avatarBuilder,
-      nicknameBuilder: nicknameBuilder,
-      onResendTap: onResendTap,
-    );
+    return getBubbleWidget(content);
+
+    // return AgoraMessageBubble(
+    //   model: model,
+    //   childBuilder: (context) {
+    //     return content;
+    //   },
+    //   unreadFlagBuilder: message.hasRead
+    //       ? null
+    //       : (context) {
+    //           return Container(
+    //             clipBehavior: Clip.hardEdge,
+    //             decoration: BoxDecoration(
+    //               borderRadius: BorderRadius.circular(30),
+    //               color: Colors.pink,
+    //             ),
+    //             width: 10,
+    //             height: 10,
+    //           );
+    //         },
+    //   onBubbleDoubleTap: onBubbleDoubleTap,
+    //   onBubbleLongPress: onBubbleLongPress,
+    //   onTap: onTap,
+    //   avatarBuilder: avatarBuilder,
+    //   nicknameBuilder: nicknameBuilder,
+    //   onResendTap: onResendTap,
+    // );
   }
 }

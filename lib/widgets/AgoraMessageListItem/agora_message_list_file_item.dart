@@ -1,26 +1,22 @@
 import 'package:agora_chat_uikit/agora_chat_uikit.dart';
+import 'package:agora_chat_uikit/widgets/AgoraMessageListItem/agora_message_list_item.dart';
 
 import 'package:flutter/material.dart';
 
-class AgoraMessageListFileItem extends StatelessWidget {
+class AgoraMessageListFileItem extends AgoraMessageListItem {
   const AgoraMessageListFileItem({
     super.key,
-    required this.model,
-    this.onTap,
-    this.onBubbleLongPress,
-    this.onBubbleDoubleTap,
-    this.onResendTap,
-    this.avatarBuilder,
-    this.nicknameBuilder,
+    required super.model,
+    super.onTap,
+    super.onBubbleLongPress,
+    super.onBubbleDoubleTap,
+    super.onResendTap,
+    super.avatarBuilder,
+    super.nicknameBuilder,
+    super.bubbleColor,
+    super.bubblePadding,
+    super.unreadFlagBuilder,
   });
-
-  final AgoraMessageListItemModel model;
-  final AgoraMessageTapAction? onTap;
-  final AgoraMessageTapAction? onBubbleLongPress;
-  final AgoraMessageTapAction? onBubbleDoubleTap;
-  final VoidCallback? onResendTap;
-  final AgoraWidgetBuilder? avatarBuilder;
-  final AgoraWidgetBuilder? nicknameBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -77,18 +73,6 @@ class AgoraMessageListFileItem extends StatelessWidget {
 
     content = SizedBox(height: 46, width: 225, child: content);
 
-    return AgoraMessageBubble(
-      bubbleColor: const Color.fromRGBO(242, 242, 242, 1),
-      model: model,
-      childBuilder: (context) {
-        return content;
-      },
-      onBubbleDoubleTap: onBubbleDoubleTap,
-      onBubbleLongPress: onBubbleLongPress,
-      onTap: onTap,
-      avatarBuilder: avatarBuilder,
-      nicknameBuilder: nicknameBuilder,
-      onResendTap: onResendTap,
-    );
+    return getBubbleWidget(content);
   }
 }

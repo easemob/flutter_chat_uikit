@@ -1,15 +1,15 @@
 {
-  "audio": "Audio",
-  "file": "File",
-  "video": "Video",
-  "location": "Location",
-  "image": "Image",
-  "custom": "Custom",
-  "camera": "Camera",
-  "album": "Album",
-  "files": "Files",
-  "delete":"Delete",
-  "deleteConversation": "Delete conversation",
-  "confirm":"Confirm",
-  "cancel":"Cancel"
+  "agoraAudio": "Audio",
+  "agoraFile": "File",
+  "agoraVideo": "Video",
+  "agoraLocation": "Location",
+  "agoraImage": "Image",
+  "agoraCustom": "Custom",
+  "agoraCamera": "Camera",
+  "agoraAlbum": "Album",
+  "agoraFiles": "Files",
+  "agoraDelete":"Delete",
+  "agoraDeleteConversation": "Delete conversation",
+  "agoraConfirm":"Confirm",
+  "agoraCancel":"Cancel"
 }

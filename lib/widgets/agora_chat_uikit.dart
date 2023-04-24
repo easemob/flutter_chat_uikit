@@ -6,7 +6,6 @@ class AgoraChatUIKit extends StatefulWidget {
     required this.child,
     super.key,
   });
-
   final Widget child;
 
   @override
