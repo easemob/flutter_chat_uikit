@@ -7,7 +7,8 @@ import 'messages_page.dart';
 class AgoraChatConfig {
   static const String appKey = "easemob#easeim";
   static const String userId = "du001";
-  static const String agoraToken = "1";
+  static const String password = "1";
+  static const String agoraToken = "";
 }
 
 void main() async {
@@ -64,6 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             const SizedBox(height: 10),
             const Text("login userId: ${AgoraChatConfig.userId}"),
+            const Text("password: ${AgoraChatConfig.password}"),
             const Text("agoraToken: ${AgoraChatConfig.agoraToken}"),
             const SizedBox(height: 10),
             Row(
@@ -181,11 +183,32 @@ class _MyHomePageState extends State<MyHomePage> {
   void _signIn() async {
     _addLogToConsole('begin sign in...');
     try {
-      await ChatClient.getInstance.login(
-        AgoraChatConfig.userId,
-        AgoraChatConfig.agoraToken,
-      );
-      _addLogToConsole('sign in success');
+      bool judgmentPwdOrToken = false;
+      do {
+        if (AgoraChatConfig.password.isNotEmpty) {
+          await ChatClient.getInstance.login(
+            AgoraChatConfig.userId,
+            AgoraChatConfig.password,
+          );
+          judgmentPwdOrToken = true;
+          break;
+        }
+
+        if (AgoraChatConfig.agoraToken.isNotEmpty) {
+          await ChatClient.getInstance.loginWithAgoraToken(
+            AgoraChatConfig.userId,
+            AgoraChatConfig.agoraToken,
+          );
+          judgmentPwdOrToken = true;
+          break;
+        }
+      } while (false);
+      if (judgmentPwdOrToken) {
+        _addLogToConsole('sign in success');
+      } else {
+        _addLogToConsole(
+            'sign in fail: The password and agoraToken cannot both be null.');
+      }
     } on ChatError catch (e) {
       _addLogToConsole('sign in fail: ${e.description}');
     }
