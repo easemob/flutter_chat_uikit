@@ -321,7 +321,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void pushToChatPage(String userId) async {
     if (userId.isEmpty) {
-      _addLogToConsole('UserId is null');
+      _addLogToConsole('userId is null');
       return;
     }
     if (ChatClient.getInstance.currentUserId == null) {

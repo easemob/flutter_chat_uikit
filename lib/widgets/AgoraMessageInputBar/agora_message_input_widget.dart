@@ -223,6 +223,7 @@ class _AgoraMessageInputWidgetState extends State<AgoraMessageInputWidget> {
         children: [
           Expanded(
             child: TextField(
+              textCapitalization: TextCapitalization.sentences,
               onChanged: (value) {
                 widget.onTextFieldChanged?.call(value);
               },

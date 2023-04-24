@@ -15,7 +15,15 @@ class _ConversationsPageState extends State<ConversationsPage> {
       appBar: AppBar(
         title: const Text('ConversationPage'),
       ),
-      body: const AgoraConversationsView(),
+      body: AgoraConversationsView(
+        onItemTap: (conversation) {
+          SnackBar bar = SnackBar(
+            content: Text('${conversation.id} clicked'),
+            duration: const Duration(milliseconds: 1000),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(bar);
+        },
+      ),
     );
   }
 }
