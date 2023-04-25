@@ -42,8 +42,8 @@ class AgoraMessageBubble extends StatelessWidget {
       decoration: BoxDecoration(
         color: bubbleColor ??
             (isLeft
-                ? const Color.fromRGBO(242, 242, 242, 1)
-                : const Color.fromRGBO(0, 65, 255, 1)),
+                ? Theme.of(context).receiveMessageBubbleColor
+                : Theme.of(context).sendMessageBubbleColor),
         borderRadius: BorderRadius.only(
           topLeft: const Radius.circular(10),
           topRight: const Radius.circular(10),
