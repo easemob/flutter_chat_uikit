@@ -34,8 +34,6 @@ class AgoraMessagesView extends StatefulWidget {
   ///
   /// [willSendMessage] A pre-text message event that needs to return a ChatMessage object. that can be used for pre-text message processing.
   ///
-  /// [permissionRequest] Callback for permission application. Callback for obtaining permission, such as recording permission, album permission, photo permission, etc.
-  ///
   /// [onError] Error callbacks, such as no current permissions, etc.
   ///
   const AgoraMessagesView({
@@ -51,7 +49,6 @@ class AgoraMessagesView extends StatefulWidget {
     this.moreItems,
     this.messageListViewController,
     this.willSendMessage,
-    this.permissionRequest,
     this.onError,
     this.enableScrollBar = true,
     this.needDismissInputWidgetAction,
@@ -97,10 +94,6 @@ class AgoraMessagesView extends StatefulWidget {
   /// A pre-text message event that needs to return a ChatMessage object.
   /// that can be used for pre-text message processing.
   final AgoraReplaceMessage? willSendMessage;
-
-  /// Callback for permission application. Callback for obtaining permission,
-  /// such as recording permission, album permission, photo permission, etc.
-  final AgoraPermissionRequest? permissionRequest;
 
   /// Error callbacks, such as no current permissions, etc.
   final void Function(ChatError error)? onError;

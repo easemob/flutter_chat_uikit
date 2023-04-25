@@ -81,13 +81,15 @@ class AgoraMessageListVoiceItem extends AgoraMessageListItem {
                         ? Theme.of(context).sendVoiceMessageItemSpeakerIconColor
                         : Theme.of(context)
                             .receiveVoiceMessageItemSpeakerIconColor,
-                  )),
+                  ),
+                ),
         ),
         Container(
-            constraints: const BoxConstraints(minWidth: 20),
-            child: SizedBox(
-              width: min(width, 130),
-            )),
+          constraints: const BoxConstraints(minWidth: 20),
+          child: SizedBox(
+            width: min(width, 130),
+          ),
+        ),
         Text(
           AgoraTimeTool.durationStr(body.duration),
           style: !isLeft
@@ -98,31 +100,5 @@ class AgoraMessageListVoiceItem extends AgoraMessageListItem {
     );
 
     return getBubbleWidget(content);
-
-    // return AgoraMessageBubble(
-    //   model: model,
-    //   childBuilder: (context) {
-    //     return content;
-    //   },
-    //   unreadFlagBuilder: message.hasRead
-    //       ? null
-    //       : (context) {
-    //           return Container(
-    //             clipBehavior: Clip.hardEdge,
-    //             decoration: BoxDecoration(
-    //               borderRadius: BorderRadius.circular(30),
-    //               color: Colors.pink,
-    //             ),
-    //             width: 10,
-    //             height: 10,
-    //           );
-    //         },
-    //   onBubbleDoubleTap: onBubbleDoubleTap,
-    //   onBubbleLongPress: onBubbleLongPress,
-    //   onTap: onTap,
-    //   avatarBuilder: avatarBuilder,
-    //   nicknameBuilder: nicknameBuilder,
-    //   onResendTap: onResendTap,
-    // );
   }
 }
