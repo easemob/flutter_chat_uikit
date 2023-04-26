@@ -17,8 +17,10 @@ class AgoraMessageBubble extends StatelessWidget {
     this.onResendTap,
     this.bubbleColor,
     this.padding,
+    this.maxWidth,
   });
 
+  final double? maxWidth;
   final AgoraMessageListItemModel model;
   final AgoraMessageTapAction? onTap;
   final AgoraMessageTapAction? onBubbleLongPress;
@@ -32,10 +34,10 @@ class AgoraMessageBubble extends StatelessWidget {
   final Color? bubbleColor;
   final EdgeInsets? padding;
 
-  final boxConstraints = const BoxConstraints(maxWidth: 280);
-
   @override
   Widget build(BuildContext context) {
+    double max = maxWidth ?? MediaQuery.of(context).size.width * 0.7;
+    final boxConstraints = BoxConstraints(maxWidth: max);
     ChatMessage message = model.message;
     bool isLeft = message.direction == MessageDirection.RECEIVE;
     Widget content = Container(

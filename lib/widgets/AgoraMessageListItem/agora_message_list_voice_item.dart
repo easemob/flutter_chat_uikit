@@ -29,10 +29,11 @@ class AgoraMessageListVoiceItem extends AgoraMessageListItem {
     ChatMessage message = model.message;
     bool isLeft = message.direction == MessageDirection.RECEIVE;
     ChatVoiceMessageBody body = message.body as ChatVoiceMessageBody;
-    double width = body.duration / 60 * 160;
+    double max = getMaxWidth(context);
+    double width = body.duration / 60 * max;
     Widget content = Row(
       textDirection: isLeft ? TextDirection.ltr : TextDirection.rtl,
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       mainAxisSize: MainAxisSize.min,
       children: [
         SizedBox(
@@ -84,12 +85,6 @@ class AgoraMessageListVoiceItem extends AgoraMessageListItem {
                   ),
                 ),
         ),
-        Container(
-          constraints: const BoxConstraints(minWidth: 20),
-          child: SizedBox(
-            width: min(width, 130),
-          ),
-        ),
         Text(
           AgoraTimeTool.durationStr(body.duration),
           style: !isLeft
@@ -97,6 +92,14 @@ class AgoraMessageListVoiceItem extends AgoraMessageListItem {
               : Theme.of(context).receiveVoiceMessageItemDurationTextStyle,
         ),
       ],
+    );
+
+    content = Container(
+      constraints: BoxConstraints(
+        maxHeight: max,
+        minWidth: width,
+      ),
+      child: content,
     );
 
     return getBubbleWidget(content);

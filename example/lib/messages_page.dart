@@ -18,6 +18,16 @@ class _MessagesPageState extends State<MessagesPage> {
       body: SafeArea(
         child: AgoraMessagesView(
           conversation: widget.conversation,
+          avatarBuilder: (context, userId) {
+            return Container(
+              width: 30,
+              height: 30,
+              color: Colors.red,
+            );
+          },
+          nicknameBuilder: (context, userId) {
+            return Text(userId);
+          },
         ),
       ),
     );

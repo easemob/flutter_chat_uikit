@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/widgets.dart';
 
 import '../../agora_chat_uikit_define.dart';
@@ -36,13 +38,11 @@ class AgoraMessageListItem extends StatelessWidget {
   }
 
   Widget getBubbleWidget(Widget content) {
-    return AgoraMessageBubble(
+    Widget ret = AgoraMessageBubble(
       model: model,
       padding: bubblePadding,
       bubbleColor: bubbleColor,
-      childBuilder: (context) {
-        return content;
-      },
+      childBuilder: (context) => content,
       unreadFlagBuilder: unreadFlagBuilder,
       onBubbleDoubleTap: onBubbleDoubleTap,
       onBubbleLongPress: onBubbleLongPress,
@@ -51,5 +51,15 @@ class AgoraMessageListItem extends StatelessWidget {
       nicknameBuilder: nicknameBuilder,
       onResendTap: onResendTap,
     );
+
+    return ret;
+  }
+
+  /// get max bubble max width.
+  double getMaxWidth(BuildContext context) {
+    final screenW = MediaQuery.of(context).size.width;
+    final screenH = MediaQuery.of(context).size.height;
+    double max = min(screenW, screenH) * 0.7;
+    return max;
   }
 }
