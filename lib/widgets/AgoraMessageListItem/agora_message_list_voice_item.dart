@@ -42,48 +42,12 @@ class AgoraMessageListVoiceItem extends AgoraMessageListItem {
           child: isPlay
               ? AgoraAnimWidget(
                   items: [
-                    Transform.scale(
-                        scaleX: isLeft ? 1 : -1,
-                        child: AgoraImageLoader.loadImage(
-                          "voice_0.png",
-                          color: isLeft
-                              ? Theme.of(context)
-                                  .sendVoiceMessageItemSpeakerIconColor
-                              : Theme.of(context)
-                                  .receiveVoiceMessageItemSpeakerIconColor,
-                        )),
-                    Transform.scale(
-                        scaleX: isLeft ? 1 : -1,
-                        child: AgoraImageLoader.loadImage(
-                          "voice_1.png",
-                          color: isLeft
-                              ? Theme.of(context)
-                                  .sendVoiceMessageItemSpeakerIconColor
-                              : Theme.of(context)
-                                  .receiveVoiceMessageItemSpeakerIconColor,
-                        )),
-                    Transform.scale(
-                        scaleX: isLeft ? 1 : -1,
-                        child: AgoraImageLoader.loadImage(
-                          "voice_2.png",
-                          color: isLeft
-                              ? Theme.of(context)
-                                  .sendVoiceMessageItemSpeakerIconColor
-                              : Theme.of(context)
-                                  .receiveVoiceMessageItemSpeakerIconColor,
-                        )),
+                    getImage(context, 'voice_0.png', isLeft),
+                    getImage(context, 'voice_1.png', isLeft),
+                    getImage(context, 'voice_2.png', isLeft),
                   ],
                 )
-              : Transform.scale(
-                  scaleX: isLeft ? 1 : -1,
-                  child: AgoraImageLoader.loadImage(
-                    "voice_2.png",
-                    color: isLeft
-                        ? Theme.of(context).sendVoiceMessageItemSpeakerIconColor
-                        : Theme.of(context)
-                            .receiveVoiceMessageItemSpeakerIconColor,
-                  ),
-                ),
+              : getImage(context, 'voice_2.png', isLeft),
         ),
         Text(
           AgoraTimeTool.durationStr(body.duration),
@@ -103,5 +67,17 @@ class AgoraMessageListVoiceItem extends AgoraMessageListItem {
     );
 
     return getBubbleWidget(content);
+  }
+
+  Widget getImage(BuildContext context, String imageName, bool isLeft) {
+    return Transform.scale(
+      scaleX: isLeft ? 1 : -1,
+      child: AgoraImageLoader.loadImage(
+        imageName,
+        color: isLeft
+            ? Theme.of(context).sendVoiceMessageItemSpeakerIconColor
+            : Theme.of(context).receiveVoiceMessageItemSpeakerIconColor,
+      ),
+    );
   }
 }
