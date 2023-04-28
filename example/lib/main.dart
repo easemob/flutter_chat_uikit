@@ -11,6 +11,8 @@ class AgoraChatConfig {
 }
 
 void main() async {
+  assert(AgoraChatConfig.appKey.isNotEmpty,
+      "You need to configure AppKey information first.");
   WidgetsFlutterBinding.ensureInitialized();
   final options = ChatOptions(
     appKey: AgoraChatConfig.appKey,
