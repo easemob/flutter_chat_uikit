@@ -71,7 +71,8 @@ class AgoraMessageListFileItem extends AgoraMessageListItem {
       ],
     );
 
-    content = SizedBox(height: 46, width: 225, child: content);
+    double max = getMaxWidth(context);
+    content = SizedBox(height: 46, width: max, child: content);
 
     return getBubbleWidget(content);
   }

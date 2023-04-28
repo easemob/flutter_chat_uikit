@@ -29,10 +29,11 @@ class AgoraMessageListVoiceItem extends AgoraMessageListItem {
     ChatMessage message = model.message;
     bool isLeft = message.direction == MessageDirection.RECEIVE;
     ChatVoiceMessageBody body = message.body as ChatVoiceMessageBody;
-    double width = body.duration / 60 * 160;
+    double max = getMaxWidth(context);
+    double width = body.duration / 60 * max;
     Widget content = Row(
       textDirection: isLeft ? TextDirection.ltr : TextDirection.rtl,
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       mainAxisSize: MainAxisSize.min,
       children: [
         SizedBox(
@@ -41,53 +42,13 @@ class AgoraMessageListVoiceItem extends AgoraMessageListItem {
           child: isPlay
               ? AgoraAnimWidget(
                   items: [
-                    Transform.scale(
-                        scaleX: isLeft ? 1 : -1,
-                        child: AgoraImageLoader.loadImage(
-                          "voice_0.png",
-                          color: isLeft
-                              ? Theme.of(context)
-                                  .sendVoiceMessageItemSpeakerIconColor
-                              : Theme.of(context)
-                                  .receiveVoiceMessageItemSpeakerIconColor,
-                        )),
-                    Transform.scale(
-                        scaleX: isLeft ? 1 : -1,
-                        child: AgoraImageLoader.loadImage(
-                          "voice_1.png",
-                          color: isLeft
-                              ? Theme.of(context)
-                                  .sendVoiceMessageItemSpeakerIconColor
-                              : Theme.of(context)
-                                  .receiveVoiceMessageItemSpeakerIconColor,
-                        )),
-                    Transform.scale(
-                        scaleX: isLeft ? 1 : -1,
-                        child: AgoraImageLoader.loadImage(
-                          "voice_2.png",
-                          color: isLeft
-                              ? Theme.of(context)
-                                  .sendVoiceMessageItemSpeakerIconColor
-                              : Theme.of(context)
-                                  .receiveVoiceMessageItemSpeakerIconColor,
-                        )),
+                    getImage(context, 'voice_0.png', isLeft),
+                    getImage(context, 'voice_1.png', isLeft),
+                    getImage(context, 'voice_2.png', isLeft),
                   ],
                 )
-              : Transform.scale(
-                  scaleX: isLeft ? 1 : -1,
-                  child: AgoraImageLoader.loadImage(
-                    "voice_2.png",
-                    color: isLeft
-                        ? Theme.of(context).sendVoiceMessageItemSpeakerIconColor
-                        : Theme.of(context)
-                            .receiveVoiceMessageItemSpeakerIconColor,
-                  )),
+              : getImage(context, 'voice_2.png', isLeft),
         ),
-        Container(
-            constraints: const BoxConstraints(minWidth: 20),
-            child: SizedBox(
-              width: min(width, 130),
-            )),
         Text(
           AgoraTimeTool.durationStr(body.duration),
           style: !isLeft
@@ -97,32 +58,26 @@ class AgoraMessageListVoiceItem extends AgoraMessageListItem {
       ],
     );
 
-    return getBubbleWidget(content);
+    content = Container(
+      constraints: BoxConstraints(
+        maxHeight: max,
+        minWidth: width,
+      ),
+      child: content,
+    );
 
-    // return AgoraMessageBubble(
-    //   model: model,
-    //   childBuilder: (context) {
-    //     return content;
-    //   },
-    //   unreadFlagBuilder: message.hasRead
-    //       ? null
-    //       : (context) {
-    //           return Container(
-    //             clipBehavior: Clip.hardEdge,
-    //             decoration: BoxDecoration(
-    //               borderRadius: BorderRadius.circular(30),
-    //               color: Colors.pink,
-    //             ),
-    //             width: 10,
-    //             height: 10,
-    //           );
-    //         },
-    //   onBubbleDoubleTap: onBubbleDoubleTap,
-    //   onBubbleLongPress: onBubbleLongPress,
-    //   onTap: onTap,
-    //   avatarBuilder: avatarBuilder,
-    //   nicknameBuilder: nicknameBuilder,
-    //   onResendTap: onResendTap,
-    // );
+    return getBubbleWidget(content);
+  }
+
+  Widget getImage(BuildContext context, String imageName, bool isLeft) {
+    return Transform.scale(
+      scaleX: isLeft ? 1 : -1,
+      child: AgoraImageLoader.loadImage(
+        imageName,
+        color: isLeft
+            ? Theme.of(context).sendVoiceMessageItemSpeakerIconColor
+            : Theme.of(context).receiveVoiceMessageItemSpeakerIconColor,
+      ),
+    );
   }
 }

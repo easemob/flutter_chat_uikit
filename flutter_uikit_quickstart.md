@@ -1,6 +1,6 @@
 # Get started with Agora Chat UIKit
 
-Instant messaging connects people wherever they are and allows them to communicate with others in real time. With built-in user interfaces (UI) for the conversation list the [Agora Chat UI Samples]() enables you to quickly embed real-time messaging into your app without requiring extra effort on the UI.
+Instant messaging connects people wherever they are and allows them to communicate with others in real time. With built-in user interfaces (UI) for the message list the [Agora Chat UI Samples]() enables you to quickly embed real-time messaging into your app without requiring extra effort on the UI.
 
 This page shows a sample code to add peer-to-peer messaging into your app by using the Agora Chat UI Samples.
 
@@ -139,10 +139,31 @@ Open the `Info.plist` and add:
 
 Open a terminal, enter the `uikit_quick_start` directory, and run the following command to add the `agora_chat_uikit` dependency:
 
-```
+#### pub dev integration (Not released yet)
+
+```dart
 flutter pub add agora_chat_uikit
 flutter pub get
 ```
+
+#### Local integration
+
+```dart
+dependencies:
+    agora_chat_uikit:
+        path: `<#uikit path#>`
+```
+
+#### Github integration
+
+```dart
+dependencies:
+    agora_chat_uikit:
+        git:
+            url: https://github.com/easemob/flutter_chat_uikit.git
+            ref: dev
+```
+
 ## Implement peer-to-peer messaging
 
 

@@ -10,6 +10,10 @@ extension AgoraUIKitThemeData on ThemeData {
 
   Color get receiveVoiceMessageItemSpeakerIconColor => Colors.white;
 
+  Color get receiveMessageBubbleColor => const Color.fromRGBO(242, 242, 242, 1);
+
+  Color get sendMessageBubbleColor => const Color.fromRGBO(0, 65, 255, 1);
+
   TextStyle get sendVoiceMessageItemDurationTextStyle => const TextStyle(
         color: Colors.white,
       );

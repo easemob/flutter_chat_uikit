@@ -17,8 +17,10 @@ class AgoraMessageBubble extends StatelessWidget {
     this.onResendTap,
     this.bubbleColor,
     this.padding,
+    this.maxWidth,
   });
 
+  final double? maxWidth;
   final AgoraMessageListItemModel model;
   final AgoraMessageTapAction? onTap;
   final AgoraMessageTapAction? onBubbleLongPress;
@@ -34,14 +36,16 @@ class AgoraMessageBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double max = maxWidth ?? MediaQuery.of(context).size.width * 0.7;
+    final boxConstraints = BoxConstraints(maxWidth: max);
     ChatMessage message = model.message;
     bool isLeft = message.direction == MessageDirection.RECEIVE;
     Widget content = Container(
       decoration: BoxDecoration(
         color: bubbleColor ??
             (isLeft
-                ? const Color.fromRGBO(242, 242, 242, 1)
-                : const Color.fromRGBO(0, 65, 255, 1)),
+                ? Theme.of(context).receiveMessageBubbleColor
+                : Theme.of(context).sendMessageBubbleColor),
         borderRadius: BorderRadius.only(
           topLeft: const Radius.circular(10),
           topRight: const Radius.circular(10),
@@ -51,7 +55,7 @@ class AgoraMessageBubble extends StatelessWidget {
               isLeft ? const Radius.circular(10) : const Radius.circular(3),
         ),
       ),
-      constraints: const BoxConstraints(maxWidth: 260),
+      constraints: boxConstraints,
       child: Padding(
         padding: padding ?? const EdgeInsets.fromLTRB(12, 8, 12, 8),
         child: childBuilder(context),
@@ -63,12 +67,12 @@ class AgoraMessageBubble extends StatelessWidget {
     if (nicknameBuilder != null) {
       insideBubbleWidgets.add(
         Container(
-          constraints: const BoxConstraints(maxWidth: 260),
+          constraints: boxConstraints,
           child: nicknameBuilder!.call(context, message.from!),
         ),
       );
 
-      insideBubbleWidgets.add(Flexible(child: content));
+      insideBubbleWidgets.add(Flexible(flex: 1, child: content));
 
       content = Column(
         mainAxisSize: MainAxisSize.min,
@@ -84,7 +88,7 @@ class AgoraMessageBubble extends StatelessWidget {
       insideBubbleWidgets.add(const SizedBox(width: 10));
     }
 
-    insideBubbleWidgets.add(content);
+    insideBubbleWidgets.add(Flexible(flex: 1, child: content));
     insideBubbleWidgets.add(SizedBox(width: isLeft ? 0 : 10.4));
 
     if (!isLeft) {
@@ -97,6 +101,7 @@ class AgoraMessageBubble extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: insideBubbleWidgets.toList(),
     );
+
     insideBubbleWidgets.clear();
 
     if (unreadFlagBuilder != null && isLeft) {
