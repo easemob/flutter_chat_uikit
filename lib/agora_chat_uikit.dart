@@ -23,6 +23,7 @@ export 'widgets/AgoraDialog/agora_dialog_widget.dart';
 export 'widgets/AgoraBottomSheet/agora_bottom_sheet.dart';
 export 'widgets/AgoraMessageInputBar/agora_message_input_widget.dart';
 export 'widgets/AgoraMessageInputBar/agora_emoji_data.dart';
+export 'widgets/AgoraMessageListItem/agora_message_list_item.dart';
 export 'widgets/AgoraMessageListItem/agora_message_bubble.dart';
 export 'widgets/AgoraMessageListItem/agora_message_list_text_item.dart';
 export 'widgets/AgoraMessageListItem/agora_message_list_image_item.dart';

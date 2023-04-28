@@ -47,7 +47,9 @@ class AgoraBottomSheet {
               child: Text(
                 item.label,
                 style: item.labelStyle ??
-                    Theme.of(context).bottomSheetItemLabelDefaultStyle,
+                    AgoraChatUIKit.of(context)
+                        .agoraTheme
+                        .bottomSheetItemLabelNormalStyle,
               ),
             ),
           ),

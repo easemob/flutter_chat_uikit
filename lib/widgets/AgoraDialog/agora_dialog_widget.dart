@@ -31,7 +31,9 @@ class AgoraDialog {
               child: Text(
                 item.label,
                 style: item.labelStyle ??
-                    Theme.of(context).dialogItemLabelDefaultStyle,
+                    AgoraChatUIKit.of(context)
+                        .agoraTheme
+                        .dialogItemLabelNormalStyle,
               ),
             ),
           ),

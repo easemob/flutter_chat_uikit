@@ -282,7 +282,9 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
       list.add(
         AgoraBottomSheetItem(
           "Recall",
-          labelStyle: Theme.of(context).bottomSheetItemLabelRecallStyle,
+          labelStyle: AgoraChatUIKit.of(context)
+              .agoraTheme
+              .bottomSheetItemLabelRecallStyle,
           onTap: () {
             msgListViewController.recallMessage(message);
             return Navigator.of(context).pop();

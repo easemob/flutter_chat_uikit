@@ -36,11 +36,15 @@ class AgoraConversationListTile extends StatelessWidget {
                 title ??
                     Text(
                       conversation.id,
-                      style: Theme.of(context).conversationListItemTitleStyle,
+                      style: AgoraChatUIKit.of(context)
+                          .agoraTheme
+                          .conversationListItemTitleStyle,
                     ),
                 Text(
                   msg?.createTs ?? "",
-                  style: Theme.of(context).conversationListItemTsStyle,
+                  style: AgoraChatUIKit.of(context)
+                      .agoraTheme
+                      .conversationListItemTsStyle,
                 )
               ]),
           subtitle: subtitle ??
@@ -49,8 +53,9 @@ class AgoraConversationListTile extends StatelessWidget {
                   builder: (context) {
                     return Text(
                       msg?.summary(context) ?? "",
-                      style:
-                          Theme.of(context).conversationListItemSubTitleStyle,
+                      style: AgoraChatUIKit.of(context)
+                          .agoraTheme
+                          .conversationListItemTitleStyle,
                     );
                   },
                 )),

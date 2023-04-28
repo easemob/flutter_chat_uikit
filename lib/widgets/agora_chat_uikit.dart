@@ -2,11 +2,15 @@ import 'package:agora_chat_uikit/agora_chat_uikit.dart';
 import 'package:flutter/widgets.dart';
 
 class AgoraChatUIKit extends StatefulWidget {
-  const AgoraChatUIKit({
+  AgoraChatUIKit({
     required this.child,
+    AgoraUIKitTheme? theme,
     super.key,
-  });
+  }) {
+    agoraTheme = theme ?? AgoraUIKitTheme();
+  }
   final Widget child;
+  late final AgoraUIKitTheme agoraTheme;
 
   @override
   State<AgoraChatUIKit> createState() => AgoraChatUIKitState();
@@ -33,12 +37,15 @@ class AgoraChatUIKitState extends State<AgoraChatUIKit> {
       ChatClient.getInstance.options != null,
       'You must has init AgoraChat SDK.',
     );
+
     _controller = AgoraConversationsController();
   }
 
   AgoraConversationsController get conversationsController {
     return _controller;
   }
+
+  AgoraUIKitTheme get agoraTheme => widget.agoraTheme;
 
   @override
   Widget build(BuildContext context) {
