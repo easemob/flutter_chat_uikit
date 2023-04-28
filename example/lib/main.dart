@@ -31,7 +31,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      builder: (context, child) => AgoraChatUIKit(child: child!),
+      builder: (context, child) => AgoraChatUIKit(
+        theme: AgoraUIKitTheme(),
+        child: child!,
+      ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }

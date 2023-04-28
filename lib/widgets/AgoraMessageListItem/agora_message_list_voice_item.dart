@@ -52,8 +52,10 @@ class AgoraMessageListVoiceItem extends AgoraMessageListItem {
         Text(
           AgoraTimeTool.durationStr(body.duration),
           style: !isLeft
-              ? Theme.of(context).sendVoiceMessageItemDurationTextStyle
-              : Theme.of(context).receiveVoiceMessageItemDurationTextStyle,
+              ? AgoraChatUIKit.of(context).agoraTheme.sendVoiceItemDurationStyle
+              : AgoraChatUIKit.of(context)
+                  .agoraTheme
+                  .receiveVoiceItemDurationStyle,
         ),
       ],
     );
@@ -75,8 +77,8 @@ class AgoraMessageListVoiceItem extends AgoraMessageListItem {
       child: AgoraImageLoader.loadImage(
         imageName,
         color: isLeft
-            ? Theme.of(context).sendVoiceMessageItemSpeakerIconColor
-            : Theme.of(context).receiveVoiceMessageItemSpeakerIconColor,
+            ? AgoraChatUIKit.of(context).agoraTheme.sendVoiceItemIconColor
+            : AgoraChatUIKit.of(context).agoraTheme.receiveVoiceItemIconColor,
       ),
     );
   }

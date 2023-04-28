@@ -205,6 +205,35 @@ For more information, see `AgoraMessagesView`
   });
 ```
 
+
+#### Customize colors
+
+You can set the color when adding `AgoraChatUIKit`. See `AgoraUIKitTheme`.
+
+```dart
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      builder: (context, child) => AgoraChatUIKit(
+        theme: AgoraUIKitTheme(
+          sendBubbleColor: Colors.red,
+          receiveBubbleColor: Colors.blue,
+        ),
+        child: child!,
+      ),
+      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+    );
+  }
+}
+```
+
 #### Add avatar
 
 ```dart
@@ -280,7 +309,7 @@ class _MessagesPageState extends State<MessagesPage> {
 }
 ```
 
-#### Changed the bubble color of the text message
+### Custom message item widget
 
 ```dart
 class _MessagesPageState extends State<MessagesPage> {
@@ -293,9 +322,8 @@ class _MessagesPageState extends State<MessagesPage> {
           conversation: widget.conversation,
           itemBuilder: (context, model) {
             if (model.message.body.type == MessageType.TXT) {
-              return AgoraMessageListTextItem(
+              return CustomTextItemWidget(
                 model: model,
-                bubbleColor: Colors.red,
                 onTap: (context, message) {
                   bubbleClicked(message);
                   return true;
@@ -313,6 +341,24 @@ class _MessagesPageState extends State<MessagesPage> {
   }
 }
 
+class CustomTextItemWidget extends AgoraMessageListItem {
+  const CustomTextItemWidget({super.key, required super.model, super.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    ChatTextMessageBody body = model.message.body as ChatTextMessageBody;
+
+    Widget content = Text(
+      body.content,
+      style: const TextStyle(
+        color: Colors.white,
+        fontSize: 50,
+        fontWeight: FontWeight.w400,
+      ),
+    );
+    return getBubbleWidget(content);
+  }
+}
 
 ```
 

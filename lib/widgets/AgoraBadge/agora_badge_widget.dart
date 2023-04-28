@@ -1,3 +1,4 @@
+import 'package:agora_chat_uikit/agora_chat_uikit.dart';
 import 'package:agora_chat_uikit/agora_chat_uikit_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -19,7 +20,7 @@ class AgoraBadgeWidget extends StatelessWidget {
         } else if (unreadCount < 0) {
           return Container(
             decoration: BoxDecoration(
-                color: Theme.of(context).badgeColor,
+                color: AgoraChatUIKit.of(context).agoraTheme.badgeColor,
                 borderRadius: const BorderRadius.all(Radius.circular(30))),
             width: 10,
             height: 10,
@@ -31,15 +32,15 @@ class AgoraBadgeWidget extends StatelessWidget {
           }
           return Container(
             decoration: BoxDecoration(
-                color: Theme.of(context).badgeColor,
+                color: AgoraChatUIKit.of(context).agoraTheme.badgeColor,
                 border: Border.all(
-                  color: Theme.of(context).badgeBorderColor,
-                  width: Theme.of(context).badgeBorderWidth,
+                  color: AgoraChatUIKit.of(context).agoraTheme.badgeBorderColor,
+                  width: 2,
                 ),
                 borderRadius: const BorderRadius.all(Radius.circular(30))),
             padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
             child: Text(
-              style: Theme.of(context).badgeTextTheme,
+              style: AgoraChatUIKit.of(context).agoraTheme.badgeTextStyle,
               unreadStr,
             ),
           );

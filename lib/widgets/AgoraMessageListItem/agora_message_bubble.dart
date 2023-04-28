@@ -44,8 +44,8 @@ class AgoraMessageBubble extends StatelessWidget {
       decoration: BoxDecoration(
         color: bubbleColor ??
             (isLeft
-                ? Theme.of(context).receiveMessageBubbleColor
-                : Theme.of(context).sendMessageBubbleColor),
+                ? AgoraChatUIKit.of(context).agoraTheme.receiveBubbleColor
+                : AgoraChatUIKit.of(context).agoraTheme.sendBubbleColor),
         borderRadius: BorderRadius.only(
           topLeft: const Radius.circular(10),
           topRight: const Radius.circular(10),
@@ -140,7 +140,9 @@ class AgoraMessageBubble extends StatelessWidget {
                 height: 20,
                 child: Text(
                   AgoraTimeTool.timeStrByMs(message.serverTime),
-                  style: Theme.of(context).messagesListItemTs,
+                  style: AgoraChatUIKit.of(context)
+                      .agoraTheme
+                      .messagesListItemTsStyle,
                 ),
               ),
             ),
