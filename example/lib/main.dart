@@ -5,9 +5,8 @@ import 'conversations_page.dart';
 import 'messages_page.dart';
 
 class AgoraChatConfig {
-  static const String appKey = "easemob#easeim";
-  static const String userId = "du001";
-  static const String password = "1";
+  static const String appKey = "";
+  static const String userId = "";
   static const String agoraToken = "";
 }
 
@@ -68,7 +67,6 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             const SizedBox(height: 10),
             const Text("login userId: ${AgoraChatConfig.userId}"),
-            const Text("password: ${AgoraChatConfig.password}"),
             const Text("agoraToken: ${AgoraChatConfig.agoraToken}"),
             const SizedBox(height: 10),
             Row(
@@ -188,15 +186,6 @@ class _MyHomePageState extends State<MyHomePage> {
     try {
       bool judgmentPwdOrToken = false;
       do {
-        if (AgoraChatConfig.password.isNotEmpty) {
-          await ChatClient.getInstance.login(
-            AgoraChatConfig.userId,
-            AgoraChatConfig.password,
-          );
-          judgmentPwdOrToken = true;
-          break;
-        }
-
         if (AgoraChatConfig.agoraToken.isNotEmpty) {
           await ChatClient.getInstance.loginWithAgoraToken(
             AgoraChatConfig.userId,

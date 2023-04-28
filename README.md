@@ -496,12 +496,12 @@ See the example for the effect.
 
 ### quick start
 
-If demo is required, configure the following information in the `example/lib/config.dart` file:
+If demo is required, configure the following information in the `example/lib/main.dart` file:
 
 // Replaces <#Your app key#>, <#Your created user#>, and <#User Token#> and with your own App Key, user ID, and user token generated in Agora Console.
 
 ```dart
-class Config {
+class AgoraChatConfig {
   static String appkey = <#Your app key#>;
   static String userId = <#Your created user#>;
   static String agoraToken = <#User Token#>;
