@@ -41,24 +41,6 @@ class AgoraMessageListImageItem extends AgoraMessageListItem {
       height = max;
     }
 
-    // if (width / height >= 10) {
-    //   final w = max;
-    //   width = w;
-    //   height = w * 0.1;
-    // } else if (width * 4 >= height * 3) {
-    //   final w = max;
-    //   height = w * (height / width);
-    //   width = w;
-    // } else if (width * 10 > height) {
-    //   final h = max * 4 / 3;
-    //   width = width / height * h;
-    //   height = h;
-    // } else {
-    //   final h = max * 4 / 3;
-    //   width = 0.1 * h;
-    //   height = h;
-    // }
-
     Widget content;
 
     if (message.direction == MessageDirection.SEND) {

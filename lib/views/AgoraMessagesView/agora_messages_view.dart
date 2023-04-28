@@ -450,59 +450,79 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
   }
 
   void _startRecord() async {
-    _recordDuration = 0;
-    _startTimer();
-    await _audioRecorder.start();
-    setState(() {
-      _dragOutside = false;
-      _recordBtnTouchDown = true;
+    bool isRequest = false;
+    Future(() async {
+      return await _audioRecorder.hasPermission();
+    }).timeout(const Duration(milliseconds: 500), onTimeout: () {
+      isRequest = true;
+      return false;
+    }).then((value) async {
+      if (value == true) {
+        _recordDuration = 0;
+        _startTimer();
+        await _audioRecorder.start();
+      } else {
+        if (!isRequest) {
+          debugPrint('no permission!!!!');
+          widget.onError?.call(
+            AgoraChatUIKitError.toChatError(
+                AgoraChatUIKitError.noPermission, 'no record permission'),
+          );
+        } else {
+          debugPrint('request permission!!!!');
+        }
+      }
     });
   }
 
   void _stopRecord([bool send = true]) async {
+    if (send == false) {
+      _cancelRecord();
+      return;
+    }
+    if (!await _audioRecorder.isRecording()) {
+      return;
+    }
     _endTimer();
     setState(() {
       _recordBtnTouchDown = false;
     });
-    bool isRecording = await _audioRecorder.isRecording();
-    if (isRecording) {
-      String? path = await _audioRecorder.stop();
+    String? path = await _audioRecorder.stop();
 
-      if (path != null) {
-        if (Platform.isIOS) {
-          if (path.startsWith("file:///")) {
-            path = path.substring(8);
-          }
-        }
-        final file = File(path);
-        bool isExists = file.existsSync();
-
-        if (isExists) {
-          if (_recordDuration <= 1) {
-            widget.onError?.call(
-              AgoraChatUIKitError.toChatError(
-                  AgoraChatUIKitError.recordTimeTooShort,
-                  "record time too short"),
-            );
-            await file.delete();
-            return;
-          }
-          _sendVoice(path);
-        } else {
-          bool permission = await _audioRecorder.hasPermission();
-          if (permission) {
-            widget.onError?.call(
-              AgoraChatUIKitError.toChatError(
-                  AgoraChatUIKitError.recordError, 'record error'),
-            );
-          } else {
-            widget.onError?.call(
-              AgoraChatUIKitError.toChatError(
-                  AgoraChatUIKitError.noPermission, 'no record permission'),
-            );
-          }
+    bool isExists = false;
+    if (path != null) {
+      if (Platform.isIOS) {
+        if (path.startsWith("file:///")) {
+          path = path.substring(8);
         }
       }
+      final file = File(path);
+      isExists = file.existsSync();
+      if (isExists) {
+        if (_recordDuration <= 1) {
+          widget.onError?.call(
+            AgoraChatUIKitError.toChatError(
+                AgoraChatUIKitError.recordTimeTooShort,
+                "record time too short"),
+          );
+          await file.delete();
+          return;
+        }
+        _sendVoice(path);
+        return;
+      }
+    }
+    bool permission = await _audioRecorder.hasPermission();
+    if (permission) {
+      widget.onError?.call(
+        AgoraChatUIKitError.toChatError(
+            AgoraChatUIKitError.recordError, 'record error'),
+      );
+    } else {
+      widget.onError?.call(
+        AgoraChatUIKitError.toChatError(
+            AgoraChatUIKitError.noPermission, 'no record permission'),
+      );
     }
   }
 

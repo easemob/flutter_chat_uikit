@@ -73,7 +73,6 @@ class AgoraMessageBubble extends StatelessWidget {
       );
 
       insideBubbleWidgets.add(Flexible(flex: 1, child: content));
-      // insideBubbleWidgets.add(Flexible(flex: 2, child: Container()));
 
       content = Column(
         mainAxisSize: MainAxisSize.min,
@@ -90,7 +89,6 @@ class AgoraMessageBubble extends StatelessWidget {
     }
 
     insideBubbleWidgets.add(Flexible(flex: 1, child: content));
-    // insideBubbleWidgets.add(Flexible(flex: 2, child: Container()));
     insideBubbleWidgets.add(SizedBox(width: isLeft ? 0 : 10.4));
 
     if (!isLeft) {

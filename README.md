@@ -205,6 +205,245 @@ For more information, see `AgoraMessagesView`
   });
 ```
 
+#### Add avatar
+
+```dart
+class _MessagesPageState extends State<MessagesPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(widget.conversation.id)),
+      body: SafeArea(
+        child: AgoraMessagesView(
+          conversation: widget.conversation,
+          avatarBuilder: (context, userId) {
+            // Returns the avatar Widget that you want to display.
+            return Container(
+              width: 30,
+              height: 30,
+              color: Colors.red,
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+```
+
+#### Add nickname
+
+```dart
+class _MessagesPageState extends State<MessagesPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(widget.conversation.id)),
+      body: SafeArea(
+        child: AgoraMessagesView(
+          conversation: widget.conversation,
+          // Returns the nickname Widget that you want to display.
+          nicknameBuilder: (context, userId) {
+            return Text(userId);
+          },
+        ),
+      ),
+    );
+  }
+}
+
+```
+
+#### Add bubble click event
+
+```dart
+class _MessagesPageState extends State<MessagesPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(widget.conversation.id)),
+      body: SafeArea(
+        child: AgoraMessagesView(
+          conversation: widget.conversation,
+          onTap: (context, message) {
+            bubbleClicked(message);
+            return true;
+          },
+        ),
+      ),
+    );
+  }
+
+  void bubbleClicked(ChatMessage message) {
+    debugPrint('bubble clicked');
+  }
+}
+```
+
+#### Changed the bubble color of the text message
+
+```dart
+class _MessagesPageState extends State<MessagesPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(widget.conversation.id)),
+      body: SafeArea(
+        child: AgoraMessagesView(
+          conversation: widget.conversation,
+          itemBuilder: (context, model) {
+            if (model.message.body.type == MessageType.TXT) {
+              return AgoraMessageListTextItem(
+                model: model,
+                bubbleColor: Colors.red,
+                onTap: (context, message) {
+                  bubbleClicked(message);
+                  return true;
+                },
+              );
+            }
+          },
+        ),
+      ),
+    );
+  }
+
+  void bubbleClicked(ChatMessage message) {
+    debugPrint('bubble clicked');
+  }
+}
+
+
+```
+
+### Customize the input widget
+
+```dart
+class _MessagesPageState extends State<MessagesPage> {
+  late AgoraMessageListController _msgController;
+  final TextEditingController _textController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _msgController = AgoraMessageListController(widget.conversation);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(widget.conversation.id)),
+      body: SafeArea(
+        child: AgoraMessagesView(
+          conversation: widget.conversation,
+          messageListViewController: _msgController,
+          inputBar: inputWidget(),
+        ),
+      ),
+    );
+  }
+
+  Widget inputWidget() {
+    return SizedBox(
+      height: 50,
+      child: Row(
+        children: [
+          Expanded(
+              child: TextField(
+            controller: _textController,
+          )),
+          ElevatedButton(
+              onPressed: () {
+                final msg = ChatMessage.createTxtSendMessage(
+                    targetId: widget.conversation.id,
+                    content: _textController.text);
+                _textController.text = '';
+                _msgController.sendMessage(msg);
+              },
+              child: const Text('Send'))
+        ],
+      ),
+    );
+  }
+}
+
+```
+
+### Delete all Messages in the current conversation
+
+```dart
+class _MessagesPageState extends State<MessagesPage> {
+  late AgoraMessageListController _msgController;
+
+  @override
+  void initState() {
+    super.initState();
+    _msgController = AgoraMessageListController(widget.conversation);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.conversation.id),
+        actions: [
+          TextButton(
+              onPressed: () {
+                _msgController.deleteAllMessages();
+              },
+              child: const Text(
+                'Clear',
+                style: TextStyle(color: Colors.white),
+              ))
+        ],
+      ),
+      body: SafeArea(
+        child: AgoraMessagesView(
+          conversation: widget.conversation,
+          messageListViewController: _msgController,
+        ),
+      ),
+    );
+  }
+}
+```
+
+### Customize the long - press pop-up menu
+
+```dart
+class _MessagesPageState extends State<MessagesPage> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.conversation.id),
+      ),
+      body: SafeArea(
+        child: AgoraMessagesView(
+          conversation: widget.conversation,
+          inputBarMoreActionsOnTap: (items) {
+            AgoraBottomSheetItem item =
+                AgoraBottomSheetItem('more', onTap: customMoreAction);
+
+            return items + [item];
+          },
+        ),
+      ),
+    );
+  }
+
+  void customMoreAction() {
+    debugPrint('custom action');
+    Navigator.of(context).pop();
+  }
+}
+```
+
 ## example
 
 See the example for the effect.
@@ -219,7 +458,7 @@ If demo is required, configure the following information in the `example/lib/con
 class Config {
   static String appkey = <#Your app key#>;
   static String userId = <#Your created user#>;
-  static String pwdOrAgoraToken = <#User Token#>;
+  static String agoraToken = <#User Token#>;
 }
 ```
 

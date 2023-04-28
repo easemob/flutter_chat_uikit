@@ -12,24 +12,32 @@ class MessagesPage extends StatefulWidget {
 
 class _MessagesPageState extends State<MessagesPage> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.conversation.id)),
+      appBar: AppBar(
+        title: Text(widget.conversation.id),
+      ),
       body: SafeArea(
         child: AgoraMessagesView(
           conversation: widget.conversation,
-          avatarBuilder: (context, userId) {
-            return Container(
-              width: 30,
-              height: 30,
-              color: Colors.red,
-            );
-          },
-          nicknameBuilder: (context, userId) {
-            return Text(userId);
+          inputBarMoreActionsOnTap: (items) {
+            AgoraBottomSheetItem item =
+                AgoraBottomSheetItem('more', onTap: customMoreAction);
+
+            return items + [item];
           },
         ),
       ),
     );
+  }
+
+  void customMoreAction() {
+    debugPrint('custom action');
+    Navigator.of(context).pop();
   }
 }
