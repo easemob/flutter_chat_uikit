@@ -455,7 +455,7 @@ class _MessagesPageState extends State<MessagesPage> {
 }
 ```
 
-### Customize the long - press pop-up menu
+### Customize input bar more actions
 
 ```dart
 class _MessagesPageState extends State<MessagesPage> {
