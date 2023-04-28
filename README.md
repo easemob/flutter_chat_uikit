@@ -2,8 +2,9 @@
 
 ## Overview
 
-agora_chat_uikit is a UI component library based on agora_chat_sdk. It provides general UI components and modules containing business logic, including Chat, ConversationList, ContactList and other modules. These components allow users to customize and customize sub-components at a smaller level using common UI components. Developers can use the library to quickly build custom IM applications based on actual business requirements.
+Instant messaging connects people wherever they are and allows them to communicate with others in real time. With built-in user interfaces (UI) for the message list the [Agora Chat UI Samples]() enables you to quickly embed real-time messaging into your app without requiring extra effort on the UI.
 
+This page shows a sample code to add peer-to-peer messaging into your app by using the Agora Chat UI Samples.
 'agora_chat_uikit' currently has 2 modular widget:
 
 `AgoraConversationsView` AgoraConversationsView is a conversation information page that displays existing conversation. And support for custom avatar and nickname operations.
