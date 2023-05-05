@@ -5,9 +5,9 @@ import 'conversations_page.dart';
 import 'messages_page.dart';
 
 class AgoraChatConfig {
-  static const String appKey = "easemob-demo#flutter";
-  static const String userId = "du001";
-  static const String agoraToken = "1";
+  static const String appKey = "";
+  static const String userId = "";
+  static const String agoraToken = "";
 }
 
 void main() async {
@@ -188,7 +188,7 @@ class _MyHomePageState extends State<MyHomePage> {
       bool judgmentPwdOrToken = false;
       do {
         if (AgoraChatConfig.agoraToken.isNotEmpty) {
-          await ChatClient.getInstance.login(
+          await ChatClient.getInstance.loginWithAgoraToken(
             AgoraChatConfig.userId,
             AgoraChatConfig.agoraToken,
           );

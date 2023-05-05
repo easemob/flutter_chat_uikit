@@ -26,19 +26,8 @@ class _MessagesPageState extends State<MessagesPage> {
       body: SafeArea(
         child: AgoraMessagesView(
           conversation: widget.conversation,
-          inputBarMoreActionsOnTap: (items) {
-            AgoraBottomSheetItem item =
-                AgoraBottomSheetItem('more', onTap: customMoreAction);
-
-            return items + [item];
-          },
         ),
       ),
     );
-  }
-
-  void customMoreAction() {
-    debugPrint('custom action');
-    Navigator.of(context).pop();
   }
 }
