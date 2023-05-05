@@ -89,6 +89,14 @@ dependencies:
 
 You need to make sure the agora chat sdk is initialized before calling AgoraChatUIKik and AgoraChatUIKit widget at the top of you widget tree. You can add it in the `MaterialApp` builder.
 
+### AgoraChatUIKit
+
+You must have a AgoraChatUIKit widget at the top of you widget tree.
+
+|Props|Props Description|
+--|--
+theme| agora chat uikit theme for setting component styles. If not set, the default style will be used.
+
 ```dart
 import 'package:agora_chat_uikit/agora_chat_uikit.dart';
 
@@ -111,15 +119,19 @@ class MyApp extends StatelessWidget {
 }
 ```
 
-When you have logged in and entered the main page, you need to call the `AgoraChatUIKit.of(context).uiSetup` method to tell agora_chat_uikit that you have logged in.
-
-```dart
-AgoraChatUIKit.of(context).uiSetup;
-```
-
 ### AgoraConversationsView
 
 The 'AgoraConversationsView' allows you to quickly display and manage the current conversations.
+
+|Props|Props Description|
+--|--
+controller| The ScrollController for the conversation list.
+itemBuilder| Conversation list item builder, return a widget if you need to customize it.
+avatarBuilder| Avatar builder, if not implemented or returns null will use the default avatar.
+nicknameBuilder| Nickname builder, which displays the userId if not set or null is returned.
+onItemTap| Conversation list item Click event callback.
+
+
 
 ```dart
 class _ConversationsPageState extends State<ConversationsPage> {
@@ -172,6 +184,25 @@ For more information, see `AgoraConversationsView`
 
 The `AgoraMessagesView` is used to manage and send and receive messages. It supports picture, text, voice, and file messages. It also supports operations such as deleting and recall messages.
 
+|Props|Props Description|
+--|--
+inputBar| Text input component, if not passed by default will use [AgoraMessageInputWidget].
+conversation| The conversation corresponding to the message details.
+onTap| Message Bubble click event callback.
+onBubbleLongPress| Message bubbles long press the event callback.
+onBubbleDoubleTap| Message Bubble Double-click the event callback.
+avatarBuilder| Avatar component builder.
+nicknameBuilder| Nickname component builder.
+itemBuilder| Message bubble, if not set, will take the default bubble.
+moreItems| The more the input component clicks on the list displayed, the default items will be used if not passed in, including copy, delete, and recall.
+messageListViewController| Message list controller: You are advised not to pass messages. Use the default value. For details, see [AgoraMessageListController].
+willSendMessage| A pre-text message event that needs to return a ChatMessage object. that can be used for pre-text message processing.
+onError| Error callbacks, such as no current permissions, etc.
+enableScrollBar| Enable scroll bar, default is true.
+needDismissInputWidget| Dismiss the input widget callback. If you use a customized inputBar, dismiss the inputBar when you receive the callback, for example, by calling [FocusNode.unfocus], see [AgoraMessageInputWidget].
+inputBarMoreActionsOnTap| More button click after callback, need to return to the AgoraBottomSheetItems list.
+
+
 ```dart
 class _ChatPageState extends State<ChatPage> {
   @override
@@ -186,6 +217,8 @@ class _ChatPageState extends State<ChatPage> {
 }
 
 ```
+
+<div align=center> <img src="./docs/chat_page.png" width = "300" /></div>
 
 For more information, see `AgoraMessagesView`
 
@@ -209,7 +242,7 @@ For more information, see `AgoraMessagesView`
 
 #### Customize colors
 
-You can set the color when adding `AgoraChatUIKit`. See `AgoraUIKitTheme`.
+You can set the color when adding `AgoraChatUIKit`. See `AgoraChatUIKitTheme`.
 
 ```dart
 class MyApp extends StatelessWidget {
@@ -223,9 +256,11 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       builder: (context, child) => AgoraChatUIKit(
-        theme: AgoraUIKitTheme(
+        theme: AgoraChatUIKitTheme(
           sendBubbleColor: Colors.red,
           receiveBubbleColor: Colors.blue,
+          sendTextStyle: const TextStyle(color: Colors.white),
+          receiveTextStyle: const TextStyle(color: Colors.white),
         ),
         child: child!,
       ),
@@ -234,6 +269,8 @@ class MyApp extends StatelessWidget {
   }
 }
 ```
+
+<div align=center> <img src="./docs/chat_page_customize_colors.png" width = "300" /></div>
 
 #### Add avatar
 
@@ -261,6 +298,9 @@ class _MessagesPageState extends State<MessagesPage> {
 }
 ```
 
+<div align=center> <img src="./docs/chat_page_avatar.png" width = "300" /></div>
+
+
 #### Add nickname
 
 ```dart
@@ -281,8 +321,10 @@ class _MessagesPageState extends State<MessagesPage> {
     );
   }
 }
-
 ```
+
+<div align=center> <img src="./docs/chat_page_nickname.png" width = "300" /></div>
+
 
 #### Add bubble click event
 
@@ -352,7 +394,7 @@ class CustomTextItemWidget extends AgoraMessageListItem {
     Widget content = Text(
       body.content,
       style: const TextStyle(
-        color: Colors.white,
+        color: Colors.black,
         fontSize: 50,
         fontWeight: FontWeight.w400,
       ),
@@ -363,17 +405,25 @@ class CustomTextItemWidget extends AgoraMessageListItem {
 
 ```
 
+<div align=center> <img src="./docs/chat_page_custom_item.png" width = "300" /></div>
+
 ### Customize the input widget
 
 ```dart
 class _MessagesPageState extends State<MessagesPage> {
   late AgoraMessageListController _msgController;
   final TextEditingController _textController = TextEditingController();
-
+  final FocusNode _focusNode = FocusNode();
   @override
   void initState() {
     super.initState();
     _msgController = AgoraMessageListController(widget.conversation);
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -385,6 +435,9 @@ class _MessagesPageState extends State<MessagesPage> {
           conversation: widget.conversation,
           messageListViewController: _msgController,
           inputBar: inputWidget(),
+          needDismissInputWidget: () {
+            _focusNode.unfocus();
+          },
         ),
       ),
     );
@@ -396,9 +449,11 @@ class _MessagesPageState extends State<MessagesPage> {
       child: Row(
         children: [
           Expanded(
-              child: TextField(
-            controller: _textController,
-          )),
+            child: TextField(
+              focusNode: _focusNode,
+              controller: _textController,
+            ),
+          ),
           ElevatedButton(
               onPressed: () {
                 final msg = ChatMessage.createTxtSendMessage(
@@ -415,6 +470,8 @@ class _MessagesPageState extends State<MessagesPage> {
 }
 
 ```
+
+<div align=center> <img src="./docs/chat_page_input.png" width = "300" /></div>
 
 ### Delete all Messages in the current conversation
 
@@ -490,6 +547,9 @@ class _MessagesPageState extends State<MessagesPage> {
   }
 }
 ```
+
+<div align=center> <img src="./docs/chat_page_more_item.png" width = "300" /></div>
+
 
 ## example
 

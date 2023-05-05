@@ -4,13 +4,15 @@ import 'package:flutter/widgets.dart';
 class AgoraChatUIKit extends StatefulWidget {
   AgoraChatUIKit({
     required this.child,
-    AgoraUIKitTheme? theme,
+    AgoraChatUIKitTheme? theme,
     super.key,
   }) {
-    agoraTheme = theme ?? AgoraUIKitTheme();
+    agoraTheme = theme ?? AgoraChatUIKitTheme();
   }
   final Widget child;
-  late final AgoraUIKitTheme agoraTheme;
+
+  /// agora chat uikit theme for setting component styles. If not set, the default style will be used.
+  late final AgoraChatUIKitTheme agoraTheme;
 
   @override
   State<AgoraChatUIKit> createState() => AgoraChatUIKitState();
@@ -45,16 +47,11 @@ class AgoraChatUIKitState extends State<AgoraChatUIKit> {
     return _controller;
   }
 
-  AgoraUIKitTheme get agoraTheme => widget.agoraTheme;
+  AgoraChatUIKitTheme get agoraTheme => widget.agoraTheme;
 
   @override
   Widget build(BuildContext context) {
     return widget.child;
-  }
-
-  /// Notify agora chat uikit ui initialization is complete.
-  void uiSetup() {
-    ChatClient.getInstance.startCallback();
   }
 
   @override
