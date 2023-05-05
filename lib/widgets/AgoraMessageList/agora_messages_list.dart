@@ -78,7 +78,7 @@ class AgoraMessageListController extends AgoraBaseController {
     }
   }
 
-  /// load messages
+  /// load messages and refresh list.
   ///
   /// Param [count] load count.
   Future<void> loadMoreMessage([int count = 10]) async {
@@ -104,12 +104,12 @@ class AgoraMessageListController extends AgoraBaseController {
     refreshUI();
   }
 
-  /// Set all messages in the current conversation to read. current conversation see [AgoraMessagesList].
+  /// mark all messages in the current conversation to read. current conversation see [AgoraMessagesList].
   Future<void> markAllMessagesAsRead() async {
     return conversation.markAllMessagesAsRead();
   }
 
-  /// Set a message in the current conversation to read.
+  /// mark a message in the current conversation to read.
   /// affects only unread messages count in the conversation.
   ///
   /// Param [message] The message needs to be set to read. current conversation see [AgoraMessagesList].

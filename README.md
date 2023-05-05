@@ -18,6 +18,52 @@ Source code URL of agora_chat_uikit for flutter:
 * https://github.com/easemob/flutter_chat_uikit
 
 
+## Function
+
+The `agora_chat_uikit` library provides the following functions:
+
+* Send and receive messages, message display, message unread count, clear messages, message types include: (text, picture, file, audio);
+* Delete conversations and messages.
+* Customize the UI.
+
+<table>
+  <tr>
+    <td>Widget</td>
+    <td>Function</td>
+    <td>Description</td>
+  </tr>
+  <tr>
+    <td> AgoraChatUIKit </td>
+    <td></td>
+    <td> The root of all widgets in AgoraChatUIKit. </td>
+  </tr>
+    <td rowspan="2"> AgoraConversationsView </td>
+    <td> Conversation list </td>
+    <td> The conversation list displays the profile avatar, nickname, latest message content, unread message count, and time </td>
+  <tr>
+    <td>Delete conversation</td>
+    <td>Deletes the conversation from the conversation list.</td>
+  </tr>
+  <tr>
+    <td rowspan="4">AgoraMessagesView</td>
+    <td>Message sender</td>
+    <td>Support to send text, emoji, picture, file, voice.</td>
+  </tr>
+  <tr>
+    <td>Delete messages</td>
+    <td>Delete messages</td>
+  </tr>
+  <tr>
+    <td>Recall message</td>
+    <td>Recall message in 120 seconds</td>
+  </tr>
+  <tr>
+    <td>Display message</td>
+    <td>Chat message display, including profile avatar, nickname, message content, time, sent status, and read status. Message types include text, picture, video, file, and voice</td>
+  </tr>
+</table>
+
+
 ## Dependencies
 
 Some third party UI libraries are used in Agora_chat_uikit, as follows:

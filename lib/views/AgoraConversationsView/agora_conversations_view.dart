@@ -71,7 +71,7 @@ class AgoraConversationsController extends AgoraBaseController {
     ChatClient.getInstance.chatManager.removeEventHandler(key);
   }
 
-  /// Update the conversations and refresh the list.
+  /// load all conversations and refresh the list.
   Future<void> loadAllConversations() async {
     List<ChatConversation> list =
         await ChatClient.getInstance.chatManager.loadAllConversations();
@@ -91,7 +91,7 @@ class AgoraConversationsController extends AgoraBaseController {
     }
   }
 
-  /// Delete all conversation.
+  /// Delete all conversations.
   ///
   /// Param [includeMessage] Whether to delete messages at the same time.
   Future<void> deleteAllConversations({bool includeMessage = true}) async {
@@ -112,7 +112,7 @@ class AgoraConversationsController extends AgoraBaseController {
     await loadAllConversations();
   }
 
-  /// Mark conversation as read
+  /// Mark a conversation as read
   Future<void> markConversationAsRead(String conversationId) async {
     int index =
         conversationList.indexWhere((element) => element.id == conversationId);
