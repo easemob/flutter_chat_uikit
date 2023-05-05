@@ -288,7 +288,7 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
 
     var time = DateTime.now().millisecondsSinceEpoch - message.serverTime;
 
-    if (time < 180 * 1000 && message.direction != MessageDirection.RECEIVE) {
+    if (time < 120 * 1000 && message.direction != MessageDirection.RECEIVE) {
       list.add(
         AgoraBottomSheetItem(
           "Recall",
