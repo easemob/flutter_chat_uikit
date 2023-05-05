@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class AgoraUIKitTheme {
-  AgoraUIKitTheme({
+class AgoraChatUIKitTheme {
+  AgoraChatUIKitTheme({
     this.badgeColor = const Color.fromRGBO(255, 20, 204, 1),
     this.badgeBorderColor = Colors.white,
     this.sendVoiceItemIconColor = const Color.fromRGBO(169, 169, 169, 1),
@@ -10,8 +10,8 @@ class AgoraUIKitTheme {
     this.receiveBubbleColor = const Color.fromRGBO(242, 242, 242, 1),
     this.badgeTextStyle =
         const TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
-    this.sendVoiceItemDurationStyle = const TextStyle(color: Colors.white),
-    this.receiveVoiceItemDurationStyle = const TextStyle(color: Colors.black),
+    this.sendTextStyle = const TextStyle(color: Colors.white),
+    this.receiveTextStyle = const TextStyle(color: Colors.black),
     this.conversationListItemTitleStyle = const TextStyle(fontSize: 17),
     this.conversationListItemSubTitleStyle =
         const TextStyle(fontSize: 14, overflow: TextOverflow.ellipsis),
@@ -35,8 +35,8 @@ class AgoraUIKitTheme {
   final Color sendBubbleColor;
   final Color receiveBubbleColor;
   final TextStyle badgeTextStyle;
-  final TextStyle sendVoiceItemDurationStyle;
-  final TextStyle receiveVoiceItemDurationStyle;
+  final TextStyle sendTextStyle;
+  final TextStyle receiveTextStyle;
   final TextStyle conversationListItemTitleStyle;
   final TextStyle conversationListItemSubTitleStyle;
   final TextStyle conversationListItemTsStyle;

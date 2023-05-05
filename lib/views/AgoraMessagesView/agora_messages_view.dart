@@ -12,9 +12,11 @@ import '../../agora_chat_uikit_error.dart';
 class AgoraMessagesView extends StatefulWidget {
   /// Message details page.
   ///
-  /// [inputBar] Text input component, if not passed by default will use [AgoraMessageInputWidget]
+  /// [inputBarTextEditingController] Text input widget text editing controller.
   ///
-  /// [conversation] The session corresponding to the message details.
+  /// [inputBar] Text input component, if not passed by default will use [AgoraMessageInputWidget].
+  ///
+  /// [conversation] The conversation corresponding to the message details.
   ///
   /// [onTap] Message Bubble click event callback.
   ///
@@ -36,6 +38,14 @@ class AgoraMessagesView extends StatefulWidget {
   ///
   /// [onError] Error callbacks, such as no current permissions, etc.
   ///
+  /// [enableScrollBar] Enable scroll bar. default is true.
+  ///
+  /// [needDismissInputWidget] Dismiss the input widget callback. If you use a customized inputBar,
+  /// dismiss the inputBar when you receive the callback,
+  /// for example, by calling [FocusNode.unfocus], see [AgoraMessageInputWidget].
+  ///
+  /// [inputBarMoreActionsOnTap] More button click after callback, need to return to the AgoraBottomSheetItems list.
+  ///
   const AgoraMessagesView({
     required this.conversation,
     this.inputBarTextEditingController,
@@ -51,7 +61,7 @@ class AgoraMessagesView extends StatefulWidget {
     this.willSendMessage,
     this.onError,
     this.enableScrollBar = true,
-    this.needDismissInputWidgetAction,
+    this.needDismissInputWidget,
     this.inputBarMoreActionsOnTap,
     super.key,
   });
@@ -104,7 +114,7 @@ class AgoraMessagesView extends StatefulWidget {
   /// Dismiss the input widget callback. If you use a customized inputBar,
   /// dismiss the inputBar when you receive the callback,
   /// for example, by calling [FocusNode.unfocus], see [AgoraMessageInputWidget].
-  final VoidCallback? needDismissInputWidgetAction;
+  final VoidCallback? needDismissInputWidget;
 
   /// More button click after callback, need to return to the AgoraBottomSheetItems list.
   final AgoraReplaceMoreActions? inputBarMoreActionsOnTap;
@@ -162,7 +172,7 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
       children: [
         Expanded(
           child: AgoraMessagesList(
-            needDismissInputWidgetAction: widget.needDismissInputWidgetAction ??
+            needDismissInputWidgetAction: widget.needDismissInputWidget ??
                 () {
                   _focusNode.unfocus();
                 },
@@ -532,7 +542,9 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
     String? path = await _audioRecorder.stop();
     if (path != null) {
       final file = File(path);
-      await file.delete();
+      if (await file.exists()) {
+        await file.delete();
+      }
     }
 
     setState(() {

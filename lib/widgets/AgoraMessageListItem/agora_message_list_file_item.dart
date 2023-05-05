@@ -1,5 +1,4 @@
 import 'package:agora_chat_uikit/agora_chat_uikit.dart';
-import 'package:agora_chat_uikit/widgets/AgoraMessageListItem/agora_message_list_item.dart';
 
 import 'package:flutter/material.dart';
 
@@ -37,7 +36,9 @@ class AgoraMessageListFileItem extends AgoraMessageListItem {
       list.add(Text(
         AgoraSizeTool.fileSize(fileSize),
         style: const TextStyle(
-            fontSize: 12, color: Color.fromRGBO(102, 102, 102, 1)),
+          fontSize: 12,
+          color: Color.fromRGBO(102, 102, 102, 1),
+        ),
       ));
     }
 

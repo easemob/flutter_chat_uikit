@@ -25,14 +25,10 @@ class AgoraMessageListTextItem extends AgoraMessageListItem {
     bool isLeft = message.direction == MessageDirection.RECEIVE;
     ChatTextMessageBody body = message.body as ChatTextMessageBody;
 
-    Widget content = Text(
-      body.content,
-      style: TextStyle(
-        color: isLeft ? Colors.black : Colors.white,
-        fontSize: 15,
-        fontWeight: FontWeight.w400,
-      ),
-    );
+    Widget content = Text(body.content,
+        style: isLeft
+            ? AgoraChatUIKit.of(context).agoraTheme.receiveTextStyle
+            : AgoraChatUIKit.of(context).agoraTheme.sendTextStyle);
 
     return getBubbleWidget(content);
   }

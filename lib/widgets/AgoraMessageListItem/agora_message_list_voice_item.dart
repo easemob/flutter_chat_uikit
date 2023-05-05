@@ -52,10 +52,8 @@ class AgoraMessageListVoiceItem extends AgoraMessageListItem {
         Text(
           AgoraTimeTool.durationStr(body.duration),
           style: !isLeft
-              ? AgoraChatUIKit.of(context).agoraTheme.sendVoiceItemDurationStyle
-              : AgoraChatUIKit.of(context)
-                  .agoraTheme
-                  .receiveVoiceItemDurationStyle,
+              ? AgoraChatUIKit.of(context).agoraTheme.sendTextStyle
+              : AgoraChatUIKit.of(context).agoraTheme.receiveTextStyle,
         ),
       ],
     );

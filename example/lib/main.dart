@@ -5,9 +5,9 @@ import 'conversations_page.dart';
 import 'messages_page.dart';
 
 class AgoraChatConfig {
-  static const String appKey = "";
-  static const String userId = "";
-  static const String agoraToken = "";
+  static const String appKey = "easemob-demo#flutter";
+  static const String userId = "du001";
+  static const String agoraToken = "1";
 }
 
 void main() async {
@@ -33,7 +33,6 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       builder: (context, child) => AgoraChatUIKit(
-        theme: AgoraUIKitTheme(),
         child: child!,
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
@@ -189,7 +188,7 @@ class _MyHomePageState extends State<MyHomePage> {
       bool judgmentPwdOrToken = false;
       do {
         if (AgoraChatConfig.agoraToken.isNotEmpty) {
-          await ChatClient.getInstance.loginWithAgoraToken(
+          await ChatClient.getInstance.login(
             AgoraChatConfig.userId,
             AgoraChatConfig.agoraToken,
           );

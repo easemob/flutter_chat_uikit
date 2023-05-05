@@ -1,4 +1,3 @@
-import 'package:agora_chat_uikit/widgets/AgoraMessageListItem/agora_message_list_item.dart';
 import 'package:flutter/material.dart';
 
 import '../../agora_chat_uikit.dart';
@@ -490,7 +489,10 @@ class _AgoraMessagesListState extends State<AgoraMessagesList>
     );
 
     if (widget.enableScrollBar) {
-      content = Scrollbar(child: content);
+      content = Scrollbar(
+        controller: _scrollController,
+        child: content,
+      );
     }
 
     content = ScrollConfiguration(
