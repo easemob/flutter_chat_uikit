@@ -70,19 +70,26 @@ class AgoraMessageListImageItem extends AgoraMessageListItem {
           break;
         }
       }
-      ChatClient.getInstance.chatManager.downloadThumbnail(message);
-      content = Container(
-        color: const Color.fromRGBO(242, 242, 242, 1),
-        child: FadeInImage(
-          placeholderFit: BoxFit.contain,
-          placeholder: AgoraImageLoader.assetImage("download_img.png"),
-          image: NetworkImage(body.thumbnailRemotePath!),
-          imageErrorBuilder: (context, error, stackTrace) {
-            return AgoraImageLoader.loadImage("download_img_failed.png",
-                fit: BoxFit.contain);
-          },
-          fit: BoxFit.fill,
-        ),
+      if (body.thumbnailRemotePath != null) {
+        ChatClient.getInstance.chatManager.downloadThumbnail(message);
+        content = Container(
+          color: const Color.fromRGBO(242, 242, 242, 1),
+          child: FadeInImage(
+            placeholderFit: BoxFit.contain,
+            placeholder: AgoraImageLoader.assetImage("download_img.png"),
+            image: NetworkImage(body.thumbnailRemotePath!),
+            imageErrorBuilder: (context, error, stackTrace) {
+              return AgoraImageLoader.loadImage("download_img_failed.png",
+                  fit: BoxFit.contain);
+            },
+            fit: BoxFit.fill,
+          ),
+        );
+        break;
+      }
+      content = AgoraImageLoader.loadImage(
+        "download_img_failed.png",
+        fit: BoxFit.contain,
       );
     } while (false);
 
