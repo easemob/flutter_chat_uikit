@@ -61,7 +61,7 @@ class AgoraMessageListImageItem extends AgoraMessageListItem {
           content = Image(
             gaplessPlayback: true,
             image: ResizeImage(
-              FileImage(File(body.thumbnailLocalPath!)),
+              FileImage(thumbnailFile),
               width: width.toInt(),
               height: height.toInt(),
             ),
