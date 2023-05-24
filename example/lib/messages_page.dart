@@ -26,6 +26,13 @@ class _MessagesPageState extends State<MessagesPage> {
       body: SafeArea(
         child: AgoraMessagesView(
           conversation: widget.conversation,
+          onError: (error) {
+            final snackBar = SnackBar(
+              content: Text('Error: ${error.description}'),
+              duration: const Duration(milliseconds: 1000),
+            );
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          },
         ),
       ),
     );
