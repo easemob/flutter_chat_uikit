@@ -470,19 +470,15 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
       return false;
     }).then((value) async {
       if (value == true) {
-        _recordDuration = 0;
         _startTimer();
         await _audioRecorder.start();
       } else {
         if (!isRequest) {
-          debugPrint('no permission!!!!');
           widget.onError?.call(
             AgoraChatUIKitError.toChatError(
                 AgoraChatUIKitError.noPermission, 'no record permission'),
           );
-        } else {
-          debugPrint('request permission!!!!');
-        }
+        } else {}
       }
     });
   }
@@ -511,7 +507,7 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
       final file = File(path);
       isExists = file.existsSync();
       if (isExists) {
-        if (_recordDuration <= 1) {
+        if (_recordDuration < 1) {
           widget.onError?.call(
             AgoraChatUIKitError.toChatError(
                 AgoraChatUIKitError.recordTimeTooShort,
@@ -567,8 +563,10 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
   }
 
   void _startTimer() {
+    _recordDuration = 0;
     _timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
-      ++_recordDuration;
+      _recordDuration++;
+      debugPrint("timer: $_recordDuration");
     });
   }
 
