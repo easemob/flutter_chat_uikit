@@ -1,5 +1,39 @@
 import 'package:flutter/material.dart';
 
+/// Agora Chat UIKit Theme
+///
+/// Param [badgeColor] is the color of the badge.
+///
+/// Param [badgeBorderColor] is the border color of the badge.
+///
+/// Param [sendVoiceItemIconColor] is the color of the send voice item icon.
+///
+/// Param [receiveVoiceItemIconColor] is the color of the receive voice item icon.
+///
+/// Param [sendBubbleColor] is the color of the send bubble.
+///
+/// Param [receiveBubbleColor] is the color of the receive bubble.
+///
+/// Param [badgeTextStyle] is the text style of the badge.
+///
+/// Param [sendTextStyle] is the text style of the send message.
+///
+/// Param [receiveTextStyle] is the text style of the receive message.
+///
+/// Param [conversationListItemTitleStyle] is the text style of the conversation list item title.
+///
+/// Param [conversationListItemSubTitleStyle] is the text style of the conversation list item subtitle.
+///
+/// Param [conversationListItemTsStyle] is the text style of the conversation list item timestamp.
+///
+/// Param [messagesListItemTsStyle] is the text style of the messages list item timestamp.
+///
+/// Param [bottomSheetItemLabelNormalStyle] is the text style of the bottom sheet item label.
+///
+/// Param [bottomSheetItemLabelRecallStyle] is the text style of the bottom sheet item label when the message is recall.
+///
+/// Param [dialogItemLabelNormalStyle] is the text style of the dialog item label.
+///
 class AgoraChatUIKitTheme {
   AgoraChatUIKitTheme({
     this.badgeColor = const Color.fromRGBO(255, 20, 204, 1),
