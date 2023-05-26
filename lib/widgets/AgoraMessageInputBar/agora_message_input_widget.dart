@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../agora_chat_uikit.dart';
 import 'agora_emoji_widget.dart';
 
+/// The widget of the message input bar.
 class AgoraMessageInputWidget extends StatefulWidget {
   const AgoraMessageInputWidget({
     super.key,
@@ -124,9 +125,10 @@ class _AgoraMessageInputWidgetState extends State<AgoraMessageInputWidget> {
                 ),
               ),
               Expanded(
-                  child: _currentInputType != _AgoraInputType.voice
-                      ? _inputWidget()
-                      : _voiceWidget()),
+                child: _currentInputType != _AgoraInputType.voice
+                    ? _inputWidget()
+                    : _voiceWidget(),
+              ),
               () {
                 return _currentInputType != _AgoraInputType.voice
                     ? Padding(
@@ -147,18 +149,21 @@ class _AgoraMessageInputWidgetState extends State<AgoraMessageInputWidget> {
                                         widget.textEditingController.text = "";
                                       },
                                       child: Container(
-                                        width: 55,
-                                        height: 35,
+                                        padding: const EdgeInsets.fromLTRB(
+                                            8, 10, 8, 10),
                                         decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(20),
-                                          color: const Color.fromRGBO(
-                                              17, 78, 255, 1),
+                                          color: AgoraChatUIKit.of(context)
+                                              .agoraTheme
+                                              .inputWidgetSendBtnColor,
                                         ),
-                                        child: const Center(
+                                        child: Center(
                                             child: Text(
                                           "Send",
-                                          style: TextStyle(color: Colors.white),
+                                          style: AgoraChatUIKit.of(context)
+                                              .agoraTheme
+                                              .inputWidgetSendBtnStyle,
                                         )),
                                       ),
                                     )

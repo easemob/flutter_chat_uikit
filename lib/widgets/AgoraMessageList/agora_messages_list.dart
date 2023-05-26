@@ -5,7 +5,24 @@ import '../../controllers/agora_base_controller.dart';
 import 'agora_message_sliver.dart';
 import 'agora_scroll_behavior.dart';
 
+/// The message list widget controller.
+///
+/// You can use this controller to send messages, delete messages, and more.
+/// You can send messages by calling the [sendMessage] method.
+/// delete messages by calling the [removeMessage] method.
+/// recall messages by calling the [recallMessage] method.
+/// load more messages by calling the [loadMoreMessage] method.
+/// [markAllMessagesAsRead] method to mark all messages as read.
+/// [deleteAllMessages] method to delete all messages.
+/// [sendReadAck] method to send read ack.
+/// [refreshUI] method to refresh UI.
 class AgoraMessageListController extends AgoraBaseController {
+  /// Param [conversation] The conversation to display.
+  ///
+  /// Param [enableReadAck] Enable the read receipt. The read receipt supports only single-chat messages.
+  ///
+  /// Param [didRecallMessage] The message recall callback, executed when the message is recalled,
+  ///
   AgoraMessageListController(
     this.conversation, {
     this.enableReadAck = true,
@@ -362,10 +379,37 @@ class AgoraMessageListController extends AgoraBaseController {
   }
 }
 
+/// Messages list widget.
+///
+/// Param [conversation] is required. is the conversations.
+///
+/// Param [backgroundWidget] is optional. is the background widget.
+///
+/// Param [messageListViewController] is optional. is the message list controller.
+///
+/// Param [itemBuilder] is optional. is the message bubble builder.
+///
+/// Param [onTap] is optional. is the bubble click callback.
+///
+/// Param [onBubbleLongPress] is optional. is the bubble long press callback.
+///
+/// Param [onBubbleDoubleTap] is optional. is the bubble double tap callback.
+///
+/// Param [avatarBuilder] is optional. is the avatar builder.
+///
+/// Param [nicknameBuilder] is optional. is the nickname builder.
+///
+/// Param [onError] is optional. is the error callback.
+///
+/// Param [enableScrollBar] is optional. is the enable scroll bar, default is enable.
+///
+/// Param [needDismissInputWidgetAction] is optional. is the need dismiss input widget action.
+///
 class AgoraMessagesList extends StatefulWidget {
   const AgoraMessagesList({
     super.key,
     required this.conversation,
+    this.backgroundWidget,
     this.messageListViewController,
     this.itemBuilder,
     this.onTap,
@@ -377,6 +421,9 @@ class AgoraMessagesList extends StatefulWidget {
     this.enableScrollBar = true,
     this.needDismissInputWidgetAction,
   });
+
+  /// Background widget.
+  final Widget? backgroundWidget;
 
   /// Current conversation.
   final ChatConversation conversation;
@@ -498,6 +545,13 @@ class _AgoraMessagesListState extends State<AgoraMessagesList>
     content = ScrollConfiguration(
       behavior: AgoraScrollBehavior(),
       child: content,
+    );
+
+    content = Stack(
+      children: [
+        widget.backgroundWidget ?? Container(),
+        content,
+      ],
     );
 
     return content;
