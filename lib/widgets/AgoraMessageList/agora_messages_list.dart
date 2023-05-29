@@ -383,7 +383,7 @@ class AgoraMessageListController extends AgoraBaseController {
 ///
 /// Param [conversation] is required. is the conversations.
 ///
-/// Param [backgroundWidget] is optional. is the background widget.
+/// Param [background] is optional. is the background widget.
 ///
 /// Param [messageListViewController] is optional. is the message list controller.
 ///
@@ -409,7 +409,7 @@ class AgoraMessagesList extends StatefulWidget {
   const AgoraMessagesList({
     super.key,
     required this.conversation,
-    this.backgroundWidget,
+    this.background,
     this.messageListViewController,
     this.itemBuilder,
     this.onTap,
@@ -423,7 +423,7 @@ class AgoraMessagesList extends StatefulWidget {
   });
 
   /// Background widget.
-  final Widget? backgroundWidget;
+  final Widget? background;
 
   /// Current conversation.
   final ChatConversation conversation;
@@ -549,7 +549,7 @@ class _AgoraMessagesListState extends State<AgoraMessagesList>
 
     content = Stack(
       children: [
-        widget.backgroundWidget ?? Container(),
+        widget.background ?? Container(),
         content,
       ],
     );

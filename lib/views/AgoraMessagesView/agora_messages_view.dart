@@ -14,7 +14,7 @@ class AgoraMessagesView extends StatefulWidget {
   ///
   /// [inputBarTextEditingController] Text input widget text editing controller.
   ///
-  /// [backgroundWidget] Background widget.
+  /// [background] Background widget.
   ///
   /// [inputBar] Text input component, if not passed by default will use [AgoraMessageInputWidget].
   ///
@@ -51,7 +51,7 @@ class AgoraMessagesView extends StatefulWidget {
   const AgoraMessagesView({
     required this.conversation,
     this.inputBarTextEditingController,
-    this.backgroundWidget,
+    this.background,
     this.inputBar,
     this.onTap,
     this.onBubbleLongPress,
@@ -69,8 +69,7 @@ class AgoraMessagesView extends StatefulWidget {
     super.key,
   });
 
-  /// Background widget.
-  final Widget? backgroundWidget;
+  final Widget? background;
 
   /// Text input widget text editing controller.
   final TextEditingController? inputBarTextEditingController;
@@ -178,7 +177,7 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
       children: [
         Expanded(
           child: AgoraMessagesList(
-            backgroundWidget: widget.backgroundWidget,
+            background: widget.background,
             needDismissInputWidgetAction: widget.needDismissInputWidget ??
                 () {
                   _focusNode.unfocus();
