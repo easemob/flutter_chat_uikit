@@ -372,7 +372,7 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 ```
 
-## Test your app  添加截图？
+## Test your app
 
 To validate the peer-to-peer messaging you have just integrated into your app using Agora Chat, perform the following operations to test the project:
 
