@@ -5,7 +5,7 @@ export 'package:image_picker/image_picker.dart';
 export 'package:file_picker/file_picker.dart';
 export 'package:record/record.dart';
 
-export 'agora_chat_uikit_theme.dart';
+export 'themes/agora_chat_uikit_theme.dart';
 export 'agora_chat_uikit_define.dart';
 export 'controllers/agora_chat_uikit_controller.dart';
 export 'generated/agora_chat_uikit_localizations.dart';

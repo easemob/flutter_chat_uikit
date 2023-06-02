@@ -3,8 +3,6 @@ import 'dart:io';
 import 'package:agora_chat_uikit/agora_chat_uikit.dart';
 import 'package:flutter/material.dart';
 
-import 'agora_message_list_item.dart';
-
 class AgoraMessageListImageItem extends AgoraMessageListItem {
   const AgoraMessageListImageItem({
     super.key,
@@ -43,39 +41,40 @@ class AgoraMessageListImageItem extends AgoraMessageListItem {
 
     Widget content;
 
-    if (message.direction == MessageDirection.SEND) {
-      content = Image(
+    do {
+      File file = File(body.localPath);
+      if (file.existsSync()) {
+        content = Image(
           gaplessPlayback: true,
           image: ResizeImage(
-            FileImage(File(body.localPath)),
+            FileImage(file),
             width: width.toInt(),
             height: height.toInt(),
           ),
-          fit: BoxFit.fill);
-    } else if (body.thumbnailStatus == DownloadStatus.SUCCESS &&
-        body.thumbnailLocalPath != null) {
-      content = Image(
-          gaplessPlayback: true,
-          image: ResizeImage(
-            FileImage(File(body.thumbnailLocalPath!)),
-            width: width.toInt(),
-            height: height.toInt(),
-          ),
-          fit: BoxFit.fill);
-    } else if (body.fileStatus == DownloadStatus.SUCCESS) {
-      content = Image(
-          gaplessPlayback: true,
-          image: ResizeImage(
-            FileImage(File(body.localPath)),
-            width: width.toInt(),
-            height: height.toInt(),
-          ),
-          fit: BoxFit.fill);
-    } else {
-      ChatClient.getInstance.chatManager.downloadThumbnail(message);
-      content = Container(
-        color: const Color.fromRGBO(242, 242, 242, 1),
-        child: FadeInImage(
+          fit: BoxFit.fill,
+        );
+        break;
+      }
+      if (body.thumbnailLocalPath != null) {
+        File thumbnailFile = File(body.thumbnailLocalPath!);
+        if (thumbnailFile.existsSync()) {
+          content = Image(
+            gaplessPlayback: true,
+            image: ResizeImage(
+              FileImage(thumbnailFile),
+              width: width.toInt(),
+              height: height.toInt(),
+            ),
+            fit: BoxFit.fill,
+          );
+          break;
+        }
+      }
+      if (body.thumbnailRemotePath != null) {
+        ChatClient.getInstance.chatManager.downloadThumbnail(message);
+        content = Container(
+          color: const Color.fromRGBO(242, 242, 242, 1),
+          child: FadeInImage(
             placeholderFit: BoxFit.contain,
             placeholder: AgoraImageLoader.assetImage("download_img.png"),
             image: NetworkImage(body.thumbnailRemotePath!),
@@ -83,9 +82,16 @@ class AgoraMessageListImageItem extends AgoraMessageListItem {
               return AgoraImageLoader.loadImage("download_img_failed.png",
                   fit: BoxFit.contain);
             },
-            fit: BoxFit.fill),
+            fit: BoxFit.fill,
+          ),
+        );
+        break;
+      }
+      content = AgoraImageLoader.loadImage(
+        "download_img_failed.png",
+        fit: BoxFit.contain,
       );
-    }
+    } while (false);
 
     content = SizedBox(
       width: width,

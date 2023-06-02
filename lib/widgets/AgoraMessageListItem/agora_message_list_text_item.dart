@@ -2,12 +2,13 @@ import 'package:agora_chat_uikit/agora_chat_uikit.dart';
 
 import 'package:flutter/material.dart';
 
-import 'agora_message_list_item.dart';
-
 class AgoraMessageListTextItem extends AgoraMessageListItem {
+  final TextStyle? contentStyle;
+
   const AgoraMessageListTextItem({
     super.key,
     required super.model,
+    this.contentStyle,
     super.onTap,
     super.onBubbleLongPress,
     super.onBubbleDoubleTap,
@@ -26,9 +27,10 @@ class AgoraMessageListTextItem extends AgoraMessageListItem {
     ChatTextMessageBody body = message.body as ChatTextMessageBody;
 
     Widget content = Text(body.content,
-        style: isLeft
-            ? AgoraChatUIKit.of(context).agoraTheme.receiveTextStyle
-            : AgoraChatUIKit.of(context).agoraTheme.sendTextStyle);
+        style: contentStyle ??
+            (isLeft
+                ? AgoraChatUIKit.of(context).agoraTheme.receiveTextStyle
+                : AgoraChatUIKit.of(context).agoraTheme.sendTextStyle));
 
     return getBubbleWidget(content);
   }

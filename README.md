@@ -113,22 +113,22 @@ In the example/android/app/proguard-rules.pro file, add the following lines to p
 
 Integrate uikit, which can be downloaded locally or integrated through git.
 
+
+### pub.dev integration
+
+```dart
+flutter pub add agora_chat_uikit
+flutter pub get
+```
+
 ### Local integration
+
+You can download the project to your computer and execute it.
 
 ```dart
 dependencies:
     agora_chat_uikit:
         path: `<#uikit path#>`
-```
-
-### Github integration
-
-```dart
-dependencies:
-    agora_chat_uikit:
-        git:
-            url: https://github.com/easemob/flutter_chat_uikit.git
-            ref: dev
 ```
 
 ## Usage

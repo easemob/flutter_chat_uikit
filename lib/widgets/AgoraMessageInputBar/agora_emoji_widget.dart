@@ -23,7 +23,7 @@ class AgoraEmojiWidget extends StatelessWidget {
     this.mainAxisSpacing = 2.0,
     this.crossAxisSpacing = 2.0,
     this.childAspectRatio = 1.0,
-    this.bigSizeRatio = 8.0,
+    this.bigSizeRatio = 0.0,
     this.emojiClicked,
   });
 

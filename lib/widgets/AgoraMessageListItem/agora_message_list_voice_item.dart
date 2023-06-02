@@ -1,10 +1,6 @@
-import 'dart:math';
-
 import 'package:agora_chat_uikit/agora_chat_uikit.dart';
 
 import 'package:flutter/material.dart';
-
-import 'agora_message_list_item.dart';
 
 class AgoraMessageListVoiceItem extends AgoraMessageListItem {
   const AgoraMessageListVoiceItem({

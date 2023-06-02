@@ -12,9 +12,12 @@ class MessagesPage extends StatefulWidget {
 }
 
 class _MessagesPageState extends State<MessagesPage> {
+  late final AgoraMessageListController controller;
+
   @override
   void initState() {
     super.initState();
+    controller = AgoraMessageListController(widget.conversation);
   }
 
   @override
@@ -22,10 +25,34 @@ class _MessagesPageState extends State<MessagesPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.conversation.id),
+        actions: [
+          UnconstrainedBox(
+            child: InkWell(
+              onTap: () {
+                controller.deleteAllMessages();
+              },
+              child: const Padding(
+                padding: EdgeInsets.all(10),
+                child: Text(
+                  'Delete',
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
+            ),
+          )
+        ],
       ),
       body: SafeArea(
         child: AgoraMessagesView(
+          messageListViewController: controller,
           conversation: widget.conversation,
+          onError: (error) {
+            final snackBar = SnackBar(
+              content: Text('Error: ${error.description}'),
+              duration: const Duration(milliseconds: 1000),
+            );
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          },
         ),
       ),
     );

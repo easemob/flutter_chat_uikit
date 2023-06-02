@@ -14,6 +14,8 @@ class AgoraMessagesView extends StatefulWidget {
   ///
   /// [inputBarTextEditingController] Text input widget text editing controller.
   ///
+  /// [background] Background widget.
+  ///
   /// [inputBar] Text input component, if not passed by default will use [AgoraMessageInputWidget].
   ///
   /// [conversation] The conversation corresponding to the message details.
@@ -49,6 +51,7 @@ class AgoraMessagesView extends StatefulWidget {
   const AgoraMessagesView({
     required this.conversation,
     this.inputBarTextEditingController,
+    this.background,
     this.inputBar,
     this.onTap,
     this.onBubbleLongPress,
@@ -65,6 +68,8 @@ class AgoraMessagesView extends StatefulWidget {
     this.inputBarMoreActionsOnTap,
     super.key,
   });
+
+  final Widget? background;
 
   /// Text input widget text editing controller.
   final TextEditingController? inputBarTextEditingController;
@@ -172,6 +177,7 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
       children: [
         Expanded(
           child: AgoraMessagesList(
+            background: widget.background,
             needDismissInputWidgetAction: widget.needDismissInputWidget ??
                 () {
                   _focusNode.unfocus();
@@ -470,19 +476,15 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
       return false;
     }).then((value) async {
       if (value == true) {
-        _recordDuration = 0;
         _startTimer();
         await _audioRecorder.start();
       } else {
         if (!isRequest) {
-          debugPrint('no permission!!!!');
           widget.onError?.call(
             AgoraChatUIKitError.toChatError(
                 AgoraChatUIKitError.noPermission, 'no record permission'),
           );
-        } else {
-          debugPrint('request permission!!!!');
-        }
+        } else {}
       }
     });
   }
@@ -511,7 +513,7 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
       final file = File(path);
       isExists = file.existsSync();
       if (isExists) {
-        if (_recordDuration <= 1) {
+        if (_recordDuration < 1) {
           widget.onError?.call(
             AgoraChatUIKitError.toChatError(
                 AgoraChatUIKitError.recordTimeTooShort,
@@ -567,8 +569,10 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
   }
 
   void _startTimer() {
+    _recordDuration = 0;
     _timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
-      ++_recordDuration;
+      _recordDuration++;
+      debugPrint("timer: $_recordDuration");
     });
   }
 

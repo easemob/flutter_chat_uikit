@@ -1,5 +1,4 @@
 import 'package:agora_chat_uikit/agora_chat_uikit.dart';
-import 'package:agora_chat_uikit/agora_chat_uikit_theme.dart';
 import 'package:flutter/material.dart';
 
 class AgoraBadgeWidget extends StatelessWidget {

@@ -14,4 +14,8 @@ class AgoraMessageListItemModel {
   AgoraMessageListItemModel copyWithNeedTime(bool needTime) {
     return AgoraMessageListItemModel(message, needTime);
   }
+
+  bool isSend() {
+    return message.direction == MessageDirection.SEND;
+  }
 }
