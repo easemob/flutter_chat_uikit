@@ -1,10 +1,11 @@
 # Get started with Agora Chat UIKit
 
-Instant messaging connects people wherever they are and allows them to communicate with others in real time. With built-in user interfaces (UI) for the message list the [Agora Chat UI Samples]() enables you to quickly embed real-time messaging into your app without requiring extra effort on the UI.
+Instant messaging connects people wherever they are and allows them to communicate with others in real time. With built-in user interfaces (UI) for the message list, the [Agora Chat UI Samples]( ./example/  ) enables you to quickly embed real-time messaging into your app without requiring extra effort on the UI.
 
 This page shows a sample code to add peer-to-peer messaging into your app by using the Agora Chat UI Samples.
 
 ## Understand the tech
+
 The following figure shows the workflow of how clients send and receive peer-to-peer messages:
 
 ![agora_chat](https://docs.agora.io/en/assets/images/get-started-sdk-understand-009486abec0cc276183ab535456cf889.png)
@@ -15,7 +16,8 @@ The following figure shows the workflow of how clients send and receive peer-to-
 
 ## Prerequisites
 
-If your target platform is iOS, your development environment must meet the following requirements:
+For the iOS platform, your development environment must meet the following requirements:
+
 - Flutter 2.10 or later
 - Dart 2.16 or later
 - macOS
@@ -23,16 +25,15 @@ If your target platform is iOS, your development environment must meet the follo
 - CocoaPods
 - An iOS simulator or a real iOS device running iOS 10.0 or later
 
-If your target platform is Android, your development environment must meet the following requirements:
+For the Android platform, your development environment must meet the following requirements:
+
 - Flutter 2.10 or later
 - Dart 2.16 or later
-- macOS or Windows
+- macOS or Windows 
 - Android Studio 4.0 or later with JDK 1.8 or later
 - An Android simulator or a real Android device running Android SDK API level 21 or later
 
-<div class="alert note">You need to run <code>flutter doctor</code> to check whether both the development environment and the deployment environment are correct.</div>
-
-
+<div class="alert note">You need to run the <code>flutter doctor</code> command to check whether both the development environment and the deployment environment are correct.</div>
 
 ## Token generation
 
@@ -86,10 +87,9 @@ Open a terminal, enter a directory in which you want to create a Flutter project
 flutter create uikit_quick_start --platforms=android,ios
 ```
 
-
 ### 2. Set up the project
 
-#### Android setup
+#### Android setup 
 
 1. In the `uikit_quick_start/android/app/build.gradle` file, add the following lines at the end to set the minimum Android SDK version to 21:
 
@@ -108,12 +108,11 @@ android {
 -dontwarn  com.hyphenate.**
 ```
 
-3. Add permissions for network and device access.
+3. Add permissions for network and device access. 
 
 In `uikit_quick_start/android/app/src/main/AndroidManifest.xml`, add the following permissions after </application>:
 
 ```xml
-...
 <uses-permission android:name="android.permission.INTERNET" />
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 <uses-permission android:name="android.permission.WAKE_LOCK"/>
@@ -121,7 +120,6 @@ In `uikit_quick_start/android/app/src/main/AndroidManifest.xml`, add the followi
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 <uses-permission android:name="android.permission.CAMERA"/>
 <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-...
 ```
 
 #### iOS setup
@@ -129,43 +127,24 @@ In `uikit_quick_start/android/app/src/main/AndroidManifest.xml`, add the followi
 1. Open the `uikit_quick_start/ios/Runner.xcodeproj` file in **Xcode**, and select **TARGETS** > **Runner** in the left sidebar. In the **Deployment Info** section under the **General** tab, set the minimum iOS version to **iOS 10.0**.
 
 2. Add permissions for device access.
-Open the `Info.plist` and add:
-* `Privacy - Microphone Usage Description`，and add some description into the Value column.
-* `Privacy - Camera Usage Description`, and add some description into the Value column.
-* `Privacy - Photo Library Usage Description`, and add some description into the Value column.
+
+In `Info.plist`， add the following permissions:
+
+* `Privacy - Microphone Usage Description`，and add some descriptions to the `Value` column.
+* `Privacy - Camera Usage Description`, and add some descriptions into the `Value` column.
+* `Privacy - Photo Library Usage Description`, and add some descriptions into the `Value` column.
 
 
 ### 3. Integrate the Agora Chat SDK
 
-Open a terminal, enter the `uikit_quick_start` directory, and run the following command to add the `agora_chat_uikit` dependency:
-
-#### pub dev integration (Not released yet)
+Open a terminal, enter the `uikit_quick_start` directory, and run the following command to add the `agora_chat_uikit` dependency:  
 
 ```dart
 flutter pub add agora_chat_uikit
 flutter pub get
 ```
 
-#### Local integration
-
-```dart
-dependencies:
-    agora_chat_uikit:
-        path: `<#uikit path#>`
-```
-
-#### Github integration
-
-```dart
-dependencies:
-    agora_chat_uikit:
-        git:
-            url: https://github.com/easemob/flutter_chat_uikit.git
-            ref: dev
-```
-
 ## Implement peer-to-peer messaging
-
 
 Create a new page `uikit_quick_start/lib/MessagesPage.dart`:
 
@@ -195,7 +174,6 @@ class _MessagesPageState extends State<MessagesPage> {
 }
 
 ```
-
 
 At the top lines of the `uikit_quick_start/lib/main.dart` file, add the following to import packages:
 
@@ -394,19 +372,31 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 ```
 
-
-## Test your app
+## Test your app  添加截图？
 
 To validate the peer-to-peer messaging you have just integrated into your app using Agora Chat, perform the following operations to test the project:
 
+1. Log in
 
-### 1. Log in
-a. Replace the placeholders of appKey, userId, and agoraToken in the AgoraChatConfig class with the App Key, user ID, and Agora token of the sender.
+a. Replace the placeholders of `appKey`, `userId`, and `agoraToken` in the `AgoraChatConfig` class with the App Key, user ID, and Agora token of the sender.   
 
-b. Select the device to run the project, run flutter run in the uikit_quick_start directory, and click the SIGN IN button.
+b. Select the device to run the project, run `flutter run` in the `uikit_quick_start` directory, and click `SIGN IN`.
 
-### 2. Push to MessagesPage
-Fill in the user ID of the receiver in the Enter recipient's user Id box, and click START CHAT to push the messages page.
+<div align=center> <img src="./docs/image1.png" width = "300" /></div>
 
-### 3. Send a message
-On the MessagesPage page, click the input box, enter the information to be sent, and click the Send button.
+
+2. Open the `MessagesPage` page
+
+Fill in the user ID of the recipient in the `Enter recipient's user Id` box, and click `START CHAT` to open the `MessagesPage` page.
+
+<div align=center> <img src="./docs/image2.png" width = "300" /></div>
+
+3. Send a message
+
+On the `MessagesPage` page, click the input box, enter the information to be sent, and click `Send`.
+
+<div align=center> <img src="./docs/image3.png" width = "300" /></div>
+
+## Next steps  
+
+For demonstration purposes, Chat provides an app server that enables you to quickly retrieve a token using the [App Key](.enable_agora_chat?platform=Android#get-the-information-of-the-agora-chat-project) given in this guide. In a production context, the best practice is for you to deploy your own token server, use your own App Key to generate a token, and retrieve the token on the client side to log in to Agora. To see how to implement a server that generates and serves tokens on request, see [Authenticate your users with tokens](./authentication?platform=android).
