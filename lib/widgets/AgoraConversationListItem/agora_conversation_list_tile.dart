@@ -33,19 +33,22 @@ class AgoraConversationListTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                title ??
-                    Text(
-                      conversation.id,
-                      style: AgoraChatUIKit.of(context)
-                          .agoraTheme
-                          .conversationListItemTitleStyle,
-                    ),
+                Flexible(
+                  child: title ??
+                      Text(
+                        conversation.id,
+                        style: AgoraChatUIKit.of(context)
+                            .agoraTheme
+                            .conversationListItemTitleStyle,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                ),
                 Text(
                   msg?.createTs ?? "",
                   style: AgoraChatUIKit.of(context)
                       .agoraTheme
                       .conversationListItemTsStyle,
-                )
+                ),
               ]),
           subtitle: subtitle ??
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -56,6 +59,7 @@ class AgoraConversationListTile extends StatelessWidget {
                       style: AgoraChatUIKit.of(context)
                           .agoraTheme
                           .conversationListItemTitleStyle,
+                      overflow: TextOverflow.ellipsis,
                     );
                   },
                 )),
