@@ -103,7 +103,7 @@ class _AgoraDialogState extends State<AgoraDialog> {
 
     if (widget.hiddenList != null) {
       for (var i = 0; i < widget.hiddenList!.length; i++) {
-        list.add(const Divider(height: 8, color: Colors.transparent));
+        list.add(const Divider(height: 18, color: Colors.transparent));
         TextEditingController controller = _controllers[i];
         Widget content = TextField(
           controller: controller,
