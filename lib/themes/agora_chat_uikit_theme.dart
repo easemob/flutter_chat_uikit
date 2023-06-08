@@ -33,8 +33,6 @@ class AgoraChatUIKitTheme {
   ///
   /// Param [bottomSheetItemLabelRecallStyle] is the text style of the bottom sheet item label when the message is recall.
   ///
-  /// Param [dialogItemLabelNormalStyle] is the text style of the dialog item label.
-  ///
   /// Param [inputWidgetSendBtnColor] is the color of the input widget send button.
   ///
   /// Param [inputWidgetSendBtnStyle] is the text style of the input widget send button.
@@ -62,8 +60,6 @@ class AgoraChatUIKitTheme {
         color: Color.fromRGBO(255, 20, 204, 1),
         fontWeight: FontWeight.w400,
         fontSize: 18),
-    this.dialogItemLabelNormalStyle = const TextStyle(
-        fontSize: 18, fontWeight: FontWeight.w600, color: Colors.black),
     this.inputWidgetSendBtnColor = Colors.blue,
     this.inputWidgetSendBtnStyle = const TextStyle(color: Colors.white),
   });
@@ -83,6 +79,5 @@ class AgoraChatUIKitTheme {
   final TextStyle messagesListItemTsStyle;
   final TextStyle bottomSheetItemLabelNormalStyle;
   final TextStyle bottomSheetItemLabelRecallStyle;
-  final TextStyle dialogItemLabelNormalStyle;
   final TextStyle inputWidgetSendBtnStyle;
 }
