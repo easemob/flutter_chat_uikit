@@ -1,81 +1,308 @@
-import 'package:agora_chat_uikit/agora_chat_uikit.dart';
 import 'package:flutter/material.dart';
 
-class AgoraDialog {
-  const AgoraDialog({
-    required this.titleLabel,
-    this.titleStyle,
-    required this.items,
-    this.content,
+class AgoraDialog extends StatefulWidget {
+  factory AgoraDialog.input({
+    String? title,
+    required List<String> hiddenList,
+    String? subTitle,
+    List<AgoraDialogItem>? items,
+  }) {
+    return AgoraDialog._(
+      titleLabel: title,
+      subTitleLabel: subTitle,
+      hiddenList: hiddenList,
+      items: items,
+    );
+  }
+
+  factory AgoraDialog.normal({
+    String? title,
+    String? subTitle,
+    List<AgoraDialogItem>? items,
+  }) {
+    return AgoraDialog._(
+      titleLabel: title,
+      subTitleLabel: subTitle,
+      items: items,
+    );
+  }
+
+  const AgoraDialog._({
+    this.titleLabel,
+    this.subTitleLabel,
+    this.hiddenList,
+    this.items,
   });
-  final String titleLabel;
-  final Widget? content;
-  final TextStyle? titleStyle;
-  final List<AgoraDialogItem> items;
 
-  Future<T?>? show<T>(BuildContext context) {
+  final String? titleLabel;
+  final String? subTitleLabel;
+  final List<String>? hiddenList;
+  final List<AgoraDialogItem>? items;
+
+  @override
+  State<StatefulWidget> createState() => _AgoraDialogState();
+}
+
+class _AgoraDialogState extends State<AgoraDialog> {
+  final List<TextEditingController> _controllers = [];
+
+  @override
+  void initState() {
+    super.initState();
+    widget.hiddenList?.forEach((element) {
+      _controllers.add(TextEditingController());
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width * 0.7;
+    return Dialog(
+      shape: ContinuousRectangleBorder(
+        borderRadius: BorderRadius.circular(18),
+      ),
+      child: SizedBox(
+        width: width,
+        child: _buildContent(),
+      ),
+    );
+  }
+
+  Widget _buildContent() {
+    assert(
+      widget.items != null ||
+          widget.hiddenList != null ||
+          widget.subTitleLabel != null ||
+          widget.titleLabel != null,
+      'You need to set at least one parameter.',
+    );
+
     List<Widget> list = [];
-
-    for (var item in items) {
+    if (widget.titleLabel != null) {
+      list.add(const Divider(height: 8, color: Colors.transparent));
       list.add(
-        InkWell(
-          onTap: item.onTap,
-          child: Container(
-            width: 100,
-            height: 40,
-            decoration: BoxDecoration(
-              color: item.backgroundColor,
-              borderRadius: BorderRadius.circular(30),
-            ),
-            child: Center(
-              child: Text(
-                item.label,
-                style: item.labelStyle ??
-                    AgoraChatUIKit.of(context)
-                        .agoraTheme
-                        .dialogItemLabelNormalStyle,
-              ),
-            ),
-          ),
+        Text(
+          widget.titleLabel ?? '',
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
         ),
       );
     }
 
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          contentPadding: const EdgeInsets.fromLTRB(50, 10, 50, 10),
-          titlePadding: const EdgeInsets.fromLTRB(0, 20, 0, 12),
-          actionsOverflowAlignment: OverflowBarAlignment.center,
-          actionsPadding: const EdgeInsets.fromLTRB(0, 12, 0, 20),
-          actionsAlignment: MainAxisAlignment.spaceEvenly,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(16)),
-          ),
-          title: Center(
-            child: Text(
-              titleLabel,
-              style: titleStyle,
+    if (widget.subTitleLabel != null) {
+      list.add(const Divider(height: 8, color: Colors.transparent));
+      list.add(
+        Text(
+          widget.subTitleLabel ?? '',
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+              fontWeight: FontWeight.w400, fontSize: 14, color: Colors.black87),
+        ),
+      );
+    }
+
+    if (widget.hiddenList != null) {
+      for (var i = 0; i < widget.hiddenList!.length; i++) {
+        list.add(const Divider(height: 8, color: Colors.transparent));
+        TextEditingController controller = _controllers[i];
+        Widget content = TextField(
+          controller: controller,
+          cursorHeight: 12,
+          decoration: InputDecoration(
+            isCollapsed: true,
+            contentPadding: const EdgeInsets.fromLTRB(15, 8, 15, 8),
+            hintText: widget.hiddenList![i],
+            hintStyle:
+                const TextStyle(fontWeight: FontWeight.w400, fontSize: 16),
+            labelStyle: const TextStyle(
+              fontWeight: FontWeight.w400,
+              fontSize: 16,
+            ),
+            border: InputBorder.none,
+            suffix: InkWell(
+              onTap: controller.clear,
+              child:
+                  const Icon(Icons.close_rounded, color: Colors.grey, size: 12),
             ),
           ),
-          content: content,
-          actions: list,
         );
-      },
+
+        content = Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(18),
+            color: const Color.fromRGBO(250, 250, 250, 1),
+          ),
+          child: content,
+        );
+        list.add(content);
+      }
+    }
+
+    if (widget.items != null) {
+      list.add(const Divider(height: 10, color: Colors.transparent));
+      if (widget.items!.length > 2) {
+        for (var i = 0; i < widget.items!.length; i++) {
+          list.add(const Divider(height: 8, color: Colors.transparent));
+          AgoraDialogItem item = widget.items![i];
+          list.add(item);
+        }
+      } else {
+        list.add(const Divider(height: 8, color: Colors.transparent));
+        List<Widget> rowItems = [];
+        for (var i = 0; i < widget.items!.length; i++) {
+          AgoraDialogItem item = widget.items![i];
+          if (item.type == AgoraDialogItemType.confirm &&
+              widget.hiddenList != null &&
+              widget.hiddenList!.isNotEmpty) {
+            item = item.copyWith(() {
+              List<String> list = [];
+              for (var element in _controllers) {
+                list.add(element.text);
+              }
+              return list;
+            });
+          }
+          rowItems.add(Expanded(child: item));
+          rowItems.add(const SizedBox(width: 20));
+          if (i == widget.items!.length - 1) {
+            rowItems.removeLast();
+          }
+        }
+        Widget content = Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: rowItems,
+        );
+        list.add(content);
+      }
+    }
+
+    Widget content = Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: list,
     );
+
+    content = Container(
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+      child: content,
+    );
+
+    content = ListView(
+      physics: const BouncingScrollPhysics(),
+      shrinkWrap: true,
+      children: [content],
+    );
+    content = Scrollbar(
+      child: content,
+    );
+    return content;
+  }
+
+  @override
+  void dispose() {
+    for (var element in _controllers) {
+      element.dispose();
+    }
+    super.dispose();
   }
 }
 
-class AgoraDialogItem {
+enum AgoraDialogItemType {
+  confirm,
+  cancel,
+}
+
+// ignore: must_be_immutable
+class AgoraDialogItem extends StatelessWidget {
+  factory AgoraDialogItem.confirm({
+    Key? key,
+    String? label,
+    void Function(List<String>? labels)? onTap,
+  }) {
+    return AgoraDialogItem(
+      key: key,
+      type: AgoraDialogItemType.confirm,
+      label: label ?? 'Confirm',
+      onTap: onTap,
+      labelStyle: const TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+        color: Colors.white,
+      ),
+      backgroundColor: const Color.fromRGBO(17, 78, 255, 1),
+    );
+  }
+
+  factory AgoraDialogItem.cancel({
+    Key? key,
+    String? label,
+    VoidCallback? onTap,
+  }) {
+    return AgoraDialogItem(
+      key: key,
+      type: AgoraDialogItemType.cancel,
+      label: label ?? 'Cancel',
+      onTap: (p0) {
+        onTap?.call();
+      },
+      labelStyle: const TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+        color: Colors.black,
+      ),
+      backgroundColor: const Color.fromRGBO(242, 242, 242, 1),
+    );
+  }
+
   AgoraDialogItem({
+    super.key,
+    required this.type,
     required this.label,
-    required this.onTap,
-    this.backgroundColor = const Color.fromRGBO(250, 250, 250, 1),
+    this.onTap,
     this.labelStyle,
+    this.backgroundColor,
   });
+
   final String label;
-  final VoidCallback onTap;
-  final Color backgroundColor;
+  final void Function(List<String>?)? onTap;
   final TextStyle? labelStyle;
+  final Color? backgroundColor;
+  final AgoraDialogItemType type;
+
+  List<String>? Function()? _getValues;
+
+  AgoraDialogItem copyWith(List<String>? Function() action) {
+    AgoraDialogItem item = AgoraDialogItem(
+      type: type,
+      label: label,
+      onTap: onTap,
+      labelStyle: labelStyle,
+      backgroundColor: backgroundColor,
+    );
+    item._getValues = action;
+    return item;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        onTap?.call(_getValues?.call());
+      },
+      child: Container(
+        width: 100,
+        height: 40,
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          borderRadius: BorderRadius.circular(30),
+        ),
+        child: Center(
+          child: Text(
+            label,
+            style: labelStyle,
+          ),
+        ),
+      ),
+    );
+  }
 }
