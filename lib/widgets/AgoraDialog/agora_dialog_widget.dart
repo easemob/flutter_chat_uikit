@@ -96,7 +96,9 @@ class _AgoraDialogState extends State<AgoraDialog> {
           widget.subTitleLabel ?? '',
           textAlign: TextAlign.center,
           style: const TextStyle(
-              fontWeight: FontWeight.w400, fontSize: 14, color: Colors.black87),
+              fontWeight: FontWeight.w400,
+              fontSize: 14,
+              color: Color.fromRGBO(108, 113, 146, 1)),
         ),
       );
     }

@@ -93,13 +93,13 @@ dependencies:
 ```
 ### iOS
 
-Open info.plist and add:
+In `Info.plist`， add the following permissions:
 
-```
-Privacy - Microphone Usage Description, and add a note in the Value column.
-Privacy - Camera Usage Description, and add a note in the Value column.
-Privacy - Photo Library Usage Description.
-```
+|Key|Type|Value|
+---|---|---
+`Privacy - Microphone Usage Description` | String | For microphone access
+`Privacy - Camera Usage Description` | String | For camera access
+`Privacy - Photo Library Usage Description` | String | For photo library access
 
 ## Prevent code obfuscation
 
