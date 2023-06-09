@@ -130,9 +130,11 @@ In `uikit_quick_start/android/app/src/main/AndroidManifest.xml`, add the followi
 
 In `Info.plist`， add the following permissions:
 
-* `Privacy - Microphone Usage Description`，and add some descriptions to the `Value` column.
-* `Privacy - Camera Usage Description`, and add some descriptions into the `Value` column.
-* `Privacy - Photo Library Usage Description`, and add some descriptions into the `Value` column.
+|Key|Type|Value|
+---|---|---
+`Privacy - Microphone Usage Description` | String | For microphone access
+`Privacy - Camera Usage Description` | String | For camera access
+`Privacy - Photo Library Usage Description` | String | For photo library access
 
 
 ### 3. Integrate the Agora Chat SDK

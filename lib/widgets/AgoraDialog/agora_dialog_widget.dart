@@ -96,14 +96,16 @@ class _AgoraDialogState extends State<AgoraDialog> {
           widget.subTitleLabel ?? '',
           textAlign: TextAlign.center,
           style: const TextStyle(
-              fontWeight: FontWeight.w400, fontSize: 14, color: Colors.black87),
+              fontWeight: FontWeight.w400,
+              fontSize: 14,
+              color: Color.fromRGBO(108, 113, 146, 1)),
         ),
       );
     }
 
     if (widget.hiddenList != null) {
       for (var i = 0; i < widget.hiddenList!.length; i++) {
-        list.add(const Divider(height: 8, color: Colors.transparent));
+        list.add(const Divider(height: 18, color: Colors.transparent));
         TextEditingController controller = _controllers[i];
         Widget content = TextField(
           controller: controller,
