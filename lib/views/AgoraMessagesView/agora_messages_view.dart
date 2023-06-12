@@ -344,13 +344,6 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
   }
 
   void _openFilePicker() async {
-    // PermissionStatus permission = await Permission.storage.request();
-    // if (permission != PermissionStatus.granted) {
-    //   widget.onError?.call(AgoraChatUIKitError.toChatError(
-    //       AgoraChatUIKitError.noPermission, "no permission"));
-    //   return;
-    // }
-
     FilePickerResult? result = await FilePicker.platform.pickFiles();
     if (result != null) {
       PlatformFile? file = result.files.first;
