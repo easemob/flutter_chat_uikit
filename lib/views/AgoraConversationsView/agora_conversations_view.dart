@@ -322,13 +322,13 @@ class AgoraConversationsViewState extends State<AgoraConversationsView> {
                               AgoraBottomSheetItem.normal(
                                 'Confirm',
                                 onTap: () async {
-                                  Navigator.of(context).pop(true);
+                                  return Navigator.of(context).pop(true);
                                 },
                               ),
                               AgoraBottomSheetItem.normal(
                                 'Cancel',
                                 onTap: () async {
-                                  Navigator.of(context).pop(false);
+                                  return Navigator.of(context).pop(false);
                                 },
                               )
                             ];
