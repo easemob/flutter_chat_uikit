@@ -318,25 +318,26 @@ class AgoraConversationsViewState extends State<AgoraConversationsView> {
                           text: AppLocalizations.of(context)?.agoraDelete ??
                               "Delete",
                           confirmAction: (_) async {
-                            return await AgoraBottomSheet(
-                                  titleLabel: AppLocalizations.of(context)
-                                          ?.agoraDeleteConversation ??
-                                      'Delete conversation',
-                                  items: [
-                                    AgoraBottomSheetItem(
-                                        AppLocalizations.of(context)
-                                                ?.agoraConfirm ??
-                                            'Confirm',
-                                        onTap: () =>
-                                            Navigator.of(context).pop(true)),
-                                    AgoraBottomSheetItem(
-                                        AppLocalizations.of(context)
-                                                ?.agoraCancel ??
-                                            'Cancel',
-                                        onTap: () =>
-                                            Navigator.of(context).pop(false)),
-                                  ],
-                                ).show(context) ??
+                            List<AgoraBottomSheetItem> list = [
+                              AgoraBottomSheetItem.normal(
+                                'Confirm',
+                                onTap: () async {
+                                  Navigator.of(context).pop(true);
+                                },
+                              ),
+                              AgoraBottomSheetItem.normal(
+                                'Cancel',
+                                onTap: () async {
+                                  Navigator.of(context).pop(false);
+                                },
+                              )
+                            ];
+
+                            return await showAgoraBottomSheet(
+                                  context: context,
+                                  title: 'Delete conversation',
+                                  items: list,
+                                ) ??
                                 false;
                           },
                         ),

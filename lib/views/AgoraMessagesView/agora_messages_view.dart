@@ -272,9 +272,9 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
     List<AgoraBottomSheetItem> list = [];
     if (message.body.type == MessageType.TXT) {
       list.add(
-        AgoraBottomSheetItem(
-          "Copy",
-          onTap: () {
+        AgoraBottomSheetItem.normal(
+          'Copy',
+          onTap: () async {
             ChatTextMessageBody body = message.body as ChatTextMessageBody;
             Clipboard.setData(ClipboardData(text: body.content));
             return Navigator.of(context).pop();
@@ -283,9 +283,9 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
       );
     }
     list.add(
-      AgoraBottomSheetItem(
-        "Delete",
-        onTap: () {
+      AgoraBottomSheetItem.normal(
+        'Delete',
+        onTap: () async {
           msgListViewController.removeMessage(message);
           return Navigator.of(context).pop();
         },
@@ -296,19 +296,17 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
 
     if (time < 120 * 1000 && message.direction != MessageDirection.RECEIVE) {
       list.add(
-        AgoraBottomSheetItem(
-          "Recall",
-          labelStyle: AgoraChatUIKit.of(context)
-              .agoraTheme
-              .bottomSheetItemLabelRecallStyle,
-          onTap: () {
+        AgoraBottomSheetItem.destructive(
+          'Recall',
+          onTap: () async {
             msgListViewController.recallMessage(message);
-            return Navigator.of(context).pop();
+            Navigator.of(context).pop();
           },
         ),
       );
     }
-    AgoraBottomSheet(items: list).show(context);
+
+    showAgoraBottomSheet(context: context, items: list);
   }
 
   void showMoreItems() {
@@ -316,27 +314,29 @@ class _AgoraMessagesViewState extends State<AgoraMessagesView> {
     if (widget.inputBarMoreActionsOnTap != null) {
       final list = widget.inputBarMoreActionsOnTap!.call(currentList);
       if (list.isNotEmpty) {
-        AgoraBottomSheet(items: list).show(context);
+        showAgoraBottomSheet(context: context, items: list);
       }
     } else {
-      AgoraBottomSheet(items: widget.moreItems ?? _moreItems()).show(context);
+      showAgoraBottomSheet(
+          context: context, items: widget.moreItems ?? _moreItems());
     }
   }
 
   List<AgoraBottomSheetItem> _moreItems() {
     return [
-      AgoraBottomSheetItem(
-          AppLocalizations.of(context)?.agoraCamera ?? 'Camera', onTap: () {
+      AgoraBottomSheetItem.normal(
+          AppLocalizations.of(context)?.agoraCamera ?? 'Camera',
+          onTap: () async {
         Navigator.of(context).pop();
         _takePhoto();
       }),
-      AgoraBottomSheetItem(AppLocalizations.of(context)?.agoraAlbum ?? 'Album',
-          onTap: () {
+      AgoraBottomSheetItem.normal(
+          AppLocalizations.of(context)?.agoraAlbum ?? 'Album', onTap: () async {
         Navigator.of(context).pop();
         _openImagePicker();
       }),
-      AgoraBottomSheetItem(AppLocalizations.of(context)?.agoraFiles ?? 'Files',
-          onTap: () {
+      AgoraBottomSheetItem.normal(
+          AppLocalizations.of(context)?.agoraFiles ?? 'Files', onTap: () async {
         Navigator.of(context).pop();
         _openFilePicker();
       }),

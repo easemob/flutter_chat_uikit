@@ -1,105 +1,173 @@
-import 'package:agora_chat_uikit/agora_chat_uikit.dart';
 import 'package:flutter/material.dart';
 
-class AgoraBottomSheet {
-  AgoraBottomSheet({
-    this.backgroundColor = Colors.white,
-    required this.items,
-    this.height = 250,
-    this.titleLabel,
+Future<T?> showAgoraBottomSheet<T>({
+  required BuildContext context,
+  String? title,
+  Color? barrierColor,
+  Color? backgroundColor,
+  List<AgoraBottomSheetItem>? items,
+  TextStyle titleStyle = const TextStyle(
+      color: Color.fromRGBO(102, 102, 102, 1),
+      fontWeight: FontWeight.w600,
+      fontSize: 14),
+  TextStyle normalItemStyle = const TextStyle(
+      color: Colors.black, fontSize: 16, fontWeight: FontWeight.w600),
+  TextStyle destructiveItemStyle = const TextStyle(
+      color: Color.fromRGBO(255, 20, 204, 1),
+      fontWeight: FontWeight.w600,
+      fontSize: 16),
+}) {
+  barrierColor ??= Theme.of(context).bottomSheetTheme.modalBackgroundColor;
+  return showModalBottomSheet(
+    context: context,
+    barrierColor: barrierColor,
+    shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+      topLeft: Radius.circular(12),
+      topRight: Radius.circular(12),
+    )),
+    builder: (context) {
+      return AgoraBottomSheet(
+        title: title,
+        items: items,
+        titleStyle: titleStyle,
+        destructiveItemStyle: destructiveItemStyle,
+        normalItemStyle: normalItemStyle,
+        backgroundColor: backgroundColor,
+        barrierColor: barrierColor,
+      );
+    },
+  );
+}
+
+class AgoraBottomSheet extends StatefulWidget {
+  const AgoraBottomSheet({
+    super.key,
+    this.title,
+    this.items,
+    this.destructiveItemStyle,
+    this.barrierColor,
+    this.backgroundColor,
+    this.titleStyle,
+    this.normalItemStyle,
   });
-  final Color backgroundColor;
+  final String? title;
+  final List<AgoraBottomSheetItem>? items;
+  final TextStyle? titleStyle;
+  final TextStyle? normalItemStyle;
+  final TextStyle? destructiveItemStyle;
+  final Color? barrierColor;
+  final Color? backgroundColor;
 
-  final List<AgoraBottomSheetItem> items;
-  final double height;
-  final String? titleLabel;
+  @override
+  State<AgoraBottomSheet> createState() => _AgoraBottomSheetState();
+}
 
-  Future<T?>? show<T>(BuildContext context) {
-    if (items.isEmpty) return null;
+class _AgoraBottomSheetState extends State<AgoraBottomSheet> {
+  @override
+  Widget build(BuildContext context) {
     List<Widget> list = [];
-    if (titleLabel != null) {
-      list.add(Padding(
-        padding: const EdgeInsets.fromLTRB(0, 12, 0, 6),
-        child: Center(
-          child: Text(
-            titleLabel!,
-            style: const TextStyle(
-                color: Color.fromRGBO(102, 102, 102, 1), fontSize: 14),
-          ),
-        ),
-      ));
-    } else {
-      list.add(const SizedBox(height: 10));
-    }
-
-    for (var item in items) {
+    list.add(const Divider(height: 12, color: Colors.transparent));
+    if (widget.title != null) {
       list.add(
-        InkWell(
-          onTap: item.onTap,
-          child: Container(
-            margin: const EdgeInsets.fromLTRB(20, 6, 20, 6),
-            height: 48,
-            decoration: BoxDecoration(
-              color: item.backgroundColor,
-              borderRadius: BorderRadius.circular(30),
-            ),
-            child: Center(
-              child: Text(
-                item.label,
-                style: item.labelStyle ??
-                    AgoraChatUIKit.of(context)
-                        .agoraTheme
-                        .bottomSheetItemLabelNormalStyle,
-              ),
-            ),
+        Container(
+          padding: const EdgeInsets.only(top: 0, bottom: 12),
+          child: Text(
+            widget.title!,
+            style: widget.titleStyle,
           ),
         ),
       );
     }
-    list.add(const SizedBox(height: 10));
-    return showModalBottomSheet(
-      backgroundColor: backgroundColor,
-      context: context,
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(10),
-        topRight: Radius.circular(10),
-      )),
-      builder: (context) {
-        return SafeArea(
-            child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
-          children: list,
-        ));
-      },
+
+    if (widget.items != null) {
+      widget.items?.forEach((element) {
+        Widget item = Text(
+          element.label,
+          style: element.type == AgoraBottomSheetItemType.destructive
+              ? widget.destructiveItemStyle
+              : widget.normalItemStyle,
+        );
+
+        item = Center(child: item);
+
+        item = Container(
+          margin: const EdgeInsets.only(left: 12, right: 12),
+          height: 48,
+          decoration: BoxDecoration(
+            color: element.backgroundColor ??
+                const Color.fromRGBO(246, 246, 246, 1),
+            borderRadius: const BorderRadius.all(Radius.circular(40)),
+          ),
+          child: item,
+        );
+
+        item = InkWell(
+          onTap: () async {
+            return await element.onTap?.call();
+          },
+          child: item,
+        );
+
+        list.add(item);
+        list.add(const Divider(height: 12, color: Colors.transparent));
+      });
+    }
+
+    Widget content = Column(
+      mainAxisSize: MainAxisSize.min,
+      children: list,
     );
+
+    content = SafeArea(child: content);
+
+    return content;
   }
 }
 
-class AgoraBottomSheetItem {
-  AgoraBottomSheetItem(
-    this.label, {
-    required this.onTap,
-    this.backgroundColor = const Color.fromRGBO(250, 250, 250, 1),
-    this.labelStyle,
-  });
-  final String label;
-  final VoidCallback onTap;
-  final Color backgroundColor;
-  final TextStyle? labelStyle;
+enum AgoraBottomSheetItemType { normal, destructive }
 
-  AgoraBottomSheetItem copyWith({
-    String? label,
-    VoidCallback? onTap,
-    Color? backgroundColor,
+class AgoraBottomSheetItem<T> {
+  final String label;
+  final Future<T> Function()? onTap;
+  final TextStyle? labelStyle;
+  final AgoraBottomSheetItemType type;
+  final Color? backgroundColor;
+
+  factory AgoraBottomSheetItem.normal(
+    String label, {
+    Future<T> Function()? onTap,
     TextStyle? labelStyle,
+    Color? backgroundColor,
   }) {
     return AgoraBottomSheetItem(
-      label ?? this.label,
-      onTap: onTap ?? this.onTap,
-      backgroundColor: backgroundColor ?? this.backgroundColor,
-      labelStyle: labelStyle ?? this.labelStyle,
+      label: label,
+      onTap: onTap,
+      labelStyle: labelStyle,
+      type: AgoraBottomSheetItemType.normal,
+      backgroundColor: backgroundColor,
     );
   }
+  factory AgoraBottomSheetItem.destructive(
+    String label, {
+    Future<T> Function()? onTap,
+    TextStyle? labelStyle,
+    Color? backgroundColor,
+  }) {
+    return AgoraBottomSheetItem<T>(
+      label: label,
+      onTap: onTap,
+      labelStyle: labelStyle,
+      type: AgoraBottomSheetItemType.destructive,
+      backgroundColor: backgroundColor,
+    );
+  }
+
+  const AgoraBottomSheetItem({
+    required this.label,
+    required this.type,
+    this.onTap,
+    this.labelStyle,
+    this.backgroundColor,
+  });
 }
