@@ -29,10 +29,6 @@ class AgoraChatUIKitTheme {
   ///
   /// Param [messagesListItemTsStyle] is the text style of the messages list item timestamp.
   ///
-  /// Param [bottomSheetItemLabelNormalStyle] is the text style of the bottom sheet item label.
-  ///
-  /// Param [bottomSheetItemLabelRecallStyle] is the text style of the bottom sheet item label when the message is recall.
-  ///
   /// Param [inputWidgetSendBtnColor] is the color of the input widget send button.
   ///
   /// Param [inputWidgetSendBtnStyle] is the text style of the input widget send button.
@@ -54,12 +50,6 @@ class AgoraChatUIKitTheme {
         const TextStyle(color: Colors.grey, fontSize: 14),
     this.messagesListItemTsStyle =
         const TextStyle(color: Colors.grey, fontSize: 14),
-    this.bottomSheetItemLabelNormalStyle = const TextStyle(
-        fontSize: 18, fontWeight: FontWeight.w400, color: Colors.black),
-    this.bottomSheetItemLabelRecallStyle = const TextStyle(
-        color: Color.fromRGBO(255, 20, 204, 1),
-        fontWeight: FontWeight.w400,
-        fontSize: 18),
     this.inputWidgetSendBtnColor = Colors.blue,
     this.inputWidgetSendBtnStyle = const TextStyle(color: Colors.white),
   });
@@ -77,7 +67,5 @@ class AgoraChatUIKitTheme {
   final TextStyle conversationListItemSubTitleStyle;
   final TextStyle conversationListItemTsStyle;
   final TextStyle messagesListItemTsStyle;
-  final TextStyle bottomSheetItemLabelNormalStyle;
-  final TextStyle bottomSheetItemLabelRecallStyle;
   final TextStyle inputWidgetSendBtnStyle;
 }
