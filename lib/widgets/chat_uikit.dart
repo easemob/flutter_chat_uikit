@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_chat_uikit/flutter_chat_uikit.dart';
 
+import '../flutter_chat_uikit.dart';
 import '../internal/chat_uikit_manager.dart';
 
 class ChatUIKit extends StatefulWidget {

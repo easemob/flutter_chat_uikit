@@ -1,4 +1,4 @@
-import 'package:flutter_chat_uikit/flutter_chat_uikit.dart';
+import '../flutter_chat_uikit.dart';
 
 class ChatUIKitError {
   static int noPermission = -10;

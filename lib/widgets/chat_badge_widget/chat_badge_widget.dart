@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_uikit/flutter_chat_uikit.dart';
+
+import '../chat_uikit.dart';
 
 class ChatBadgeWidget extends StatelessWidget {
   const ChatBadgeWidget(
