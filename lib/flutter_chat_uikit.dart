@@ -44,4 +44,4 @@ export 'widgets/chat_message_list/chat_message_list_item/chat_message_list_text_
 export 'widgets/chat_message_list/chat_message_list_item/chat_message_list_voice_item.dart';
 export 'widgets/chat_message_list/chat_message_list_item/chat_message_status_widget.dart';
 export 'widgets/chat_tile/chat_conversation_tile.dart';
-export 'widgets/chat_uikit_widget.dart';
+export 'widgets/chat_uikit.dart';

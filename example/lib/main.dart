@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_uikit/flutter_chat_uikit.dart';
 
+import 'conversations_page.dart';
 import 'messages_page.dart';
 
 class ChatConfig {
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      builder: (context, child) => ChatUIKitWidget(
+      builder: (context, child) => ChatUIKit(
         theme: ChatUIKitTheme(),
         child: child!,
       ),
@@ -155,13 +156,13 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void pushToConversationPage() async {
-    // if (ChatClient.getInstance.currentUserId == null) {
-    //   _addLogToConsole('user not login');
-    //   return;
-    // }
-    // Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-    //   return const ConversationsPage();
-    // }));
+    if (EMClient.getInstance.currentUserId == null) {
+      _addLogToConsole('user not login');
+      return;
+    }
+    Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+      return const ConversationsPage();
+    }));
   }
 
   void pushToChatPage(String userId) async {

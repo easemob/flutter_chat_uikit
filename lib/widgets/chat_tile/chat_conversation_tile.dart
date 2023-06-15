@@ -40,7 +40,7 @@ class ChatConversationListTile extends StatelessWidget {
                   child: title ??
                       Text(
                         conversation.id,
-                        style: ChatUIKitWidget.of(context)
+                        style: ChatUIKit.of(context)
                             .theme
                             .conversationListItemTitleStyle,
                         overflow: TextOverflow.ellipsis,
@@ -48,9 +48,8 @@ class ChatConversationListTile extends StatelessWidget {
                 ),
                 Text(
                   msg?.createTs ?? "",
-                  style: ChatUIKitWidget.of(context)
-                      .theme
-                      .conversationListItemTsStyle,
+                  style:
+                      ChatUIKit.of(context).theme.conversationListItemTsStyle,
                 ),
               ]),
           subtitle: subtitle ??
@@ -59,7 +58,7 @@ class ChatConversationListTile extends StatelessWidget {
                   builder: (context) {
                     return Text(
                       msg?.summary(context) ?? "",
-                      style: ChatUIKitWidget.of(context)
+                      style: ChatUIKit.of(context)
                           .theme
                           .conversationListItemTitleStyle,
                       overflow: TextOverflow.ellipsis,

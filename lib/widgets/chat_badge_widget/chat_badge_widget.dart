@@ -19,7 +19,7 @@ class ChatBadgeWidget extends StatelessWidget {
         } else if (unreadCount < 0) {
           return Container(
             decoration: BoxDecoration(
-                color: ChatUIKitWidget.of(context).theme.badgeColor,
+                color: ChatUIKit.of(context).theme.badgeColor,
                 borderRadius: const BorderRadius.all(Radius.circular(30))),
             width: 10,
             height: 10,
@@ -31,15 +31,15 @@ class ChatBadgeWidget extends StatelessWidget {
           }
           return Container(
             decoration: BoxDecoration(
-                color: ChatUIKitWidget.of(context).theme.badgeColor,
+                color: ChatUIKit.of(context).theme.badgeColor,
                 border: Border.all(
-                  color: ChatUIKitWidget.of(context).theme.badgeBorderColor,
+                  color: ChatUIKit.of(context).theme.badgeBorderColor,
                   width: 2,
                 ),
                 borderRadius: const BorderRadius.all(Radius.circular(30))),
             padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
             child: Text(
-              style: ChatUIKitWidget.of(context).theme.badgeTextStyle,
+              style: ChatUIKit.of(context).theme.badgeTextStyle,
               unreadStr,
             ),
           );

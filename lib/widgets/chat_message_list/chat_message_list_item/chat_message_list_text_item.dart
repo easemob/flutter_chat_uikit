@@ -29,8 +29,8 @@ class ChatMessageListTextItem extends ChatMessageListItem {
     Widget content = Text(body.content,
         style: contentStyle ??
             (isLeft
-                ? ChatUIKitWidget.of(context).theme.receiveTextStyle
-                : ChatUIKitWidget.of(context).theme.sendTextStyle));
+                ? ChatUIKit.of(context).theme.receiveTextStyle
+                : ChatUIKit.of(context).theme.sendTextStyle));
 
     return getBubbleWidget(content);
   }

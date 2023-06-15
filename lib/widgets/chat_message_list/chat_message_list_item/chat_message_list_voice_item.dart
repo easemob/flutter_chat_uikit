@@ -48,8 +48,8 @@ class ChatMessageListVoiceItem extends ChatMessageListItem {
         Text(
           TimeTool.durationStr(body.duration),
           style: !isLeft
-              ? ChatUIKitWidget.of(context).theme.sendTextStyle
-              : ChatUIKitWidget.of(context).theme.receiveTextStyle,
+              ? ChatUIKit.of(context).theme.sendTextStyle
+              : ChatUIKit.of(context).theme.receiveTextStyle,
         ),
       ],
     );
@@ -71,8 +71,8 @@ class ChatMessageListVoiceItem extends ChatMessageListItem {
       child: ChatImageLoader.loadImage(
         imageName,
         color: isLeft
-            ? ChatUIKitWidget.of(context).theme.sendVoiceItemIconColor
-            : ChatUIKitWidget.of(context).theme.receiveVoiceItemIconColor,
+            ? ChatUIKit.of(context).theme.sendVoiceItemIconColor
+            : ChatUIKit.of(context).theme.receiveVoiceItemIconColor,
       ),
     );
   }

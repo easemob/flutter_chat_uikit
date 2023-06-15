@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../tools/chat_image_loader.dart';
-import '../chat_uikit_widget.dart';
+import '../chat_uikit.dart';
 import 'chat_emoji_data.dart';
 import 'chat_emoji_widget.dart';
 
@@ -155,14 +155,14 @@ class _ChatInputBarState extends State<ChatInputBar> {
                                         decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(20),
-                                          color: ChatUIKitWidget.of(context)
+                                          color: ChatUIKit.of(context)
                                               .theme
                                               .inputWidgetSendBtnColor,
                                         ),
                                         child: Center(
                                             child: Text(
                                           "Send",
-                                          style: ChatUIKitWidget.of(context)
+                                          style: ChatUIKit.of(context)
                                               .theme
                                               .inputWidgetSendBtnStyle,
                                         )),
