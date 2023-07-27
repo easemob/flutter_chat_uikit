@@ -1,6 +1,6 @@
 name: flutter_chat_uikit
 description: A new Flutter plugin project.
-version: 1.0.0
+version: 0.1.0
 homepage:
 
 environment:
@@ -28,7 +28,7 @@ dependencies:
 
   common_utils: 2.1.0
 
-  im_flutter_sdk: ^4.0.0+7
+  im_flutter_sdk: ^4.0.2
 
 dev_dependencies:
   flutter_test:

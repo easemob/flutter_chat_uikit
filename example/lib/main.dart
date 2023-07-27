@@ -5,9 +5,9 @@ import 'conversations_page.dart';
 import 'messages_page.dart';
 
 class ChatConfig {
-  static const String appKey = "easemob-demo#flutter";
-  static const String userId = "du001";
-  static const String password = '1';
+  static const String appKey = '';
+  static const String userId = '';
+  static const String password = '';
 }
 
 void main() async {
