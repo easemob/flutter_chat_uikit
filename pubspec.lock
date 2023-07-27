@@ -225,10 +225,10 @@ packages:
     dependency: "direct main"
     description:
       name: im_flutter_sdk
-      sha256: "33827ad1cb718520a80a9a3cf0d8e6ad60c3d9185adfccd02ed45ef6d498b275"
+      sha256: "7d6ab335e73b714a632935dfb082efd448704cd99c6d545eaaf2ceb210f317aa"
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.0+7"
+    version: "4.0.2"
   image_picker:
     dependency: "direct main"
     description:
