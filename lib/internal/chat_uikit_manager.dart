@@ -1,5 +1,6 @@
 import '../flutter_chat_uikit.dart';
 import 'chat_message_list_manager.dart';
+import 'chat_method.dart';
 
 class ChatUIKitManager {
   static ChatUIKitManager? _shared;
@@ -19,11 +20,11 @@ class ChatUIKitManager {
 
   ChatUIKitManager._() {
     _addListeners();
-    EMClient.getInstance.startCallback();
+    chatClient.startCallback();
   }
 
   void _addListeners() {
-    EMClient.getInstance.chatManager.addEventHandler(
+    chatClient.chatManager.addEventHandler(
       _chatHandlerKey,
       EMChatEventHandler(
         onMessagesReceived: _onMessagesReceived,
@@ -39,21 +40,21 @@ class ChatUIKitManager {
       ),
     );
 
-    EMClient.getInstance.addConnectionEventHandler(
+    chatClient.addConnectionEventHandler(
       _connectionHandlerKey,
       EMConnectionEventHandler(),
     );
 
-    EMClient.getInstance.addMultiDeviceEventHandler(
+    chatClient.addMultiDeviceEventHandler(
       _multiDeviceHandlerKey,
       EMMultiDeviceEventHandler(),
     );
   }
 
   void _removeListeners() {
-    EMClient.getInstance.chatManager.removeEventHandler(_chatHandlerKey);
-    EMClient.getInstance.removeConnectionEventHandler(_connectionHandlerKey);
-    EMClient.getInstance.removeMultiDeviceEventHandler(_multiDeviceHandlerKey);
+    chatClient.chatManager.removeEventHandler(_chatHandlerKey);
+    chatClient.removeConnectionEventHandler(_connectionHandlerKey);
+    chatClient.removeMultiDeviceEventHandler(_multiDeviceHandlerKey);
   }
 
   void _onMessagesReceived(List<EMMessage> messages) {
