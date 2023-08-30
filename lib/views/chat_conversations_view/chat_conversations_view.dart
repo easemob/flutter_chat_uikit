@@ -8,10 +8,7 @@ import '../../widgets/chat_swipe_widget/chat_swipe_widget.dart';
 class ChatConversationsController extends ChatBaseController {
   ChatConversationsController({
     super.key,
-  }) {
-    _addChatListener();
-    loadAllConversations();
-  }
+  });
 
   final ValueNotifier<List<EMConversation>> _listValueNotifier =
       ValueNotifier([]);
@@ -54,7 +51,7 @@ class ChatConversationsController extends ChatBaseController {
     _totalUnreadCountNotifier.removeListener(function);
   }
 
-  void _addChatListener() {
+  void addChatListener() {
     chatClient.chatManager.addEventHandler(
       key,
       EMChatEventHandler(
@@ -68,12 +65,12 @@ class ChatConversationsController extends ChatBaseController {
     );
   }
 
-  void _removeChatListener() {
+  void removeChatListener() {
     EMClient.getInstance.chatManager.removeEventHandler(key);
   }
 
-  void clear() {
-    _removeChatListener();
+  void dispose() {
+    removeChatListener();
   }
 
   /// load all conversations and refresh the list.
@@ -135,9 +132,11 @@ class ChatConversationsController extends ChatBaseController {
 /// Conversation list Widget
 class ChatConversationsView extends StatefulWidget {
   /// Conversation list Widget
-  /// [controller] The ScrollController for the conversation list.
+  /// [scrollController] The ScrollController for the conversation list.
   ///
   /// [onItemTap] Conversation list item Click event callback.
+  ///
+  /// [conversationsController] The Conversations controller.
   ///
   /// [reverse] Creates a scrollable, linear array of widgets with a custom child model. For example, a custom child model
   /// can control the algorithm used to estimate the size of children that are not actually visible.
@@ -172,10 +171,11 @@ class ChatConversationsView extends StatefulWidget {
   ///
   /// [nicknameBuilder] Nickname builder, which displays the userId if not set or null is returned.
   ///
-  const ChatConversationsView({
+  ChatConversationsView({
     super.key,
-    this.controller,
+    this.scrollController,
     this.onItemTap,
+    ChatConversationsController? conversationsController,
     this.reverse = false,
     this.primary,
     this.physics,
@@ -188,10 +188,14 @@ class ChatConversationsView extends StatefulWidget {
     this.itemBuilder,
     this.avatarBuilder,
     this.nicknameBuilder,
-  });
+  }) : conversationsController =
+            conversationsController ?? ChatConversationsController();
+
+  /// The conversations controller.
+  final ChatConversationsController conversationsController;
 
   /// The ScrollController for the conversation list.
-  final ScrollController? controller;
+  final ScrollController? scrollController;
 
   /// Conversation list item builder, return a widget if you need to customize it.
   final ChatConversationItemWidgetBuilder? itemBuilder;
@@ -258,18 +262,32 @@ class ChatConversationsView extends StatefulWidget {
 }
 
 class ChatConversationsViewState extends State<ChatConversationsView> {
-  late final ChatConversationsController controller;
   @override
   void initState() {
     super.initState();
-    controller = ChatUIKit.of(context).conversationsController;
-    controller.addListListener(_handleDataSourceUpdate);
-    controller.loadAllConversations();
+    widget.conversationsController.addListListener(_handleDataSourceUpdate);
+    widget.conversationsController.addChatListener();
+    widget.conversationsController.loadAllConversations();
+  }
+
+  @override
+  void didUpdateWidget(covariant ChatConversationsView oldWidget) {
+    if (widget.conversationsController != oldWidget.conversationsController) {
+      oldWidget.conversationsController
+          .removeListListener(_handleDataSourceUpdate);
+      oldWidget.conversationsController.dispose();
+      widget.conversationsController.addListListener(_handleDataSourceUpdate);
+      widget.conversationsController.addChatListener();
+      widget.conversationsController.conversationList =
+          oldWidget.conversationsController.conversationList;
+    }
+    super.didUpdateWidget(oldWidget);
   }
 
   @override
   void dispose() {
-    controller.removeListListener(_handleDataSourceUpdate);
+    widget.conversationsController.removeListListener(_handleDataSourceUpdate);
+    widget.conversationsController.removeChatListener();
     super.dispose();
   }
 
@@ -282,7 +300,7 @@ class ChatConversationsViewState extends State<ChatConversationsView> {
   @override
   Widget build(BuildContext context) {
     _tmpList.clear();
-    _tmpList.addAll(controller.conversationList);
+    _tmpList.addAll(widget.conversationsController.conversationList);
 
     if (_tmpList.isEmpty) {
       return Center(
@@ -298,7 +316,7 @@ class ChatConversationsViewState extends State<ChatConversationsView> {
         dragStartBehavior: widget.dragStartBehavior,
         cacheExtent: widget.cacheExtent,
         shrinkWrap: widget.shrinkWrap,
-        controller: widget.controller,
+        controller: widget.scrollController,
         primary: widget.primary,
         reverse: widget.reverse,
         slivers: [
@@ -314,7 +332,7 @@ class ChatConversationsViewState extends State<ChatConversationsView> {
                           dismissed: (bool dismissed) async {
                             if (dismissed) {
                               {
-                                await controller
+                                await widget.conversationsController
                                     .deleteConversationWithId(conversation.id);
                               }
                             }

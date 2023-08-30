@@ -261,7 +261,7 @@ class ChatMessageListController extends ChatBaseController {
     }
   }
 
-  void addChatManagerListener() {
+  void addChatListener() {
     chatClient.chatManager.addMessageEvent(
         key,
         ChatMessageEvent(
@@ -331,7 +331,7 @@ class ChatMessageListController extends ChatBaseController {
     }
   }
 
-  void removeChatManagerListener() {
+  void removeChatListener() {
     chatClient.chatManager.removeEventHandler(key);
     chatClient.chatManager.removeMessageEvent(key);
   }
@@ -371,10 +371,10 @@ class ChatMessageListController extends ChatBaseController {
     _onError = onError;
   }
 
-  void clear() {
+  void dispose() {
     _reloadData = null;
     _onError = null;
-    removeChatManagerListener();
+    removeChatListener();
   }
 }
 
@@ -470,7 +470,7 @@ class _ChatMessagesListState extends State<ChatMessagesList>
   @override
   void initState() {
     super.initState();
-    widget.messageListViewController.addChatManagerListener();
+    widget.messageListViewController.addChatListener();
 
     widget.messageListViewController.markAllMessagesAsRead();
     widget.messageListViewController
@@ -493,7 +493,7 @@ class _ChatMessagesListState extends State<ChatMessagesList>
   @override
   void dispose() {
     _scrollController.dispose();
-    widget.messageListViewController.clear();
+    widget.messageListViewController.dispose();
     super.dispose();
   }
 
@@ -501,11 +501,12 @@ class _ChatMessagesListState extends State<ChatMessagesList>
   void didUpdateWidget(covariant ChatMessagesList oldWidget) {
     if (widget.messageListViewController !=
         oldWidget.messageListViewController) {
-      oldWidget.messageListViewController.clear();
+      oldWidget.messageListViewController.dispose();
       widget.messageListViewController
           .updateMsgList(oldWidget.messageListViewController.msgList);
       widget.messageListViewController
           ._bindingActions(reloadData: _reloadData, onError: _onError);
+      widget.messageListViewController.addChatListener();
     }
     super.didUpdateWidget(oldWidget);
   }

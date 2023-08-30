@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 
 import '../flutter_chat_uikit.dart';
-import '../internal/chat_uikit_manager.dart';
 
 class ChatUIKit extends StatefulWidget {
   ChatUIKit({
@@ -32,16 +31,11 @@ class ChatUIKit extends StatefulWidget {
 }
 
 class ChatUIKitState extends State<ChatUIKit> {
-  late final ChatConversationsController _controller;
-
   ChatUIKitTheme get theme => widget.theme;
-  ChatConversationsController get conversationsController => _controller;
 
   @override
   void initState() {
     super.initState();
-    ChatUIKitManager.shared;
-    _controller = ChatConversationsController();
   }
 
   @override
@@ -51,7 +45,6 @@ class ChatUIKitState extends State<ChatUIKit> {
 
   @override
   void dispose() {
-    ChatUIKitManager.clear();
     super.dispose();
   }
 
