@@ -2,13 +2,14 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import '../../flutter_chat_uikit.dart';
+import '../../internal/chat_method.dart';
 import '../../widgets/chat_swipe_widget/chat_swipe_widget.dart';
 
 class ChatConversationsController extends ChatBaseController {
   ChatConversationsController({
     super.key,
   }) {
-    _addListener();
+    _addChatListener();
     loadAllConversations();
   }
 
@@ -53,8 +54,8 @@ class ChatConversationsController extends ChatBaseController {
     _totalUnreadCountNotifier.removeListener(function);
   }
 
-  void _addListener() {
-    EMClient.getInstance.chatManager.addEventHandler(
+  void _addChatListener() {
+    chatClient.chatManager.addEventHandler(
       key,
       EMChatEventHandler(
         onMessagesReceived: (messages) async {
@@ -67,8 +68,12 @@ class ChatConversationsController extends ChatBaseController {
     );
   }
 
-  void dispose() {
+  void _removeChatListener() {
     EMClient.getInstance.chatManager.removeEventHandler(key);
+  }
+
+  void clear() {
+    _removeChatListener();
   }
 
   /// load all conversations and refresh the list.

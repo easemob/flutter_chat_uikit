@@ -45,6 +45,11 @@ class ChatUIKitState extends State<ChatUIKit> {
   }
 
   @override
+  void reassemble() {
+    super.reassemble();
+  }
+
+  @override
   void dispose() {
     ChatUIKitManager.clear();
     super.dispose();
