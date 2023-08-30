@@ -441,6 +441,7 @@ class _ChatMessagesViewState extends State<ChatMessagesView> {
     Navigator.of(context).push(MaterialPageRoute(builder: (ctx) {
       return ChatImageShowWidget(message);
     }));
+    return Future.value();
   }
 
   void _playVoice(EMMessage message) async {
