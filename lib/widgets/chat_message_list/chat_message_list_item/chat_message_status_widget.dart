@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import '../../../flutter_chat_uikit.dart';

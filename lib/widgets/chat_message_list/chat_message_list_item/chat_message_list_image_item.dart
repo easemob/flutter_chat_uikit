@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import '../../../flutter_chat_uikit.dart';
+import '../../../internal/chat_method.dart';
 
 class ChatMessageListImageItem extends ChatMessageListItem {
   const ChatMessageListImageItem({
@@ -72,7 +73,7 @@ class ChatMessageListImageItem extends ChatMessageListItem {
         }
       }
       if (body.thumbnailRemotePath != null) {
-        EMClient.getInstance.chatManager.downloadThumbnail(message);
+        chatClient.chatManager.downloadThumbnail(message);
         content = Container(
           color: const Color.fromRGBO(242, 242, 242, 1),
           child: FadeInImage(

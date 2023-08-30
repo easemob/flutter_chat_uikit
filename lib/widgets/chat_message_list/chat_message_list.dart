@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_uikit/internal/chat_method.dart';
 
 import '../../flutter_chat_uikit.dart';
 
@@ -25,9 +26,7 @@ class ChatMessageListController extends ChatBaseController {
     this.enableReadAck = true,
     this.didRecallMessage,
     super.key,
-  }) {
-    _addChatManagerListener();
-  }
+  });
 
   /// The message recall callback, executed when the message is recalled,
   /// You can return a message that the sdk inserts into the local database.
@@ -39,7 +38,11 @@ class ChatMessageListController extends ChatBaseController {
   final bool enableReadAck;
   final List<ChatMessageListItemModel> msgList = [];
 
-  Future<void> Function(bool enableAnimation, bool moveToEnd)? _reloadData;
+  void updateMsgList(List<ChatMessageListItemModel> list) {
+    msgList.addAll(list);
+  }
+
+  Future<void> Function(bool moveToEnd)? _reloadData;
   void Function(EMError error)? _onError;
 
   EMMessage? _playingMessage;
@@ -55,8 +58,7 @@ class ChatMessageListController extends ChatBaseController {
   void sendMessage(EMMessage message) async {
     _removeMessageFromList(message);
     try {
-      EMMessage msg =
-          await EMClient.getInstance.chatManager.sendMessage(message);
+      EMMessage msg = await chatClient.chatManager.sendMessage(message);
       msgList.insert(0, _modelCreator(msg));
       await refreshUI(moveToEnd: true);
     } on EMError catch (e) {
@@ -85,7 +87,7 @@ class ChatMessageListController extends ChatBaseController {
     EMMessage message,
   ) async {
     try {
-      await EMClient.getInstance.chatManager.recallMessage(message.msgId);
+      await chatClient.chatManager.recallMessage(message.msgId);
       _recallMessagesCallback([message]);
     } on EMError catch (e) {
       _onError?.call(e);
@@ -143,7 +145,7 @@ class ChatMessageListController extends ChatBaseController {
         message.direction == MessageDirection.RECEIVE &&
         conversation.type == EMConversationType.Chat) {
       try {
-        await EMClient.getInstance.chatManager.sendMessageReadAck(message);
+        await chatClient.chatManager.sendMessageReadAck(message);
       } on EMError catch (e) {
         _onError?.call(e);
       }
@@ -183,7 +185,7 @@ class ChatMessageListController extends ChatBaseController {
   /// If the message roaming interface is called, the deleted message can still be retrieved.
   /// current conversation see [ChatMessagesList]. message roaming see [ChatManager.fetchHistoryMessages].
   Future<void> deleteAllMessages() async {
-    await EMClient.getInstance.chatManager.deleteConversation(conversation.id);
+    await chatClient.chatManager.deleteConversation(conversation.id);
     _latestShowTsTime = -1;
     msgList.clear();
     refreshUI();
@@ -191,10 +193,9 @@ class ChatMessageListController extends ChatBaseController {
 
   /// Refresh ChatMessagesList Widget. see [ChatMessagesList].
   Future<void>? refreshUI({
-    bool enableAnimation = false,
     bool moveToEnd = false,
   }) {
-    return _reloadData?.call(enableAnimation, moveToEnd);
+    return _reloadData?.call(moveToEnd);
   }
 
   void play(EMMessage message) {
@@ -260,8 +261,8 @@ class ChatMessageListController extends ChatBaseController {
     }
   }
 
-  void _addChatManagerListener() {
-    EMClient.getInstance.chatManager.addMessageEvent(
+  void addChatListener() {
+    chatClient.chatManager.addMessageEvent(
         key,
         ChatMessageEvent(
           onProgress: (msgId, progress) {},
@@ -271,7 +272,7 @@ class ChatMessageListController extends ChatBaseController {
             _onError?.call(error);
           },
         ));
-    EMClient.getInstance.chatManager.addEventHandler(
+    chatClient.chatManager.addEventHandler(
       key,
       EMChatEventHandler(
         onMessagesRead: _updateMessageItems,
@@ -330,9 +331,9 @@ class ChatMessageListController extends ChatBaseController {
     }
   }
 
-  void _removeChatManagerListener() {
-    EMClient.getInstance.chatManager.removeEventHandler(key);
-    EMClient.getInstance.chatManager.removeMessageEvent(key);
+  void removeChatListener() {
+    chatClient.chatManager.removeEventHandler(key);
+    chatClient.chatManager.removeMessageEvent(key);
   }
 
   List<ChatMessageListItemModel> _modelsCreator(
@@ -363,7 +364,7 @@ class ChatMessageListController extends ChatBaseController {
   }
 
   void _bindingActions({
-    Future<void> Function(bool enableAnimation, bool moveToEnd)? reloadData,
+    Future<void> Function(bool moveToEnd)? reloadData,
     void Function(EMError error)? onError,
   }) {
     _reloadData = reloadData;
@@ -371,7 +372,9 @@ class ChatMessageListController extends ChatBaseController {
   }
 
   void dispose() {
-    _removeChatManagerListener();
+    _reloadData = null;
+    _onError = null;
+    removeChatListener();
   }
 }
 
@@ -406,7 +409,7 @@ class ChatMessagesList extends StatefulWidget {
     super.key,
     required this.conversation,
     this.background,
-    this.messageListViewController,
+    required this.messageListViewController,
     this.itemBuilder,
     this.onTap,
     this.onBubbleLongPress,
@@ -428,7 +431,7 @@ class ChatMessagesList extends StatefulWidget {
   final void Function(EMError error)? onError;
 
   /// Message list controller.
-  final ChatMessageListController? messageListViewController;
+  final ChatMessageListController messageListViewController;
 
   /// Message bubble builder.
   final ChatMessageListItemBuilder? itemBuilder;
@@ -462,33 +465,25 @@ class ChatMessagesList extends StatefulWidget {
 
 class _ChatMessagesListState extends State<ChatMessagesList>
     with WidgetsBindingObserver {
-  late ChatMessageListController controller;
-
   final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
+    widget.messageListViewController.addChatListener();
 
+    widget.messageListViewController.markAllMessagesAsRead();
+    widget.messageListViewController
+        ._bindingActions(reloadData: _reloadData, onError: _onError);
+    widget.messageListViewController.loadMoreMessage();
     _scrollController.addListener(scrollListener);
-
-    controller = widget.messageListViewController ??
-        ChatMessageListController(
-          widget.conversation,
-        );
-
-    controller._bindingActions(
-      reloadData: _reloadData,
-      onError: _onError,
-    );
-    controller.loadMoreMessage();
   }
 
   void _onError(EMError err) {
     widget.onError?.call(err);
   }
 
-  Future<void> _reloadData(bool enableAnimation, bool moveToEnd) async {
+  Future<void> _reloadData(bool moveToEnd) async {
     setState(() {});
     if (moveToEnd) {
       _scrollController.jumpTo(0);
@@ -497,22 +492,37 @@ class _ChatMessagesListState extends State<ChatMessagesList>
 
   @override
   void dispose() {
-    controller.dispose();
     _scrollController.dispose();
+    widget.messageListViewController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant ChatMessagesList oldWidget) {
+    if (widget.messageListViewController !=
+        oldWidget.messageListViewController) {
+      oldWidget.messageListViewController.dispose();
+      widget.messageListViewController
+          .updateMsgList(oldWidget.messageListViewController.msgList);
+      widget.messageListViewController
+          ._bindingActions(reloadData: _reloadData, onError: _onError);
+      widget.messageListViewController.addChatListener();
+    }
+    super.didUpdateWidget(oldWidget);
   }
 
   void scrollListener() async {
     if (_scrollController.position.maxScrollExtent ==
         _scrollController.offset) {
-      controller.loadMoreMessage();
+      widget.messageListViewController.loadMoreMessage();
     }
     widget.needDismissInputWidgetAction?.call();
   }
 
   @override
   Widget build(BuildContext context) {
-    List<ChatMessageListItemModel> list = controller.msgList;
+    List<ChatMessageListItemModel> list =
+        widget.messageListViewController.msgList;
 
     Widget content = CustomScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
@@ -555,7 +565,7 @@ class _ChatMessagesListState extends State<ChatMessagesList>
 
   Widget messageWidget(ChatMessageListItemModel model) {
     EMMessage message = model.message;
-    controller.sendReadAck(message);
+    widget.messageListViewController.sendReadAck(message);
 
     ValueKey<String>? valueKey; //ValueKey(message.msgId);
 
@@ -570,7 +580,8 @@ class _ChatMessagesListState extends State<ChatMessagesList>
               nicknameBuilder: widget.nicknameBuilder,
               onBubbleDoubleTap: widget.onBubbleDoubleTap,
               onBubbleLongPress: widget.onBubbleLongPress,
-              onResendTap: () => controller.sendMessage(message),
+              onResendTap: () =>
+                  widget.messageListViewController.sendMessage(message),
             );
           } else if (message.body.type == MessageType.IMAGE) {
             return ChatMessageListImageItem(
@@ -583,7 +594,8 @@ class _ChatMessagesListState extends State<ChatMessagesList>
               nicknameBuilder: widget.nicknameBuilder,
               onBubbleDoubleTap: widget.onBubbleDoubleTap,
               onBubbleLongPress: widget.onBubbleLongPress,
-              onResendTap: () => controller.sendMessage(message),
+              onResendTap: () =>
+                  widget.messageListViewController.sendMessage(message),
             );
           } else if (message.body.type == MessageType.FILE) {
             return ChatMessageListFileItem(
@@ -595,7 +607,8 @@ class _ChatMessagesListState extends State<ChatMessagesList>
               nicknameBuilder: widget.nicknameBuilder,
               onBubbleDoubleTap: widget.onBubbleDoubleTap,
               onBubbleLongPress: widget.onBubbleLongPress,
-              onResendTap: () => controller.sendMessage(message),
+              onResendTap: () =>
+                  widget.messageListViewController.sendMessage(message),
             );
           } else if (message.body.type == MessageType.VOICE) {
             return ChatMessageListVoiceItem(
@@ -606,8 +619,10 @@ class _ChatMessagesListState extends State<ChatMessagesList>
               nicknameBuilder: widget.nicknameBuilder,
               onBubbleDoubleTap: widget.onBubbleDoubleTap,
               onBubbleLongPress: widget.onBubbleLongPress,
-              onResendTap: () => controller.sendMessage(message),
-              isPlay: controller._playingMessage?.msgId == message.msgId,
+              onResendTap: () =>
+                  widget.messageListViewController.sendMessage(message),
+              isPlay: widget.messageListViewController._playingMessage?.msgId ==
+                  message.msgId,
               unreadFlagBuilder: message.hasRead
                   ? null
                   : (_) => Container(
