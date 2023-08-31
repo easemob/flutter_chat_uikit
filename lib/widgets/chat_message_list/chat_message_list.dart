@@ -561,6 +561,7 @@ class _ChatMessagesListState extends State<ChatMessagesList>
 
     content = WillPopScope(
       onWillPop: () async {
+        widget.conversation.markAllMessagesAsRead();
         ChatUIKit.of(context).conversationsController?.loadAllConversations();
         return true;
       },
