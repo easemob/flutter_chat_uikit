@@ -254,16 +254,8 @@ class ChatConversationsView extends StatefulWidget {
   @override
   State<ChatConversationsView> createState() => ChatConversationsViewState();
 
-  static ChatConversationsViewState of(BuildContext context) {
-    ChatConversationsViewState? state;
-    state = context.findAncestorStateOfType<ChatConversationsViewState>();
-
-    assert(
-      state != null,
-      'You must have a ChatConversationListView widget at the top of you widget tree',
-    );
-
-    return state!;
+  static ChatConversationsViewState? of(BuildContext context) {
+    return context.findAncestorStateOfType<ChatConversationsViewState>();
   }
 }
 
@@ -271,24 +263,33 @@ class ChatConversationsViewState extends State<ChatConversationsView> {
   @override
   void initState() {
     super.initState();
+    updateConversation();
+    widget.conversationsController.loadAllConversations();
+  }
+
+  void updateConversation([ChatConversationsController? oldController]) {
+    if (oldController != null) {
+      oldController.dispose();
+      oldController.removeListListener(_handleDataSourceUpdate);
+      widget.conversationsController.conversationList =
+          oldController.conversationList;
+    }
     widget.conversationsController.addListListener(_handleDataSourceUpdate);
     widget.conversationsController.addChatListener();
-    widget.conversationsController.loadAllConversations();
+    ChatUIKit.of(context).conversationsController =
+        widget.conversationsController;
   }
 
   @override
   void didUpdateWidget(covariant ChatConversationsView oldWidget) {
     if (widget.conversationsController != oldWidget.conversationsController) {
-      oldWidget.conversationsController
-          .removeListListener(_handleDataSourceUpdate);
-      oldWidget.conversationsController.dispose();
-      widget.conversationsController.addListListener(_handleDataSourceUpdate);
-      widget.conversationsController.addChatListener();
-      widget.conversationsController.conversationList =
-          oldWidget.conversationsController.conversationList;
+      updateConversation(oldWidget.conversationsController);
     }
     super.didUpdateWidget(oldWidget);
   }
+
+  ChatConversationsController get conversationsController =>
+      widget.conversationsController;
 
   @override
   void dispose() {
@@ -312,7 +313,7 @@ class ChatConversationsViewState extends State<ChatConversationsView> {
       return widget.backgroundWidgetWhenListEmpty ?? Container();
     }
 
-    return ChatSwipeAutoCloseBehavior(
+    Widget content = ChatSwipeAutoCloseBehavior(
       child: CustomScrollView(
         clipBehavior: widget.clipBehavior,
         restorationId: widget.restorationId,
@@ -399,5 +400,14 @@ class ChatConversationsViewState extends State<ChatConversationsView> {
         ],
       ),
     );
+
+    content = WillPopScope(
+        child: content,
+        onWillPop: () async {
+          ChatUIKit.of(context).conversationsController = null;
+          return true;
+        });
+
+    return content;
   }
 }

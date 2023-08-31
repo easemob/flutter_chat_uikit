@@ -471,7 +471,6 @@ class _ChatMessagesListState extends State<ChatMessagesList>
   void initState() {
     super.initState();
     widget.messageListViewController.addChatListener();
-
     widget.messageListViewController.markAllMessagesAsRead();
     widget.messageListViewController
         ._bindingActions(reloadData: _reloadData, onError: _onError);
@@ -558,6 +557,14 @@ class _ChatMessagesListState extends State<ChatMessagesList>
         widget.background ?? Container(),
         content,
       ],
+    );
+
+    content = WillPopScope(
+      onWillPop: () async {
+        ChatUIKit.of(context).conversationsController?.loadAllConversations();
+        return true;
+      },
+      child: content,
     );
 
     return content;
