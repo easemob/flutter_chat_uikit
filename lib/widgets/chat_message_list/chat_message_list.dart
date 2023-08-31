@@ -122,6 +122,10 @@ class ChatMessageListController extends ChatBaseController {
 
   /// mark all messages in the current conversation to read. current conversation see [ChatMessagesList].
   Future<void> markAllMessagesAsRead() async {
+    try {
+      await chatClient.chatManager.sendConversationReadAck(conversation.id);
+      // ignore: empty_catches
+    } catch (e) {}
     return conversation.markAllMessagesAsRead();
   }
 
@@ -275,6 +279,15 @@ class ChatMessageListController extends ChatBaseController {
     chatClient.chatManager.addEventHandler(
       key,
       EMChatEventHandler(
+        onConversationRead: (from, to) {
+          List<ChatMessageListItemModel> tmpList = msgList.map((e) {
+            e.message.hasReadAck = true;
+            return e;
+          }).toList();
+          msgList.clear();
+          msgList.addAll(tmpList);
+          refreshUI();
+        },
         onMessagesRead: _updateMessageItems,
         onMessagesReceived: (messages) {
           List<EMMessage> tmp = messages
