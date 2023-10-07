@@ -188,6 +188,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Release to Cancel'**
   String get releaseToCancel;
+
+  /// No description provided for @uikitCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get uikitCopy;
+
+  /// No description provided for @uikitRecall.
+  ///
+  /// In en, this message translates to:
+  /// **'Recall'**
+  String get uikitRecall;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

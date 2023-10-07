@@ -51,4 +51,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get releaseToCancel => 'Release to Cancel';
+
+  @override
+  String get uikitCopy => 'Copy';
+
+  @override
+  String get uikitRecall => 'Recall';
 }
