@@ -200,6 +200,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Recall'**
   String get uikitRecall;
+
+  /// No description provided for @uikitSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get uikitSend;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

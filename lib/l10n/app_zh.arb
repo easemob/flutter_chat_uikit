@@ -17,5 +17,6 @@
     "releaseToCancel": "松开取消",
     "uikitCopy": "复制",
     "uikitDelete": "删除",
-    "uikitRecall": "撤回"
+    "uikitRecall": "撤回",
+    "uikitSend": "发送"
   }

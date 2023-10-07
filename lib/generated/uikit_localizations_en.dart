@@ -57,4 +57,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get uikitRecall => 'Recall';
+
+  @override
+  String get uikitSend => 'Send';
 }
