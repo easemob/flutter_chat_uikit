@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_uikit/flutter_chat_uikit.dart';
+import 'package:flutter_chat_uikit_example/messages_page.dart';
 
 class ConversationsPage extends StatefulWidget {
   const ConversationsPage({super.key});
@@ -17,11 +18,8 @@ class _ConversationsPageState extends State<ConversationsPage> {
       ),
       body: ChatConversationsView(
         onItemTap: (conversation) {
-          SnackBar bar = SnackBar(
-            content: Text('${conversation.id} clicked'),
-            duration: const Duration(milliseconds: 1000),
-          );
-          ScaffoldMessenger.of(context).showSnackBar(bar);
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => MessagesPage(conversation)));
         },
       ),
     );
