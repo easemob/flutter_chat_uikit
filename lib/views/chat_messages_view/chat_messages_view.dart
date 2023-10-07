@@ -134,8 +134,8 @@ class _ChatMessagesViewState extends State<ChatMessagesView> {
   final AudioPlayer _player = AudioPlayer();
   final FocusNode _focusNode = FocusNode();
   int _recordDuration = 0;
-  bool _recordBtnTouchDown = false;
-  bool _dragOutside = false;
+  // bool _recordBtnTouchDown = false;
+  // bool _dragOutside = false;
   Timer? _timer;
   late TextEditingController _textController;
   EMMessage? _playingMessage;
@@ -148,11 +148,10 @@ class _ChatMessagesViewState extends State<ChatMessagesView> {
 
   @override
   void dispose() {
-    _audioRecorder.dispose();
     if (widget.inputBarTextEditingController == null) {
       _textController.dispose();
     }
-
+    _audioRecorder.dispose();
     _player.dispose();
     _focusNode.dispose();
     super.dispose();
@@ -160,8 +159,11 @@ class _ChatMessagesViewState extends State<ChatMessagesView> {
 
   @override
   void didUpdateWidget(covariant ChatMessagesView oldWidget) {
-    _stopRecord(false);
-    _stopVoice();
+    if (widget != oldWidget) {
+      _stopRecord(false);
+      _stopVoice();
+    }
+
     super.didUpdateWidget(oldWidget);
   }
 
@@ -224,8 +226,12 @@ class _ChatMessagesViewState extends State<ChatMessagesView> {
                 }
                 widget.messageListViewController.refreshUI(moveToEnd: true);
               },
-              recordTouchDown: _startRecord,
-              recordTouchUpInside: _stopRecord,
+              recordTouchDown: () async {
+                await _startRecord();
+              },
+              recordTouchUpInside: () async {
+                await _stopRecord();
+              },
               recordTouchUpOutside: _cancelRecord,
               recordDragInside: _recordDragInside,
               recordDragOutside: _recordDragOutside,
@@ -257,6 +263,18 @@ class _ChatMessagesViewState extends State<ChatMessagesView> {
         Positioned.fill(child: Center(child: _maskWidget()))
       ],
     );
+
+    content = WillPopScope(
+        child: content,
+        onWillPop: () async {
+          if (_focusNode.hasFocus) {
+            _focusNode.unfocus();
+          }
+          _playingMessage = null;
+          await _player.stop();
+          await _stopRecord();
+          return true;
+        });
 
     return content;
   }
@@ -408,7 +426,7 @@ class _ChatMessagesViewState extends State<ChatMessagesView> {
     }));
   }
 
-  void _sendVoice(String path) async {
+  Future<void> _sendVoice(String path) async {
     String displayName = path.split("/").last;
 
     EMMessage msg = EMMessage.createVoiceSendMessage(
@@ -425,9 +443,9 @@ class _ChatMessagesViewState extends State<ChatMessagesView> {
     await widget.conversation.markMessageAsRead(message.msgId);
     message.hasRead = true;
     if (_playingMessage?.msgId == message.msgId) {
-      _stopVoice();
+      await _stopVoice();
     } else {
-      _playVoice(message);
+      await _playVoice(message);
     }
   }
 
@@ -441,26 +459,33 @@ class _ChatMessagesViewState extends State<ChatMessagesView> {
     return Future.value();
   }
 
-  void _playVoice(EMMessage message) async {
+  Future<void> _playVoice(EMMessage message) async {
     _playingMessage = message;
     widget.messageListViewController.play(message);
     widget.messageListViewController.refreshUI();
     EMVoiceMessageBody body = message.body as EMVoiceMessageBody;
     await _player.stop();
-    _player.play(DeviceFileSource(body.localPath));
+    await _player
+        .play(DeviceFileSource(body.localPath))
+        .onError((error, stackTrace) => {});
     _player.onPlayerComplete.first.whenComplete(() {
-      _stopVoice();
-    });
+      if (_playingMessage != null) {
+        _stopVoice();
+      }
+    }).onError((error, stackTrace) {});
   }
 
-  void _stopVoice() async {
+  Future<void> _stopVoice() async {
     _playingMessage = null;
     await _player.stop();
     widget.messageListViewController.stopPlay();
     widget.messageListViewController.refreshUI();
   }
 
-  void _startRecord() async {
+  Future<void> _startRecord() async {
+    // setState(() {
+    //   _recordBtnTouchDown = true;
+    // });
     bool isRequest = false;
     Future(() async {
       return await _audioRecorder.hasPermission();
@@ -480,7 +505,7 @@ class _ChatMessagesViewState extends State<ChatMessagesView> {
     });
   }
 
-  void _stopRecord([bool send = true]) async {
+  Future<void> _stopRecord([bool send = true]) async {
     if (send == false) {
       _cancelRecord();
       return;
@@ -489,9 +514,9 @@ class _ChatMessagesViewState extends State<ChatMessagesView> {
       return;
     }
     _endTimer();
-    setState(() {
-      _recordBtnTouchDown = false;
-    });
+    // setState(() {
+    //   _recordBtnTouchDown = false;
+    // });
     String? path = await _audioRecorder.stop();
 
     bool isExists = false;
@@ -510,7 +535,7 @@ class _ChatMessagesViewState extends State<ChatMessagesView> {
           await file.delete();
           return;
         }
-        _sendVoice(path);
+        await _sendVoice(path);
         return;
       }
     }
@@ -533,30 +558,30 @@ class _ChatMessagesViewState extends State<ChatMessagesView> {
       }
     }
 
-    setState(() {
-      _recordBtnTouchDown = false;
-    });
+    // setState(() {
+    //   _recordBtnTouchDown = false;
+    // });
 
     _endTimer();
   }
 
   void _recordDragInside() {
-    setState(() {
-      _dragOutside = false;
-    });
+    // setState(() {
+    //   _dragOutside = false;
+    // });
   }
 
   void _recordDragOutside() {
-    setState(() {
-      _dragOutside = true;
-    });
+    // setState(() {
+    //   _dragOutside = true;
+    // });
   }
 
   void _startTimer() {
     _recordDuration = 0;
+    _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
       _recordDuration++;
-      debugPrint("timer: $_recordDuration");
     });
   }
 
@@ -566,9 +591,10 @@ class _ChatMessagesViewState extends State<ChatMessagesView> {
 
   Widget? _maskWidget() {
     // if (_recordBtnTouchDown) {
+    //   getAmplitude();
     //   return Container(
-    //     width: 300,
-    //     height: 300,
+    //     width: 400,
+    //     height: 400,
     //     color: _dragOutside ? Colors.red : Colors.blue,
     //   );
     // } else {
@@ -576,4 +602,18 @@ class _ChatMessagesViewState extends State<ChatMessagesView> {
     // }
     return null;
   }
+
+  // Future<void> getAmplitude() async {
+  //   Future.doWhile(() {
+  //     return fetchA();
+  //   });
+  // }
+
+  // Future<bool> fetchA() async {
+  //   final amplitude = await _audioRecorder.getAmplitude();
+  //   await Future.delayed(const Duration(milliseconds: 100));
+  //   debugPrint(
+  //       "amplitude:${amplitude.current}, max:${amplitude.max}, dL:${amplitude.current / amplitude.max}");
+  //   return _recordBtnTouchDown;
+  // }
 }

@@ -19,14 +19,11 @@ class ChatUIKit extends StatefulWidget {
   @override
   State<ChatUIKit> createState() => ChatUIKitState();
 
-  static ChatUIKitState of(BuildContext context) {
+  static ChatUIKitState? of(BuildContext context) {
     ChatUIKitState? state;
     state = context.findAncestorStateOfType<ChatUIKitState>();
-    assert(
-      state != null,
-      'You must have a ChatUIKit widget at the top of the widget',
-    );
-    return state!;
+
+    return state;
   }
 }
 

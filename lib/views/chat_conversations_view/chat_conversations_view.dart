@@ -173,6 +173,8 @@ class ChatConversationsView extends StatefulWidget {
   ///
   /// [backgroundWidgetWhenListEmpty] Background widget when list is empty.
   ///
+  /// [enablePullReload] Enable pull down reload.
+  ///
   ChatConversationsView({
     super.key,
     this.scrollController,
@@ -191,6 +193,7 @@ class ChatConversationsView extends StatefulWidget {
     this.avatarBuilder,
     this.nicknameBuilder,
     this.backgroundWidgetWhenListEmpty,
+    this.enablePullReload = false,
   }) : conversationsController =
             conversationsController ?? ChatConversationsController();
 
@@ -251,6 +254,9 @@ class ChatConversationsView extends StatefulWidget {
   /// Background widget when list is empty.
   final Widget? backgroundWidgetWhenListEmpty;
 
+  /// Enable pull down reload.
+  final bool? enablePullReload;
+
   @override
   State<ChatConversationsView> createState() => ChatConversationsViewState();
 
@@ -276,7 +282,7 @@ class ChatConversationsViewState extends State<ChatConversationsView> {
     }
     widget.conversationsController.addListListener(_handleDataSourceUpdate);
     widget.conversationsController.addChatListener();
-    ChatUIKit.of(context).conversationsController =
+    ChatUIKit.of(context)?.conversationsController =
         widget.conversationsController;
   }
 
@@ -375,7 +381,7 @@ class ChatConversationsViewState extends State<ChatConversationsView> {
                         child: ChatConversationListTile(
                           avatar: widget.avatarBuilder
                                   ?.call(context, conversation) ??
-                              ChatImageLoader.defaultAvatar(size: 40),
+                              ChatImageLoader.defaultAvatar(size: 50),
                           title: widget.nicknameBuilder
                               ?.call(context, conversation),
                           conversation: conversation,
@@ -401,10 +407,19 @@ class ChatConversationsViewState extends State<ChatConversationsView> {
       ),
     );
 
+    if (widget.enablePullReload == true) {
+      content = RefreshIndicator(
+        onRefresh: () async {
+          await widget.conversationsController.loadAllConversations();
+        },
+        child: content,
+      );
+    }
+
     content = WillPopScope(
         child: content,
         onWillPop: () async {
-          ChatUIKit.of(context).conversationsController = null;
+          ChatUIKit.of(context)?.conversationsController = null;
           return true;
         });
 
