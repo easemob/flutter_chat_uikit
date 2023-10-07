@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_uikit/flutter_chat_uikit.dart';
 
-import 'conversations_page.dart';
-import 'messages_page.dart';
+import 'package:flutter_chat_uikit_example/conversations_page.dart';
+import 'package:flutter_chat_uikit_example/messages_page.dart';
 
 class ChatConfig {
   static const String appKey = '';
@@ -36,6 +36,8 @@ class MyApp extends StatelessWidget {
         theme: ChatUIKitTheme(),
         child: child!,
       ),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
