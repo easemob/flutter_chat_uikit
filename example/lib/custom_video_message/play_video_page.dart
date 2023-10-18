@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_uikit/flutter_chat_uikit.dart';
+import 'package:em_chat_uikit/em_chat_uikit.dart';
 import 'package:video_player/video_player.dart';
 
 class PlayVideoPage extends StatefulWidget {
@@ -29,41 +29,13 @@ class _PlayVideoPageState extends State<PlayVideoPage> {
   VideoPlayerController? _controller;
 
   bool isPlaying = false;
+  bool hasLocalFile = false;
 
   @override
   void initState() {
     super.initState();
     message = widget.message;
-    EMClient.getInstance.chatManager.addMessageEvent(
-      _msgEventKey,
-      ChatMessageEvent(
-        onProgress: (msgId, progress) {
-          if (msgId == message!.msgId) {
-            _progress.value = progress;
-            _downloadStatus.value = CustomDownloadStatus.downloading;
-          }
-        },
-        onSuccess: (msgId, msg) async {
-          if (msgId == message!.msgId) {
-            message = msg;
-            body = message!.body as EMVideoMessageBody;
-            if (body!.fileStatus == DownloadStatus.SUCCESS) {
-              final file = File(body!.localPath);
-              _controller = VideoPlayerController.file(file);
 
-              checkFile();
-            }
-          }
-        },
-        onError: (msgId, msg, error) {
-          if (msgId == message!.msgId) {
-            message = msg;
-            _downloadStatus.value = CustomDownloadStatus.failed;
-            setState(() {});
-          }
-        },
-      ),
-    );
     checkFile();
   }
 
@@ -72,6 +44,36 @@ class _PlayVideoPageState extends State<PlayVideoPage> {
     File file = File(body!.localPath);
     if (!file.existsSync()) {
       _downloadVideo(message!);
+      EMClient.getInstance.chatManager.addMessageEvent(
+        _msgEventKey,
+        ChatMessageEvent(
+          onProgress: (msgId, progress) {
+            if (msgId == message!.msgId) {
+              _progress.value = progress;
+              _downloadStatus.value = CustomDownloadStatus.downloading;
+            }
+          },
+          onSuccess: (msgId, msg) async {
+            if (msgId == message!.msgId) {
+              message = msg;
+              body = message!.body as EMVideoMessageBody;
+              if (body!.fileStatus == DownloadStatus.SUCCESS) {
+                final file = File(body!.localPath);
+                _controller = VideoPlayerController.file(file);
+
+                checkFile();
+              }
+            }
+          },
+          onError: (msgId, msg, error) {
+            if (msgId == message!.msgId) {
+              message = msg;
+              _downloadStatus.value = CustomDownloadStatus.failed;
+              setState(() {});
+            }
+          },
+        ),
+      );
     } else {
       _downloadStatus.value = CustomDownloadStatus.success;
       _controller = VideoPlayerController.file(file)

@@ -13,13 +13,13 @@ class ChatImageLoader {
       width: width,
       height: height,
       fit: fit,
-      package: "flutter_chat_uikit",
+      package: "em_chat_uikit",
       color: color,
     );
   }
 
   static ImageProvider<Object> assetImage(String name) {
-    return AssetImage("images/$name", package: "flutter_chat_uikit");
+    return AssetImage("images/$name", package: "em_chat_uikit");
   }
 
   static Widget defaultAvatar({

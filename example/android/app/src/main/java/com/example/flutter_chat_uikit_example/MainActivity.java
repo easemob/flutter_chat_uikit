@@ -1,4 +1,4 @@
-package com.example.flutter_chat_uikit_example;
+package com.example.em_chat_uikit_example;
 
 import io.flutter.embedding.android.FlutterActivity;
 

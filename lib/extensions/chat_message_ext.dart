@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import 'package:flutter_chat_uikit/flutter_chat_uikit.dart';
+import 'package:em_chat_uikit/em_chat_uikit.dart';
 
 extension ChatMessageExt on EMMessage {
   String summary(BuildContext context) {

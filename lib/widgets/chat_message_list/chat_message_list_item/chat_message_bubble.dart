@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../flutter_chat_uikit.dart';
+import '../../../em_chat_uikit.dart';
 
 class ChatMessageBubble extends StatelessWidget {
   const ChatMessageBubble({

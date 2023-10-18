@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../flutter_chat_uikit.dart';
+import '../../../em_chat_uikit.dart';
 
 class ChatMessageListVoiceItem extends ChatMessageListItem {
   const ChatMessageListVoiceItem({

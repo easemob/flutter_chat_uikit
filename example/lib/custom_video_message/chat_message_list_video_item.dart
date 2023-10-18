@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_uikit/flutter_chat_uikit.dart';
-import 'package:flutter_chat_uikit/tools/icon_image_provider.dart';
+import 'package:em_chat_uikit/em_chat_uikit.dart';
+import 'package:em_chat_uikit/tools/icon_image_provider.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
 class ChatMessageListVideoItem extends ChatMessageListItem {

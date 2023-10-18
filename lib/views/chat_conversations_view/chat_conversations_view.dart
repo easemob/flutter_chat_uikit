@@ -1,7 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-import '../../flutter_chat_uikit.dart';
+import '../../em_chat_uikit.dart';
 import '../../internal/chat_method.dart';
 import '../../widgets/chat_swipe_widget/chat_swipe_widget.dart';
 

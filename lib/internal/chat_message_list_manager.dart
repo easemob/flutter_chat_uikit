@@ -1,4 +1,4 @@
-import '../flutter_chat_uikit.dart';
+import '../em_chat_uikit.dart';
 
 class ChatMessageListCallback {
   void onMessagesReceived(List<EMMessage> messages) {}

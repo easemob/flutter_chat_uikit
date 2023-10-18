@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_uikit/flutter_chat_uikit.dart';
-import 'package:flutter_chat_uikit/internal/chat_method.dart';
+import 'package:em_chat_uikit/em_chat_uikit.dart';
+import 'package:em_chat_uikit/internal/chat_method.dart';
 
 class ChatImageShowWidget extends StatefulWidget {
   const ChatImageShowWidget(this.message, {super.key});
@@ -16,35 +16,13 @@ class ChatImageShowWidget extends StatefulWidget {
 class _ChatImageShowWidgetState extends State<ChatImageShowWidget> {
   final ValueNotifier<int> _progress = ValueNotifier(0);
   final ValueNotifier<bool> showLargeImage = ValueNotifier(false);
-  final String _msgEventKey = "msgEventKey";
+  final String _msgEventKey = "ImageDownLoadEventKey";
   EMImageMessageBody? body;
   EMMessage? message;
   @override
   void initState() {
     super.initState();
     message = widget.message;
-    chatClient.chatManager.addMessageEvent(
-      _msgEventKey,
-      ChatMessageEvent(
-        onProgress: (msgId, progress) {
-          if (msgId == message!.msgId) {
-            _progress.value = progress;
-          }
-        },
-        onSuccess: (msgId, msg) {
-          if (msgId == message!.msgId) {
-            message = msg;
-            checkFile();
-          }
-        },
-        onError: (msgId, msg, error) {
-          if (msgId == message!.msgId) {
-            message = msg;
-            setState(() {});
-          }
-        },
-      ),
-    );
     checkFile();
   }
 
@@ -56,6 +34,28 @@ class _ChatImageShowWidgetState extends State<ChatImageShowWidget> {
     } else {
       showLargeImage.value = false;
       _downloadImage(message!);
+      chatClient.chatManager.addMessageEvent(
+        _msgEventKey,
+        ChatMessageEvent(
+          onProgress: (msgId, progress) {
+            if (msgId == message!.msgId) {
+              _progress.value = progress;
+            }
+          },
+          onSuccess: (msgId, msg) {
+            if (msgId == message!.msgId) {
+              message = msg;
+              checkFile();
+            }
+          },
+          onError: (msgId, msg, error) {
+            if (msgId == message!.msgId) {
+              message = msg;
+              setState(() {});
+            }
+          },
+        ),
+      );
     }
   }
 

@@ -2,8 +2,8 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_uikit/flutter_chat_uikit.dart';
-import 'package:flutter_chat_uikit_example/custom_video_message/play_video_page.dart';
+import 'package:em_chat_uikit/em_chat_uikit.dart';
+import 'package:em_chat_uikit_example/custom_video_message/play_video_page.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 

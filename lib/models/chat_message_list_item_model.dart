@@ -1,4 +1,4 @@
-import '../flutter_chat_uikit.dart';
+import '../em_chat_uikit.dart';
 
 class ChatMessageListItemModel {
   const ChatMessageListItemModel(this.message, [this.needTime = false]);

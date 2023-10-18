@@ -1,4 +1,4 @@
-name: flutter_chat_uikit
+name: em_chat_uikit
 description: A set of ui components adapted to the chat sdk can quickly build a chat page
   and chat through the chat sdk by invoking the ui components.
 version: 1.0.0
@@ -49,7 +49,7 @@ flutter:
   plugin:
     platforms:
       android:
-        package: com.example.flutter_chat_uikit
+        package: com.example.em_chat_uikit
         pluginClass: FlutterChatUikitPlugin
       ios:
         pluginClass: FlutterChatUikitPlugin

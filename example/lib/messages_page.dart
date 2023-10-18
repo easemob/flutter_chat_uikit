@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_uikit/flutter_chat_uikit.dart';
+import 'package:em_chat_uikit/em_chat_uikit.dart';
 
 class MessagesPage extends StatefulWidget {
   const MessagesPage(this.conversation, {super.key});

@@ -1,6 +1,6 @@
-# flutter_chat_uikit_example
+# em_chat_uikit_example
 
-Demonstrates how to use the flutter_chat_uikit plugin.
+Demonstrates how to use the em_chat_uikit plugin.
 
 ## Getting Started
 

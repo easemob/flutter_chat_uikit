@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_uikit/internal/chat_method.dart';
+import 'package:em_chat_uikit/internal/chat_method.dart';
 
-import '../../flutter_chat_uikit.dart';
+import '../../em_chat_uikit.dart';
 
 /// The message list widget controller.
 ///

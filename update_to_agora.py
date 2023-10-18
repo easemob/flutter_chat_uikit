@@ -92,9 +92,9 @@ def renameFolder(folderName):
 
 # 需要修改的文件名
 FILE_dict = {
-    "flutter_chat_uikit.iml":"agora_chat_uikit.iml",
-    "flutter_chat_uikit.dart":"agora_chat_uikit.dart",
-    "flutter_chat_uikit.podspec":"agora_chat_uikit.podspec",
+    "em_chat_uikit.iml":"agora_chat_uikit.iml",
+    "em_chat_uikit.dart":"agora_chat_uikit.dart",
+    "em_chat_uikit.podspec":"agora_chat_uikit.podspec",
 }
 
 
@@ -160,9 +160,9 @@ def walkFile(file):
 
 # 需要替换的字符串map
 UPDATE_dict = {
-    "name: flutter_chat_uikit": "name: agora_chat_uikit",
-    "flutter_chat_uikit.dart":"agora_chat_uikit.dart",
-    "flutter_chat_uikit:":"agora_chat_uikit:",
+    "name: em_chat_uikit": "name: agora_chat_uikit",
+    "em_chat_uikit.dart":"agora_chat_uikit.dart",
+    "em_chat_uikit:":"agora_chat_uikit:",
     "im_flutter_sdk/im_flutter_sdk.dart":"agora_chat_sdk/agora_chat_sdk.dart",
     "EMMessage":"ChatMessage",
     "EMConversation":"ChatConversation",
@@ -177,9 +177,9 @@ UPDATE_dict = {
     "EMConnectionEventHandler":"ConnectionEventHandler",
     "EMMultiDeviceEventHandler":"ChatMultiDeviceEventHandler",
     "EMOptions":"ChatOptions",
-    "package:flutter_chat_uikit":"package:agora_chat_uikit",
-    "\"flutter_chat_uikit\"":"\"agora_chat_uikit\"",
-    " = 'flutter_chat_uikit'":" = 'agora_chat_uikit'",
+    "package:em_chat_uikit":"package:agora_chat_uikit",
+    "\"em_chat_uikit\"":"\"agora_chat_uikit\"",
+    " = 'em_chat_uikit'":" = 'agora_chat_uikit'",
     
     # SDK Version
     "im_flutter_sdk: ^4.0.2":"agora_chat_sdk: 1.1.1",

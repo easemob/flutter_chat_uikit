@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_uikit/tools/icon_image_provider.dart';
+import 'package:em_chat_uikit/tools/icon_image_provider.dart';
 
-import '../../../flutter_chat_uikit.dart';
+import '../../../em_chat_uikit.dart';
 
 class ChatMessageListImageItem extends ChatMessageListItem {
   const ChatMessageListImageItem({

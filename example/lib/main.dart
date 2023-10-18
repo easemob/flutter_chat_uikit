@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_uikit/flutter_chat_uikit.dart';
+import 'package:em_chat_uikit/em_chat_uikit.dart';
 
-import 'package:flutter_chat_uikit_example/conversations_page.dart';
-import 'package:flutter_chat_uikit_example/custom_video_message/custom_message_page.dart';
-import 'package:flutter_chat_uikit_example/messages_page.dart';
+import 'package:em_chat_uikit_example/conversations_page.dart';
+import 'package:em_chat_uikit_example/custom_video_message/custom_message_page.dart';
+import 'package:em_chat_uikit_example/messages_page.dart';
 
 class ChatConfig {
-  static const String appKey = '';
-  static const String userId = '';
-  static const String password = '';
+  static const String appKey = 'easemob-demo#flutter';
+  static const String userId = 'du002';
+  static const String password = '1';
 }
 
 void main() async {

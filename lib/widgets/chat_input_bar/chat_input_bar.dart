@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_uikit/generated/uikit_localizations.dart';
+import 'package:em_chat_uikit/generated/uikit_localizations.dart';
 
 import '../../tools/chat_image_loader.dart';
 import '../chat_uikit.dart';

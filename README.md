@@ -2,24 +2,24 @@
 
 ## Overview
 
-Instant messaging connects people wherever they are and allows them to communicate with others in real time. With built-in user interfaces (UI) for the message list, the [Chat UI Samples](https://github.com/easemob/flutter_chat_uikit) enables you to quickly embed real-time messaging into your app without requiring extra effort on the UI.
+Instant messaging connects people wherever they are and allows them to communicate with others in real time. With built-in user interfaces (UI) for the message list, the [Chat UI Samples](https://github.com/easemob/em_chat_uikit) enables you to quickly embed real-time messaging into your app without requiring extra effort on the UI.
  
 This page shows a sample code to add one-to-one chat and group chat messaging into your app by using the Flutter Chat UI Samples.
-'flutter_chat_uikit' currently has two modular widgets:
+'em_chat_uikit' currently has two modular widgets:
 
 `ChatConversationsView` ChatConversationsView lists the existing conversations. The avatar and nickname displayed on the conversation view can be returned through callbacks.
 
 `ChatMessagesView` ChatMessagesView lists messages in the current conversation, including text, image, voice, and file messages. The avatar and nickname displayed on the message view can be returned through callbacks.
 
-easemob offers an open-source flutter_chat_uikit project on GitHub. You can clone and run the project or refer to the logic in it to create projects integrating flutter_chat_uikit.
+easemob offers an open-source em_chat_uikit project on GitHub. You can clone and run the project or refer to the logic in it to create projects integrating em_chat_uikit.
 
-Source code URL of flutter_chat_uikit for Flutter:
+Source code URL of em_chat_uikit for Flutter:
 
-https://github.com/easemob/flutter_chat_uikit
+https://github.com/easemob/em_chat_uikit
 
 ## Function
 
-The `flutter_chat_uikit` library provides the following functions:
+The `em_chat_uikit` library provides the following functions:
 
 - Sends and receives messages, displays messages, shows the unread message count, and clears messages. The text, image, emoji, file, and audio messages are supported.
 - Deletes conversations and messages. 
@@ -65,7 +65,7 @@ The `flutter_chat_uikit` library provides the following functions:
 
 ## Dependencies
 
-The following third-party UI libraries are used in flutter_chat_uikit:
+The following third-party UI libraries are used in em_chat_uikit:
 
 ```dart
 dependencies:
@@ -115,7 +115,7 @@ In the `example/android/app/proguard-rules.pro` file, add the following lines to
 ### pub.dev integration
 
 ```dart
-flutter pub add flutter_chat_uikit
+flutter pub add em_chat_uikit
 flutter pub get
 ```
 
@@ -125,7 +125,7 @@ You can download the project to your computer and execute it.
 
 ```dart
 dependencies:
-    flutter_chat_uikit:
+    em_chat_uikit:
         path: `<#uikit path#>`
 ```
 
@@ -142,7 +142,7 @@ You must have a ChatUIKit widget at the top of you widget tree.
 | theme | Chat UIKit theme for setting component styles. If this prop is not set, the default style will be used.|
 
 ```dart
-import 'package:flutter_chat_uikit/flutter_chat_uikit.dart';
+import 'package:em_chat_uikit/em_chat_uikit.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

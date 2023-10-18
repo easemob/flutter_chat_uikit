@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../flutter_chat_uikit.dart';
+import '../../em_chat_uikit.dart';
 import '../../widgets/chat_image_show_widget/chat_image_show_widget.dart';
 
 /// Message details page
