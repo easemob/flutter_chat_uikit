@@ -15,7 +15,7 @@ class ChatImageShowWidget extends StatefulWidget {
 
 class _ChatImageShowWidgetState extends State<ChatImageShowWidget> {
   final ValueNotifier<int> _progress = ValueNotifier(0);
-
+  final ValueNotifier<bool> showLargeImage = ValueNotifier(false);
   final String _msgEventKey = "msgEventKey";
   EMImageMessageBody? body;
   EMMessage? message;
@@ -24,67 +24,58 @@ class _ChatImageShowWidgetState extends State<ChatImageShowWidget> {
     super.initState();
     message = widget.message;
     chatClient.chatManager.addMessageEvent(
-        _msgEventKey,
-        ChatMessageEvent(
-          onProgress: (msgId, progress) {
-            if (msgId == message!.msgId) {
-              _progress.value = progress;
-            }
-          },
-          onSuccess: (msgId, msg) {
-            if (msgId == message!.msgId) {
-              message = msg;
-              setState(() {});
-            }
-          },
-          onError: (msgId, msg, error) {
-            if (msgId == message!.msgId) {
-              message = msg;
-              setState(() {});
-            }
-          },
-        ));
+      _msgEventKey,
+      ChatMessageEvent(
+        onProgress: (msgId, progress) {
+          if (msgId == message!.msgId) {
+            _progress.value = progress;
+          }
+        },
+        onSuccess: (msgId, msg) {
+          if (msgId == message!.msgId) {
+            message = msg;
+            checkFile();
+          }
+        },
+        onError: (msgId, msg, error) {
+          if (msgId == message!.msgId) {
+            message = msg;
+            setState(() {});
+          }
+        },
+      ),
+    );
+    checkFile();
+  }
+
+  void checkFile() {
+    body = message!.body as EMImageMessageBody;
+    final file = File(body!.localPath);
+    if (file.existsSync()) {
+      showLargeImage.value = true;
+    } else {
+      showLargeImage.value = false;
+      _downloadImage(message!);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    body = message!.body as EMImageMessageBody;
-    Widget? content;
-    bool needDownload = false;
-    do {
-      File file = File(body!.localPath);
-      if (file.existsSync()) {
-        content = Image.file(File(body!.localPath));
-        break;
-      }
-      if (body!.fileStatus != DownloadStatus.FAILED) {
-        needDownload = true;
-        _downloadImage(message!);
-      } else {
-        needDownload = false;
-      }
-
-      file = File(body!.thumbnailLocalPath!);
-      if (file.existsSync()) {
-        content = Image.file(File(body!.thumbnailLocalPath!));
-        break;
-      }
-
-      content = Image.network(body!.thumbnailRemotePath!);
-    } while (false);
+    Widget content = ValueListenableBuilder(
+      valueListenable: showLargeImage,
+      builder: (context, value, child) {
+        return value ? largeImageWidget() : thumbnailImageWidget();
+      },
+      child: thumbnailImageWidget(),
+    );
 
     content = InteractiveViewer(
       child: content,
     );
 
-    content = SizedBox(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
-      child: content,
-    );
+    content = Center(child: content);
 
     content = Stack(
-      alignment: Alignment.center,
       children: [
         content,
         Positioned(
@@ -99,34 +90,49 @@ class _ChatImageShowWidgetState extends State<ChatImageShowWidget> {
             ),
           ),
         ),
-        () {
-          return needDownload
-              ? Positioned(
-                  child: SizedBox(
-                  width: 30,
-                  height: 30,
-                  child: ValueListenableBuilder(
-                    valueListenable: _progress,
-                    builder: (context, value, child) {
-                      return CircularProgressIndicator(
-                        value: value / 100,
-                      );
-                    },
-                  ),
-                ))
-              : Container();
-        }(),
       ],
     );
 
-    return Scaffold(
+    content = SizedBox(
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height,
+      child: content,
+    );
+    content = Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(child: content),
     );
+    return content;
   }
 
   void _downloadImage(EMMessage message) {
     chatClient.chatManager.downloadAttachment(message);
+  }
+
+  Widget thumbnailImageWidget() {
+    Widget? content;
+    var file = File(body!.thumbnailLocalPath ?? '');
+    if (file.existsSync()) {
+      content = Image.file(File(body!.thumbnailLocalPath!));
+    } else {
+      file = File(body!.localPath);
+      if (file.existsSync()) {
+        content = Image.file(File(body!.localPath));
+      } else {
+        if (body?.thumbnailRemotePath != null) {
+          content = content = Image.network(body!.thumbnailRemotePath!);
+        } else {
+          content =
+              const Icon(Icons.broken_image, size: 58, color: Colors.white);
+        }
+      }
+    }
+
+    return content;
+  }
+
+  Widget largeImageWidget() {
+    return Image.file(File(body!.localPath));
   }
 
   @override

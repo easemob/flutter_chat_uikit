@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chat_uikit/flutter_chat_uikit.dart';
 
 import 'package:flutter_chat_uikit_example/conversations_page.dart';
+import 'package:flutter_chat_uikit_example/custom_video_message/custom_message_page.dart';
 import 'package:flutter_chat_uikit_example/messages_page.dart';
 
 class ChatConfig {
@@ -118,17 +119,37 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
                 const SizedBox(height: 10),
-                TextButton(
-                  onPressed: () {
-                    pushToChatPage(_chatId);
-                  },
-                  style: ButtonStyle(
-                    foregroundColor: MaterialStateProperty.all(Colors.white),
-                    backgroundColor:
-                        MaterialStateProperty.all(Colors.lightBlue),
-                  ),
-                  child: const Text("START CHAT"),
-                ),
+                Row(
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        FocusScope.of(context).requestFocus(FocusNode());
+                        pushToChatPage(_chatId);
+                      },
+                      style: ButtonStyle(
+                        foregroundColor:
+                            MaterialStateProperty.all(Colors.white),
+                        backgroundColor:
+                            MaterialStateProperty.all(Colors.lightBlue),
+                      ),
+                      child: const Text("START CHAT"),
+                    ),
+                    const SizedBox(width: 10),
+                    TextButton(
+                      onPressed: () {
+                        FocusScope.of(context).requestFocus(FocusNode());
+                        pushToCustomChatPage(_chatId);
+                      },
+                      style: ButtonStyle(
+                        foregroundColor:
+                            MaterialStateProperty.all(Colors.white),
+                        backgroundColor:
+                            MaterialStateProperty.all(Colors.lightBlue),
+                      ),
+                      child: const Text("CUSTOM CHAT"),
+                    ),
+                  ],
+                )
               ],
             ),
             const SizedBox(height: 10),
@@ -181,6 +202,24 @@ class _MyHomePageState extends State<MyHomePage> {
     Future(() {
       Navigator.of(context).push(MaterialPageRoute(builder: (_) {
         return MessagesPage(conv!);
+      }));
+    });
+  }
+
+  void pushToCustomChatPage(String userId) async {
+    if (userId.isEmpty) {
+      _addLogToConsole('UserId is null');
+      return;
+    }
+    if (EMClient.getInstance.currentUserId == null) {
+      _addLogToConsole('user not login');
+      return;
+    }
+    EMConversation? conv =
+        await EMClient.getInstance.chatManager.getConversation(userId);
+    Future(() {
+      Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+        return CustomMessagesPage(conv!);
       }));
     });
   }

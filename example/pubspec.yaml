@@ -1,4 +1,5 @@
 name: flutter_chat_uikit_example
+version: 1.0.0
 description: Demonstrates how to use the flutter_chat_uikit plugin.
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -16,6 +17,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
+  video_thumbnail: ^0.5.3
+
+  path_provider: ^2.1.1
+
+  video_player: ^2.7.2
 
   flutter_chat_uikit:
     # When depending on this package from a real application you should use:
