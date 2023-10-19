@@ -43,7 +43,6 @@ class _PlayVideoPageState extends State<PlayVideoPage> {
     body = message!.body as EMVideoMessageBody;
     File file = File(body!.localPath);
     if (!file.existsSync()) {
-      _downloadVideo(message!);
       EMClient.getInstance.chatManager.addMessageEvent(
         _msgEventKey,
         ChatMessageEvent(
@@ -74,6 +73,7 @@ class _PlayVideoPageState extends State<PlayVideoPage> {
           },
         ),
       );
+      _downloadVideo(message!);
     } else {
       _downloadStatus.value = CustomDownloadStatus.success;
       _controller = VideoPlayerController.file(file)
