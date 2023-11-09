@@ -23,7 +23,7 @@ The `em_chat_uikit` library provides the following functions:
 
 - Sends and receives messages, displays messages, shows the unread message count, and clears messages. The text, image, emoji, file, and audio messages are supported.
 - Deletes conversations and messages. 
-- Customizes the UI.
+- Customizes the UI. 
 
 <table>
   <tr>
